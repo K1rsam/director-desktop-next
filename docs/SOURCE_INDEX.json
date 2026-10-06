@@ -1,0 +1,730 @@
+{
+  "version": "source-lock/v1",
+  "createdAt": "2026-10-06T17:57:00Z",
+  "status": "engineering_implementation_authorized_creative_runtime_pending_evidence",
+  "destination": {
+    "repository": "K1rsam/director-desktop-next",
+    "visibility": "private",
+    "defaultBranch": "main",
+    "verifiedInitialCommit": "558c38faf5a8bce839d2fd66ce0df6c420d7268f",
+    "localDirectory": "TO_BE_SELECTED_AND_VERIFIED_NON_OVERLAPPING_BY_AGENT"
+  },
+  "desktopSource": {
+    "repository": "K1rsam/director-web",
+    "ref": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+    "branchObserved": "handoff/director-desktop-20261005",
+    "previousRef": "970c36f3ee22ed30df9981bb86f1cd703d709bd9"
+  },
+  "creativeSource": {
+    "repository": "K1rsam/director-web",
+    "ref": "00093c632c45369106c7ef79a47b684fd5e77526",
+    "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/",
+    "authority": "byte_verified_export_candidates_pending_actual_adopted_runtime_verification",
+    "runtimeCodeStatus": "latest_adopted_Mac_working_tree_not_pinned",
+    "excludeIntegratedSkill": true
+  },
+  "readSources": [
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/asset-art-director/SKILL.md",
+      "gitBlobSha": "f50d2f54568bb554e618df46614d5a9fb5d610fc",
+      "sha256": "b73d4626ed1cd26eeba2b73539cb46d9e9c8e20236a9034baf91a95687ab7ece",
+      "bytes": 7603
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/asset-image-production/SKILL.md",
+      "gitBlobSha": "b4784d214902545bf60104a9c5c3f23002133842",
+      "sha256": "96488c1f38f6552c9a4a5dd55f20777c0c2fb20b6cafd16af06c5092e5f48cf5",
+      "bytes": 2008
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/asset-visual-facts-extractor/SKILL.md",
+      "gitBlobSha": "2b4a190cfc633a99c0207d7568d4e7235d08f071",
+      "sha256": "53d0e92ba99704ef7b51e465ad2590dc2676ed62c13b7bfb1daaa6d21f607b66",
+      "bytes": 4271
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/episode-emotion-planner/SKILL.md",
+      "gitBlobSha": "2dd4654bdf74fd4a67f5956c2f235fe0f593e614",
+      "sha256": "9d06e36572a9052cf9d72e0d9723db4f5adc39f44f7d56de8c3c403481ddef50",
+      "bytes": 13466
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/episode-finishing-editor/SKILL.md",
+      "gitBlobSha": "a1e1e40db14a59893366c4091b4b61134222482e",
+      "sha256": "64e13089d39f39b3eff099d0a610dd673cee37f77313514dc782d5226e797bcc",
+      "bytes": 26108
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/foundation-asset-catalog/SKILL.md",
+      "gitBlobSha": "9acad9029c218ff6bfa78dab0c76f20ab90b070d",
+      "sha256": "569af266afa5197f6b219d356c87b0f3a04288fd8b986a3f87a37e287c0dd87b",
+      "bytes": 9107
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/foundation-finishing-editor/SKILL.md",
+      "gitBlobSha": "74a466f4933b08d6870ba4f631971cb6c84794e3",
+      "sha256": "5f28919467dd4ea25bb84eac60d42aa8d314f750e97af28ca1557d85b14866e9",
+      "bytes": 9769
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/acting-blocking.md",
+      "gitBlobSha": "c99c9e054e7cfa8edca7b447ce99f4865b207178",
+      "sha256": "c8f4543a559a0369766cd522946163adebac5dfe8bad78dbe39e493145d21067",
+      "bytes": 14069
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/camera-emotion.md",
+      "gitBlobSha": "59494573e18aef1e36312cf3a54779b09c4a89f9",
+      "sha256": "fa2804b8bd1e3e9b52cbd172b2f7b9dc2723024265f4457de25990513c944ca9",
+      "bytes": 18178
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/camera-path-repair.md",
+      "gitBlobSha": "2fd26e6d10dc91493431735ef141986c8401f5f1",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/comic-contrast.md",
+      "gitBlobSha": "7148a63be67c30d81b585dcbdf02e1e8a0778065",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/danger-rescue.md",
+      "gitBlobSha": "0f5d75b9d4123bb82067ae3f2c36d1272648280e",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/editing-integrity.md",
+      "gitBlobSha": "65cada3068acc9ec4484798216e100fa0b1ce6c5",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/expressive-emphasis.md",
+      "gitBlobSha": "5a6d79cddb70b32edb9fcb60bc0a5dbc6d85b903",
+      "sha256": "c8b8cc18adc85ac109a01fdaac9fdbeeeab337a8d0253cbda8d920caa0a17fe5",
+      "bytes": 2745
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/joy-acceptance.md",
+      "gitBlobSha": "2ba7804a116f0626e881e1e8249c019b7a8d1898",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/long-voice.md",
+      "gitBlobSha": "7997050bb63bee86cf2a15b90045a84b5a653c7e",
+      "sha256": "e0812d4cbaf7a40ff4b8655c4ebf68d8842cf221b8e4c695724712cd882001bf",
+      "bytes": 1831
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/quiet-nonhuman.md",
+      "gitBlobSha": "51921bed0109640afd2381d06dea6244c4419e36",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/scale-silence.md",
+      "gitBlobSha": "865cbb7e89a83eadcb6f1f7ee8e16277d2e30278",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/spatial-contact.md",
+      "gitBlobSha": "1a8761a436219feddad7e83b63d344a0723bc3ff",
+      "sha256": "60bc191d84e225a13283c652c16d226d7b0b09a1467332707d4d5032ef74ef7b",
+      "bytes": 1374
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/cards/status-conflict.md",
+      "gitBlobSha": "cbd1dd7349c80f4683eab51880e5ed0b57d434b1",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/fantasy-expression.md",
+      "gitBlobSha": "bd9519839f689e24833102e68ada409f5c6b8dbd",
+      "sha256": "fdca3d4e23b4c61d2a485b9560042146f5c3a0587fd4f6e834cedbb1795c031f",
+      "bytes": 24814
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/lighting-space.md",
+      "gitBlobSha": "c27289b62150d9b942d9e8e51addbe0ed934e150",
+      "sha256": "d12bd04c16d8ab0a1da5022beb9263731025927f8ea0dcb902ca0bf27f1306a3",
+      "bytes": 5050
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/sound-rhythm.md",
+      "gitBlobSha": "091094cd7ee56432a87dfcdd143b2c61e0c07bda",
+      "sha256": "dd50cd16ee4430297ffdad330aa341426e65c4d6bdf09d46a7b39915a7ca41b6",
+      "bytes": 8389
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/storyboard-common.md",
+      "gitBlobSha": "a2f5af921b0c3caf74c0882d1d70b9987b621541",
+      "sha256": "02a63823900e1a0858fab86d7bc6819e6622075b969d8e4b6d385df0d487552c",
+      "bytes": 13634
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/methods/storyboard-source-context.md",
+      "gitBlobSha": "a13562afae48caa3367feade1d4dd0d1e3365609",
+      "sha256": "a5daaefd50b9d944c3f2a0432339d77512272b8f33433af398c4dda70b08f700",
+      "bytes": 2860
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/screenplay-fidelity/SKILL.md",
+      "gitBlobSha": "cb76764ed598150d63973c6a65428b549c62ae48",
+      "sha256": "8746ed7ee06be797c817d7f73e8e9b8f548ef0238e82ff9fd10bf9d08c027f0b",
+      "bytes": 2377
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/story-foundation/SKILL.md",
+      "gitBlobSha": "95ed0283af9b719b5251734a9a5f99c2f98eaed9",
+      "sha256": "ff512dc45931daf82bebef6ec3b8c92c06d05cc27d4c6bd6676437718a13163d",
+      "bytes": 3402
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/unit-performance-director/SKILL.md",
+      "gitBlobSha": "6cc82ec4a116c3ea050c71322b1a63f5032232f8",
+      "sha256": "70fba0987dda7804e7740dc6aaf4dd93262bb3d566ffec917214d1b17ef2557e",
+      "bytes": 21499
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/rules/unit-video-production/SKILL.md",
+      "gitBlobSha": "023e41d39905ff9a6d07a98cffe5e6e2a73ac850",
+      "sha256": "6fbac2064e5f752ce90d55d6df36776b5b4b5ec18810dbc453939a1b65e33ab0",
+      "bytes": 2282
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/mod.rs",
+      "gitBlobSha": "5cbff2ebab03b04e764be1030c05361fd5302a3f",
+      "sha256": "224e237b983b65440057d82fcc27d1de79192be35ff40b90deb2512c21bf2ab4",
+      "bytes": 64058
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard.rs",
+      "gitBlobSha": "3f403ae5cb33d743c5bd2cab86f08198e224d56e",
+      "sha256": "4a97d209081197cc31e9366cc7e8aa0b281e48963f8ac693c32c6dedf5c19a8d",
+      "bytes": 442620
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_assets.rs",
+      "gitBlobSha": "69fe21346f388094ff9c4b5af76636ee50ee45f2",
+      "sha256": "168a31e95c3fa0eb288fe8c216d8c51aa079797e3c03d7dafc616eaa32be0298",
+      "bytes": 23574
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_creative.rs",
+      "gitBlobSha": "01417771d24096f85a1cc6b83af070c733725218",
+      "sha256": "6a5c78816e8bbe02b1f211f1b11c3bf14663118a1e1d72e4b5ebcb1f43f9e015",
+      "bytes": 80900
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_dependencies.rs",
+      "gitBlobSha": "18594f37941a9b16179170cbb9642e415141c2e3",
+      "sha256": "9cfbdeac00c5031a8c0c9cc403cb2c909ccc8ff54bd37982c06c6dd66812e349",
+      "bytes": 17197
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_original.rs",
+      "gitBlobSha": "7f6e23d1908e16e774d9e7b6ddaf764a15f11df1",
+      "sha256": "65b7289ef49cedebae4723ce82cca9dbcc4624bf1b9e1e83120fb5d15756bdbd",
+      "bytes": 35043
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_schema.rs",
+      "gitBlobSha": "3732a62ac83f1ee6a7997294c44b802d612ae992",
+      "sha256": "2453f52be611485b1a85e5b8e2adcaf1a92d4af802e5a5a83e189ed7b678ab91",
+      "bytes": 10371
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/storyboard_transport.rs",
+      "gitBlobSha": "0665f2589b3424a1d189194291ebe6098cbb50e3",
+      "sha256": "f4c8728325b786d8c297d1d9caee5cc57e57cf717df4ebd86a9bee68262cd6f4",
+      "bytes": 90221
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/text_executor.rs",
+      "gitBlobSha": "c5742577654708f11873487b0ebd6cf9d426da85",
+      "sha256": "45f16b5b89e7bdf6e220e8de2ebb45e7815645a931d94a1a2db46ad82027f213",
+      "bytes": 476234
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/workflow.rs",
+      "gitBlobSha": "fd53b4a165643c52c9d8e1afcd2498cc379e8455",
+      "sha256": "7e224a9acdb37668cb32357f66b0c3721a4a1abcd2a23846ae90a36435ea5a3e",
+      "bytes": 66375
+    },
+    {
+      "source": "desktopSource",
+      "path": "docs/DESKTOP-UPDATE-20261007.md",
+      "gitBlobSha": "abad9036a97037ba930f999310aae668500e1c40",
+      "sha256": "2e51d535c495a1e7b856987caf03d6f6e5f9d81e670cb1a0c8786ecec71706fa",
+      "bytes": 2720
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/README.md",
+      "gitBlobSha": "56bf9f2e76aada9982442a98e4eb8cacbef23f9d",
+      "sha256": "1e0eb2e37d00095268472d419bcc9ef5fdb0c0e6c388fb283d26a6336ca6685d",
+      "bytes": 1731
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/SKILL.md",
+      "gitBlobSha": "96de745e2cad9712fb06187b8c857eecc6f70c4a",
+      "sha256": "e23102b0709f4b6b4fab5af8812a8899982e7c0d56825a6941cce8dda1e74c21",
+      "bytes": 21402
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/camera-path-repair.md",
+      "gitBlobSha": "2fd26e6d10dc91493431735ef141986c8401f5f1",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/comic-contrast.md",
+      "gitBlobSha": "7148a63be67c30d81b585dcbdf02e1e8a0778065",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/danger-rescue.md",
+      "gitBlobSha": "0f5d75b9d4123bb82067ae3f2c36d1272648280e",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/editing-integrity.md",
+      "gitBlobSha": "65cada3068acc9ec4484798216e100fa0b1ce6c5",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/expressive-emphasis.md",
+      "gitBlobSha": "1f64dcbffdf79e5956a99b1398e8ec6992c1bed8",
+      "sha256": "859627f68e7067f79d57afc787fcc08f4904dbff2c7c3394e30e5e21ba0644a2",
+      "bytes": 2922
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/joy-acceptance.md",
+      "gitBlobSha": "2ba7804a116f0626e881e1e8249c019b7a8d1898",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/long-voice.md",
+      "gitBlobSha": "ca169dcba4fae872f2df26872d2a08de9da7866c",
+      "sha256": "c917620f81197a0146fbca98750e4c679b08d4ca50f6847812faf1ff0bb7ac7b",
+      "bytes": 2299
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/quiet-nonhuman.md",
+      "gitBlobSha": "51921bed0109640afd2381d06dea6244c4419e36",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/scale-silence.md",
+      "gitBlobSha": "865cbb7e89a83eadcb6f1f7ee8e16277d2e30278",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/spatial-contact.md",
+      "gitBlobSha": "c1f49c68a7ce53d81b0ba702e05b1b2692cfbf63",
+      "sha256": "2d2b7bd1a922cfc61f1de84aca4ad6087e9bdac3f85ca1e378d4a9f13e6c4c1d",
+      "bytes": 1823
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/status-conflict.md",
+      "gitBlobSha": "cbd1dd7349c80f4683eab51880e5ed0b57d434b1",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/common-contract.md",
+      "gitBlobSha": "5d6835da77f464be516464b543eabacee0677d35",
+      "sha256": "f1a576d1bc232787a396a2be94748ca2c20a0a954b72929fce77ddec7c0dedb9",
+      "bytes": 16752
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/acting-blocking-methods/SKILL.md",
+      "gitBlobSha": "d5005b328e3d21c30e08f8f90f0a4e88cc54e2e4",
+      "sha256": "71453a6d95d9bfe0248144f249dc46d8672c6c261e3a83aee8cf6bd72172a9bf",
+      "bytes": 14054
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/camera-emotion-methods/SKILL.md",
+      "gitBlobSha": "10b2455b4814e7e70a8e1a918474a45337672b7e",
+      "sha256": "6c3630ff4d0ab654feda6072fca994d549640ed4fc68edf6351739ab4911b079",
+      "bytes": 18615
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/director-refinement/SKILL.md",
+      "gitBlobSha": "dcc7ec552c27a04f571fc555c8c313f3ec8e90ae",
+      "sha256": "579e82ae4256cbc9e9af3bfdfd0a3ec3590b91f1af818b7a77611264ffd2c937",
+      "bytes": 6869
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/episode-emotion-planner/SKILL.md",
+      "gitBlobSha": "790868115ded94d20b2cbececd9d869d16705d24",
+      "sha256": "7d6da5154fbefe89490186f0c7905f7959ea6abe121b0c05ed73f21dc56deaa7",
+      "bytes": 14131
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/episode-finishing-editor/SKILL.md",
+      "gitBlobSha": "7530254a882616afacf58e1a41f88174a872a02d",
+      "sha256": "2083577fff437605cc0ff4f7d262786914f52f8427d636110b1e0a162855b465",
+      "bytes": 28735
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/fantasy-expression-methods/SKILL.md",
+      "gitBlobSha": "2abafec627958d0c26147ac5a7f8377b98c791e6",
+      "sha256": "8c3d0c1eb38574de2c175c038935049d1f20efaf2aa4a054434936d56b709c3d",
+      "bytes": 26333
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/lighting-space-methods/SKILL.md",
+      "gitBlobSha": "2c5122ff92e1288cb79de60e0374b38a34616b55",
+      "sha256": "b97201cbbe4895bc0f5c3a6a3dfe4a16dfaebf9f84935a17b951d9f4ba01f614",
+      "bytes": 5035
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/sound-rhythm-methods/SKILL.md",
+      "gitBlobSha": "1430ffb4146e6c1e672ab7d46923b20c5aed9b88",
+      "sha256": "1000ea079ff9d4c42921fd5b0f058eb4b3a33ce01a3b5910f0c19f1b7bef1512",
+      "bytes": 9567
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/source-context-preparer/SKILL.md",
+      "gitBlobSha": "40505f531b2a3ad2384f8071ecef50cd0f7beea5",
+      "sha256": "f563acc7ef27d08e60fd596778e511d7132d4e62144d4cb75f6fee63a4a9d291",
+      "bytes": 3596
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/unit-performance-director/SKILL.md",
+      "gitBlobSha": "dec83b2ddf520f1450565ab3ffcfbbd54ac78535",
+      "sha256": "8a627052a0cc80d409514a4da51b7edefbd5efa350ac8210f0e45f87dcbff578",
+      "bytes": 21902
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/来源校验.json",
+      "gitBlobSha": "3f5b7c7ca8929049ed3310c6e26f05c794919265",
+      "sha256": "71d04a8ae4a13ca7d3b9b628002623670775b0fd98f93a79573917da098d0c5c",
+      "bytes": 6543
+    },
+    {
+      "source": "creativeSource",
+      "path": "skill-packs/3008-stage3/2026-10-06/使用说明.md",
+      "gitBlobSha": "a73a5cf46719611fc04e2a82463a0b9e2c4baf26",
+      "sha256": "93b637937859d5dc27e36072b5edfeef4dafc7b74556ed9404628de24e6911d9",
+      "bytes": 3493
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src/SourceStructure.tsx",
+      "gitBlobSha": "c3b28957aab42cce0bfd0f4f51a7cae6c5138a85",
+      "sha256": "5ee90f31ea56cab37bedd3f77f0a70fe58ae4d0ca5b68ccc29e761b93a9245a9",
+      "bytes": 10946
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/store.rs",
+      "gitBlobSha": "81842f6919b72e9c8d53ec57f882f51422ece537",
+      "sha256": "d4243deae4a360f56ad1ebfb801cb139f4f885b6eb5c5a4ca202287567697067",
+      "bytes": 146981
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/engine.rs",
+      "gitBlobSha": "5aeeeaa136a6a8a74943918dd1f3387dfc207ce2",
+      "sha256": "aff20f21fdc7e71aa41855cb66bfc240ecd416c4f1279db403cf3d8c1cd58765",
+      "bytes": 245095
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/source.rs",
+      "gitBlobSha": "1236b45e2c4cf91109fd40e70afe715946065b14",
+      "sha256": "77997aac7bc348713f6e34700daf9133502a8ef7cc0c89bb69d9554a070df231",
+      "bytes": 77482
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/assets.rs",
+      "gitBlobSha": "a43cbfeb0800741e0dca6d4fec2f64fdd1f305a5",
+      "sha256": "977935e3bd2bd8976275e997918906120f3f57e24e67e557e5ddf7bd974372e0",
+      "bytes": 101363
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src-tauri/src/pipeline/scene_edits.rs",
+      "gitBlobSha": "7abc23c28843218ec60f9da4409f42eba3206365",
+      "sha256": "97d6e9daafab870fa0a3bc882b92d01a9ab149ac86488ba2092afcb9a151f865",
+      "bytes": 30397
+    },
+    {
+      "source": "desktopSource",
+      "path": "director-desktop/src/AssetPanel.tsx",
+      "gitBlobSha": "9c01523888f965e3bef49cbb6707ab068bbe1b4c",
+      "sha256": "0361aa06334e1bfdebe9d0c3a2416a49f649b2685165247443bfb3ed5e686ace",
+      "bytes": 26384
+    }
+  ],
+  "creativeFiles": [
+    {
+      "sourceRelativePath": "skills/acting-blocking-methods/SKILL.md",
+      "packagedPath": "references/原版/skills/acting-blocking-methods/SKILL.md",
+      "bytes": 14054,
+      "sha256": "71453a6d95d9bfe0248144f249dc46d8672c6c261e3a83aee8cf6bd72172a9bf"
+    },
+    {
+      "sourceRelativePath": "skills/camera-emotion-methods/SKILL.md",
+      "packagedPath": "references/原版/skills/camera-emotion-methods/SKILL.md",
+      "bytes": 18615,
+      "sha256": "6c3630ff4d0ab654feda6072fca994d549640ed4fc68edf6351739ab4911b079"
+    },
+    {
+      "sourceRelativePath": "skills/director-refinement/SKILL.md",
+      "packagedPath": "references/原版/skills/director-refinement/SKILL.md",
+      "bytes": 6869,
+      "sha256": "579e82ae4256cbc9e9af3bfdfd0a3ec3590b91f1af818b7a77611264ffd2c937"
+    },
+    {
+      "sourceRelativePath": "skills/episode-emotion-planner/SKILL.md",
+      "packagedPath": "references/原版/skills/episode-emotion-planner/SKILL.md",
+      "bytes": 14131,
+      "sha256": "7d6da5154fbefe89490186f0c7905f7959ea6abe121b0c05ed73f21dc56deaa7"
+    },
+    {
+      "sourceRelativePath": "skills/episode-finishing-editor/SKILL.md",
+      "packagedPath": "references/原版/skills/episode-finishing-editor/SKILL.md",
+      "bytes": 28735,
+      "sha256": "2083577fff437605cc0ff4f7d262786914f52f8427d636110b1e0a162855b465"
+    },
+    {
+      "sourceRelativePath": "skills/fantasy-expression-methods/SKILL.md",
+      "packagedPath": "references/原版/skills/fantasy-expression-methods/SKILL.md",
+      "bytes": 26333,
+      "sha256": "8c3d0c1eb38574de2c175c038935049d1f20efaf2aa4a054434936d56b709c3d"
+    },
+    {
+      "sourceRelativePath": "skills/lighting-space-methods/SKILL.md",
+      "packagedPath": "references/原版/skills/lighting-space-methods/SKILL.md",
+      "bytes": 5035,
+      "sha256": "b97201cbbe4895bc0f5c3a6a3dfe4a16dfaebf9f84935a17b951d9f4ba01f614"
+    },
+    {
+      "sourceRelativePath": "skills/sound-rhythm-methods/SKILL.md",
+      "packagedPath": "references/原版/skills/sound-rhythm-methods/SKILL.md",
+      "bytes": 9567,
+      "sha256": "1000ea079ff9d4c42921fd5b0f058eb4b3a33ce01a3b5910f0c19f1b7bef1512"
+    },
+    {
+      "sourceRelativePath": "skills/source-context-preparer/SKILL.md",
+      "packagedPath": "references/原版/skills/source-context-preparer/SKILL.md",
+      "bytes": 3596,
+      "sha256": "f563acc7ef27d08e60fd596778e511d7132d4e62144d4cb75f6fee63a4a9d291"
+    },
+    {
+      "sourceRelativePath": "skills/unit-performance-director/SKILL.md",
+      "packagedPath": "references/原版/skills/unit-performance-director/SKILL.md",
+      "bytes": 21902,
+      "sha256": "8a627052a0cc80d409514a4da51b7edefbd5efa350ac8210f0e45f87dcbff578"
+    },
+    {
+      "sourceRelativePath": "references/cards/camera-path-repair.md",
+      "packagedPath": "references/原版/references/cards/camera-path-repair.md",
+      "bytes": 1982,
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de"
+    },
+    {
+      "sourceRelativePath": "references/cards/comic-contrast.md",
+      "packagedPath": "references/原版/references/cards/comic-contrast.md",
+      "bytes": 1689,
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed"
+    },
+    {
+      "sourceRelativePath": "references/cards/danger-rescue.md",
+      "packagedPath": "references/原版/references/cards/danger-rescue.md",
+      "bytes": 1432,
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893"
+    },
+    {
+      "sourceRelativePath": "references/cards/editing-integrity.md",
+      "packagedPath": "references/原版/references/cards/editing-integrity.md",
+      "bytes": 1966,
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0"
+    },
+    {
+      "sourceRelativePath": "references/cards/expressive-emphasis.md",
+      "packagedPath": "references/原版/references/cards/expressive-emphasis.md",
+      "bytes": 2922,
+      "sha256": "859627f68e7067f79d57afc787fcc08f4904dbff2c7c3394e30e5e21ba0644a2"
+    },
+    {
+      "sourceRelativePath": "references/cards/joy-acceptance.md",
+      "packagedPath": "references/原版/references/cards/joy-acceptance.md",
+      "bytes": 1383,
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216"
+    },
+    {
+      "sourceRelativePath": "references/cards/long-voice.md",
+      "packagedPath": "references/原版/references/cards/long-voice.md",
+      "bytes": 2299,
+      "sha256": "c917620f81197a0146fbca98750e4c679b08d4ca50f6847812faf1ff0bb7ac7b"
+    },
+    {
+      "sourceRelativePath": "references/cards/quiet-nonhuman.md",
+      "packagedPath": "references/原版/references/cards/quiet-nonhuman.md",
+      "bytes": 986,
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3"
+    },
+    {
+      "sourceRelativePath": "references/cards/scale-silence.md",
+      "packagedPath": "references/原版/references/cards/scale-silence.md",
+      "bytes": 961,
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258"
+    },
+    {
+      "sourceRelativePath": "references/cards/spatial-contact.md",
+      "packagedPath": "references/原版/references/cards/spatial-contact.md",
+      "bytes": 1823,
+      "sha256": "2d2b7bd1a922cfc61f1de84aca4ad6087e9bdac3f85ca1e378d4a9f13e6c4c1d"
+    },
+    {
+      "sourceRelativePath": "references/cards/status-conflict.md",
+      "packagedPath": "references/原版/references/cards/status-conflict.md",
+      "bytes": 1284,
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f"
+    },
+    {
+      "sourceRelativePath": "references/common-contract.md",
+      "packagedPath": "references/原版/references/common-contract.md",
+      "bytes": 16752,
+      "sha256": "f1a576d1bc232787a396a2be94748ca2c20a0a954b72929fce77ddec7c0dedb9"
+    }
+  ],
+  "implementationScope": {
+    "sdkRequiredNow": true,
+    "retainCli": true,
+    "sharedWindowsMacCore": true,
+    "firstLiveAcceptanceBackend": "cli",
+    "sdkLiveThisRound": false,
+    "liveEpisodeNumbers": [
+      1,
+      2
+    ],
+    "otherEpisodesAllowed": false,
+    "automaticFullRegenerationRoundsAllowed": false,
+    "engineeringAgentModel": "gpt-6.1-sol",
+    "engineeringAgentReasoning": "max",
+    "appCliModel": "gpt-6.1-sol",
+    "appCliReasoning": "medium",
+    "stage1WholeUploadedScriptIfNeeded": true,
+    "stage2WholeScriptTextAssetDesignIfNeeded": true,
+    "stage2ImageTestPolicy": {
+      "allowedConditionally": true,
+      "provider": "official_jimeng_cli",
+      "requestedModelLabel": "image_model_5.0",
+      "exactModelIdVerified": false,
+      "accountFreeEligibilityVerified": false,
+      "scope": "small_representative_key_character_base_and_state_then_needed_type_samples",
+      "paidFallbackAllowed": false,
+      "wholeCatalogBatchAllowed": false
+    },
+    "stage4LiveVideoTestingAllowed": false,
+    "stage1Stage2AllowedSourceEpisodes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "privateAcceptanceInput": {
+    "libraryFileId": "libfile_4a8979e4737481918efe1df2de22d7a8",
+    "inspectionStatus": "uploaded_docx_and_extracted_text_read_historical_correspondence_pending",
+    "sourceSha256": "cd18c69c7099be79e146207bd4a5baa8e4084ad11f1be9cf08b07938d541420f",
+    "historicalSameSourceVerified": false,
+    "adoptedEpisodeBaselinesVerified": false,
+    "repositoryContentAllowed": false,
+    "preparedFilename": "《全民御兽，我觉醒了灭世烛龙》(1).docx",
+    "preparedBytes": 40585,
+    "extractedTextSha256": "9fcd6910253a2bd98709f6519184e0e25f55184af611bb4847c9b8612edfd377",
+    "extractedTextCharacters": 14984,
+    "documentParagraphs": 462,
+    "episodeCount": 10,
+    "paragraphTextCharacters": 14523
+  }
+}

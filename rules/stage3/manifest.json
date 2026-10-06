@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "creative-candidate-manifest/v1",
+  "packId": "mac-3008-original-export-20261006",
+  "status": "candidate_not_approved_for_runtime",
+  "active": false,
+  "activePackId": null,
+  "repository": "K1rsam/director-desktop-next",
+  "source": {
+    "repository": "K1rsam/director-web",
+    "ref": "00093c632c45369106c7ef79a47b684fd5e77526",
+    "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/",
+    "authority": "byte_verified_export_candidates_pending_actual_adopted_runtime_verification",
+    "runtimeCodeStatus": "latest_adopted_Mac_working_tree_not_pinned",
+    "excludeIntegratedSkill": true
+  },
+  "evidence": {
+    "byteHashVerification": "verified_against_pinned_export_and_source_manifest",
+    "fullMacRuntimeCode": "not_yet_verified",
+    "lastAdoptedRunHistoryMessage": 228,
+    "failedExperimentIsBaseline": false,
+    "integratedSkillIsBaseline": false
+  },
+  "runtimeLabelsReportedByExport": [
+    "production-lean-v4",
+    "expressive-cadence-v4",
+    "screen-rhythm-v5",
+    "fantasy-spans-v1",
+    "visual-subjects-v1",
+    "director-refinement-v3"
+  ],
+  "activationRequires": [
+    "Read-only verification of actual adopted Mac runtime rules and required schema/loader/refinement files",
+    "Source-backed resolution of any version differences without rewriting original creative files",
+    "Reviewed adapter contract and offline regression evidence"
+  ],
+  "files": [
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/acting-blocking-methods/SKILL.md",
+      "sha256": "71453a6d95d9bfe0248144f249dc46d8672c6c261e3a83aee8cf6bd72172a9bf",
+      "bytes": 14054,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/acting-blocking-methods/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/camera-emotion-methods/SKILL.md",
+      "sha256": "6c3630ff4d0ab654feda6072fca994d549640ed4fc68edf6351739ab4911b079",
+      "bytes": 18615,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/camera-emotion-methods/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/director-refinement/SKILL.md",
+      "sha256": "579e82ae4256cbc9e9af3bfdfd0a3ec3590b91f1af818b7a77611264ffd2c937",
+      "bytes": 6869,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/director-refinement/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/episode-emotion-planner/SKILL.md",
+      "sha256": "7d6da5154fbefe89490186f0c7905f7959ea6abe121b0c05ed73f21dc56deaa7",
+      "bytes": 14131,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/episode-emotion-planner/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/episode-finishing-editor/SKILL.md",
+      "sha256": "2083577fff437605cc0ff4f7d262786914f52f8427d636110b1e0a162855b465",
+      "bytes": 28735,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/episode-finishing-editor/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/fantasy-expression-methods/SKILL.md",
+      "sha256": "8c3d0c1eb38574de2c175c038935049d1f20efaf2aa4a054434936d56b709c3d",
+      "bytes": 26333,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/fantasy-expression-methods/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/lighting-space-methods/SKILL.md",
+      "sha256": "b97201cbbe4895bc0f5c3a6a3dfe4a16dfaebf9f84935a17b951d9f4ba01f614",
+      "bytes": 5035,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/lighting-space-methods/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/sound-rhythm-methods/SKILL.md",
+      "sha256": "1000ea079ff9d4c42921fd5b0f058eb4b3a33ce01a3b5910f0c19f1b7bef1512",
+      "bytes": 9567,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/sound-rhythm-methods/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/source-context-preparer/SKILL.md",
+      "sha256": "f563acc7ef27d08e60fd596778e511d7132d4e62144d4cb75f6fee63a4a9d291",
+      "bytes": 3596,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/source-context-preparer/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/skills/unit-performance-director/SKILL.md",
+      "sha256": "8a627052a0cc80d409514a4da51b7edefbd5efa350ac8210f0e45f87dcbff578",
+      "bytes": 21902,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/skills/unit-performance-director/SKILL.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/camera-path-repair.md",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/camera-path-repair.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/comic-contrast.md",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/comic-contrast.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/danger-rescue.md",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/danger-rescue.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/editing-integrity.md",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/editing-integrity.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/expressive-emphasis.md",
+      "sha256": "859627f68e7067f79d57afc787fcc08f4904dbff2c7c3394e30e5e21ba0644a2",
+      "bytes": 2922,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/expressive-emphasis.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/joy-acceptance.md",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/joy-acceptance.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/long-voice.md",
+      "sha256": "c917620f81197a0146fbca98750e4c679b08d4ca50f6847812faf1ff0bb7ac7b",
+      "bytes": 2299,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/long-voice.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/quiet-nonhuman.md",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/quiet-nonhuman.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/scale-silence.md",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/scale-silence.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/spatial-contact.md",
+      "sha256": "2d2b7bd1a922cfc61f1de84aca4ad6087e9bdac3f85ca1e378d4a9f13e6c4c1d",
+      "bytes": 1823,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/spatial-contact.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/cards/status-conflict.md",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/cards/status-conflict.md"
+    },
+    {
+      "path": "rules/stage3/candidates/mac-3008-20261006/references/common-contract.md",
+      "sha256": "f1a576d1bc232787a396a2be94748ca2c20a0a954b72929fce77ddec7c0dedb9",
+      "bytes": 16752,
+      "sourcePath": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/references/common-contract.md"
+    }
+  ]
+}
