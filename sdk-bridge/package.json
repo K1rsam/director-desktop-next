@@ -1,0 +1,19 @@
+{
+  "name": "@director-desktop-next/codex-sdk-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/main.mjs",
+    "check": "node --check src/bridge.mjs && node --check src/main.mjs && node --check test/bridge.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "verify": "npm run check && npm test",
+    "evidence": "node test/record-evidence.mjs"
+  },
+  "dependencies": {
+    "@openai/codex-sdk": "0.160.1"
+  }
+}

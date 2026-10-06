@@ -1,0 +1,98 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { actionBlockReason, assertOfflineAction, classifyAction, CREDENTIAL_SETTING_KEYS, dispatchOfflineRequest, OFFLINE_EXECUTION_POLICY, validateExecutionPolicy } from './executionPolicy.ts';
+import type { PolicyRequest } from './executionPolicy.ts';
+import { createCatalogDiscovery } from './contracts.ts';
+import type { Workspace } from './types.ts';
+
+const localReads = ['getExecutionPolicy', 'projects.list', 'files.choose', 'legacy.inspect', 'workspace.get', 'units.get', 'units.versions.list', 'foundation.choices.list', 'assets.get', 'assets.usage', 'jobs.detail'];
+const localWrites = ['projects.create', 'projects.archive', 'projects.restore', 'projects.delete', 'legacy.import', 'project.import', 'project.export', 'units.version.restore', 'units.save', 'production.direction.save', 'foundation.choice.confirm', 'assets.save', 'assets.delete', 'assets.restore', 'jobs.close_unknown', 'source.import', 'source.resolve', 'source.reparse', 'media.import', 'media.adopt', 'media.adopt_batch', 'images.ensure_current', 'videos.adopt', 'settings.save', 'backup.create', 'backup.restore'];
+const generations = ['foundation.run', 'foundation.choices.apply', 'images.design', 'images.produce', 'images.run', 'storyboard.run', 'storyboard.decision.resolve', 'units.regenerate', 'workflows.resume', 'videos.submit'];
+const providers = ['providers.refresh', 'videos.preflight', 'videos.prepare', 'jobs.query', 'jobs.download', 'jobs.reconcile'];
+const accounts = ['textCli.status', 'textCli.login', 'textCli.loginStatus', 'textCli.cancelLogin', 'textCli.openLogin', 'dreamina.status', 'dreamina.login', 'dreamina.logout', 'dreamina.open_authorization'];
+
+test('offline build preserves explicit local reads and editing actions', () => {
+  for (const action of localReads) { assert.equal(classifyAction(action), 'local_read', action); assert.equal(actionBlockReason(action), null, action); }
+  for (const action of localWrites) { assert.equal(classifyAction(action), 'local_write', action); assert.equal(actionBlockReason(action), null, action); }
+});
+
+test('model, image, video and resume routes are generation actions', () => {
+  for (const action of generations) { assert.equal(classifyAction(action), 'generation', action); assert.match(actionBlockReason(action)!, /真实文本、图片与视频生成/, action); }
+});
+
+test('prepare is not mislabeled local while it depends on channel and account checks', () => {
+  for (const action of providers) { assert.equal(classifyAction(action), 'provider', action); assert.match(actionBlockReason(action)!, /渠道访问/, action); }
+});
+
+test('CLI probes, login, status and logout remain inactive', () => {
+  for (const action of accounts) { assert.equal(classifyAction(action), 'credentials', action); assert.match(actionBlockReason(action)!, /CLI、账户登录与凭据/, action); }
+});
+
+test('credential payloads are denied without blocking ordinary local settings', () => {
+  assert.equal(actionBlockReason({ action: 'settings.save', settings: { textProvider: 'codex', textModel: 'test-model', visualStyle: '合成测试', textApiKey: '', bhToken: null } }), null);
+  for (const key of CREDENTIAL_SETTING_KEYS) {
+    for (const value of ['synthetic-value', ' ', {}, 1, true]) {
+      const request = { action: 'settings.save', settings: { [key]: value } };
+      assert.equal(classifyAction(request), 'credentials', key);
+      assert.throws(() => assertOfflineAction(request), /凭据/, key);
+    }
+  }
+});
+
+test('unknown operations and near-match names fail closed', () => {
+  for (const action of ['', 'projects.list ', 'PROJECTS.LIST', 'sdk.execute', 'images.generate', 'workflows.retry', 'settings.credentials.save']) {
+    assert.equal(classifyAction(action), 'unknown', action);
+    assert.throws(() => assertOfflineAction({ action }), /尚未纳入/, action);
+  }
+});
+
+test('blocked operations make zero IPC calls, including repeated attempts', async () => {
+  let calls = 0;
+  const transport = async () => { calls++; return {}; };
+  for (const action of [...generations, ...providers, ...accounts, 'future.external.action']) {
+    for (let attempt = 0; attempt < 2; attempt++) await assert.rejects(dispatchOfflineRequest({ action }, transport), /离线准备模式/, action);
+  }
+  await assert.rejects(dispatchOfflineRequest({ action: 'settings.save', settings: { textApiKey: 'synthetic-value' } }, transport), /凭据/);
+  assert.equal(calls, 0);
+});
+
+test('guard does not alter local data, identities, raw dialogue or history', async () => {
+  const input = { action: 'units.save', unit: { id: 'unit-1', expectedVersion: 3, prompt: '角色 OS：原句😀', sourceRefs: ['line-1'], raw: { original: '未改原件' } } };
+  const before = structuredClone(input);
+  const output = { saved: true };
+  let received: PolicyRequest | undefined;
+  assert.equal(await dispatchOfflineRequest(input, async request => { received = request; return output; }), output);
+  assert.equal(received, input);
+  assert.deepEqual(input, before);
+});
+
+test('autoSubmit setting cannot turn preparation or resumed tasks into live dispatch', async () => {
+  const calls: string[] = [];
+  const transport = async (request: PolicyRequest) => { calls.push(request.action); return {}; };
+  await dispatchOfflineRequest({ action: 'settings.save', settings: { autoSubmit: true } }, transport);
+  for (const action of ['videos.prepare', 'videos.submit', 'workflows.resume', 'images.produce']) {
+    await assert.rejects(dispatchOfflineRequest({ action, autoSubmit: true }, transport), /离线准备模式/);
+  }
+  assert.deepEqual(calls, ['settings.save']);
+});
+
+test('policy response must independently prove offline mode and inactive creative pack', async () => {
+  const policy = validateExecutionPolicy(OFFLINE_EXECUTION_POLICY);
+  assert.deepEqual(policy, OFFLINE_EXECUTION_POLICY);
+  assert.notEqual(policy.reasons, OFFLINE_EXECUTION_POLICY.reasons);
+  const response = await dispatchOfflineRequest({ action: 'getExecutionPolicy' }, async () => OFFLINE_EXECUTION_POLICY);
+  assert.deepEqual(response, OFFLINE_EXECUTION_POLICY);
+  for (const value of [null, {}, { ...OFFLINE_EXECUTION_POLICY, liveExecutionAllowed: true }, { ...OFFLINE_EXECUTION_POLICY, mode: 'live' }, { ...OFFLINE_EXECUTION_POLICY, stage3CreativePackStatus: 'active' }, { ...OFFLINE_EXECUTION_POLICY, reasons: [1] }]) {
+    assert.throws(() => validateExecutionPolicy(value), /策略/);
+    await assert.rejects(dispatchOfflineRequest({ action: 'getExecutionPolicy' }, async () => value), /策略/);
+  }
+  assert.throws(() => assertOfflineAction({ action: 'storyboard.run' }), /离线准备模式/);
+});
+
+test('automatic catalog discovery does not read providers in offline mode', async () => {
+  let calls = 0;
+  const workspace: Workspace = { project: { id: 'offline-project', title: '合成项目' }, settings: { imageProvider: 'bh', videoProvider: 'dreamina' }, providers: [], assets: [], units: [], media: [], jobs: [], rules: [] };
+  const discover = createCatalogDiscovery({ enabled: () => !actionBlockReason('providers.refresh'), current: () => workspace, busy: () => false, revision: () => 0, refresh: async () => { calls++; }, read: async () => { calls++; return workspace; }, apply: () => { calls++; }, report: () => { calls++; } });
+  await discover(); await discover();
+  assert.equal(calls, 0);
+});

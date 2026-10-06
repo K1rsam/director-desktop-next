@@ -1,0 +1,114 @@
+{
+  "format": "director-sdk-artifacts/v1",
+  "verificationDate": "2026-10-06",
+  "tests": {
+    "passed": 41,
+    "failed": 0,
+    "skipped": 0,
+    "platform": "linux",
+    "arch": "x64",
+    "node": "v24.19.0"
+  },
+  "modelCalls": 0,
+  "accountCalls": 0,
+  "officialRuntimeCalls": 0,
+  "liveExecutionEnabled": false,
+  "rustExecutionWiring": false,
+  "files": [
+    {
+      "path": "../docs/SDK_BRIDGE.md",
+      "bytes": 16071,
+      "sha256": "d9b5992133b975572917b355b38093440a953e9ac3c6aece81d7a3ab0896cca1"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 35,
+      "sha256": "8cf2897fd7c3a2b6754e8209dbef953e1c501497cc2ed99bff61b32c38e1e105"
+    },
+    {
+      "path": "README.md",
+      "bytes": 903,
+      "sha256": "97facffc5442cfe5c587a950a715e0b2830f582a20a84f23abef18fcae24f1eb"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1116,
+      "sha256": "bd747f0f60ca380bc7bead1e7e38db920141ae7fafc4f445ddcf906db9cd0c85"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 4820,
+      "sha256": "3a2f5f00d28e721c3685edfa6c3dd23756e57fcc14afe8f8a1c88f441efe74e1"
+    },
+    {
+      "path": "package.json",
+      "bytes": 535,
+      "sha256": "6d43ab19d607eed3c2101fdbe3e71c2461c535b8b5a2e24186f1466d48837f02"
+    },
+    {
+      "path": "src/bridge.mjs",
+      "bytes": 24357,
+      "sha256": "66d7fc8890bde975e30738cf6b99135566b51a7d1e7f501ca26b42dbce0faceb"
+    },
+    {
+      "path": "src/main.mjs",
+      "bytes": 4209,
+      "sha256": "0fa9e85a25c7962e358a45964af749b7a32b338b94e9ddbba981467f277e5be4"
+    },
+    {
+      "path": "src/protocol.d.ts",
+      "bytes": 1681,
+      "sha256": "7b3d83ffd38c0a8c56faa0d9fa253e630e356fa80d3962f303c22112e3381bf3"
+    },
+    {
+      "path": "test/bridge.test.mjs",
+      "bytes": 24604,
+      "sha256": "51150200d80e723599a987e6decc22786f5b7c81c34dd9490517636c21ce5918"
+    },
+    {
+      "path": "test/fixture-runtime.mjs",
+      "bytes": 1682,
+      "sha256": "ccfc0bd6a105516212c3d83cc76fab90c1fe8d96038650e33174e6a3ce660a0c"
+    },
+    {
+      "path": "test/fixtures/fake-codex.mjs",
+      "bytes": 2618,
+      "sha256": "7f74a6136975941b1919adadcb09c12b59f6b5adb3c9f41c8767c5bef8ecbcd9"
+    },
+    {
+      "path": "test/record-evidence.mjs",
+      "bytes": 2549,
+      "sha256": "a3964b936f4fa3eff36fa46aeb4cf7a492cc025cd7e0e0e9144f4468dfce6d88"
+    },
+    {
+      "path": "verification/evidence.log",
+      "bytes": 190,
+      "sha256": "e92a35e11daafdc8ece546e975f346eca6fabfed72139fe275a74a536559c945"
+    },
+    {
+      "path": "verification/install.log",
+      "bytes": 124,
+      "sha256": "ea1d011f5323987ffca2f329d6109cb690a441690d45fe0efac235deb4ca88ca"
+    },
+    {
+      "path": "verification/offline-ci.log",
+      "bytes": 126,
+      "sha256": "02ec3b8e5ca7f66ff5def08ef824c36f70d4ac3ac4e1ce1a27635efaf7d1c749"
+    },
+    {
+      "path": "verification/offline-tests.log",
+      "bytes": 4875,
+      "sha256": "834546b13937d218e227438a4da3ef22ffbfd61f038590aa082d052b0c0bde38"
+    },
+    {
+      "path": "verification/package-provenance.json",
+      "bytes": 2123,
+      "sha256": "6ecc691a344d79dec17c731d7082e2596927f46821dc0b9d14d6c66b74682841"
+    },
+    {
+      "path": "verification/synthetic-protocol.ndjson",
+      "bytes": 6569,
+      "sha256": "33e535fd4fa5fa0456bfdc92338f261cb85c1e166233b9cdbaf1055daf75094d"
+    }
+  ]
+}

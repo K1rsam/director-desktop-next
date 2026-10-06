@@ -1,0 +1,1171 @@
+{
+  "schema": "selective-source-migration/v1",
+  "repository": "K1rsam/director-web",
+  "commit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+  "files": [
+    {
+      "sourcePath": "director-desktop/index.html",
+      "destinationPath": "apps/desktop/index.html",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "73daa3ec5ee055c4af3d1c59f61fb4b6981474e9",
+      "sourceSha256": "ea7d6999a83f470e27e9732a14bc069aba5c7ef5b07b2517ac3df6a8a203f79e",
+      "bytes": 501
+    },
+    {
+      "sourcePath": "director-desktop/package-lock.json",
+      "destinationPath": "apps/desktop/package-lock.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "e50510119c0395008295564b75a916e11f060945",
+      "sourceSha256": "239a58dcbd0dfe91d5f25ccf23436a8d9a54f8a9f348ddb59370b54292c8795f",
+      "bytes": 37519
+    },
+    {
+      "sourcePath": "director-desktop/package.json",
+      "destinationPath": "apps/desktop/package.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c9e8cca78b78ff8c57a1f4ffc0bc00ddb7a22079",
+      "sourceSha256": "bad2bc56bef0328c4d346c1245e63de0cd74e7acb3738c25d0d296651ab29858",
+      "bytes": 1151
+    },
+    {
+      "sourcePath": "director-desktop/rules/asset-art-director/SKILL.md",
+      "destinationPath": "apps/desktop/rules/asset-art-director/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "f50d2f54568bb554e618df46614d5a9fb5d610fc",
+      "sourceSha256": "b73d4626ed1cd26eeba2b73539cb46d9e9c8e20236a9034baf91a95687ab7ece",
+      "bytes": 7603
+    },
+    {
+      "sourcePath": "director-desktop/rules/asset-image-production/SKILL.md",
+      "destinationPath": "apps/desktop/rules/asset-image-production/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "b4784d214902545bf60104a9c5c3f23002133842",
+      "sourceSha256": "96488c1f38f6552c9a4a5dd55f20777c0c2fb20b6cafd16af06c5092e5f48cf5",
+      "bytes": 2008
+    },
+    {
+      "sourcePath": "director-desktop/rules/asset-visual-facts-extractor/SKILL.md",
+      "destinationPath": "apps/desktop/rules/asset-visual-facts-extractor/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "2b4a190cfc633a99c0207d7568d4e7235d08f071",
+      "sourceSha256": "53d0e92ba99704ef7b51e465ad2590dc2676ed62c13b7bfb1daaa6d21f607b66",
+      "bytes": 4271
+    },
+    {
+      "sourcePath": "director-desktop/rules/episode-emotion-planner/SKILL.md",
+      "destinationPath": "apps/desktop/rules/episode-emotion-planner/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "2dd4654bdf74fd4a67f5956c2f235fe0f593e614",
+      "sourceSha256": "9d06e36572a9052cf9d72e0d9723db4f5adc39f44f7d56de8c3c403481ddef50",
+      "bytes": 13466
+    },
+    {
+      "sourcePath": "director-desktop/rules/episode-finishing-editor/SKILL.md",
+      "destinationPath": "apps/desktop/rules/episode-finishing-editor/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a1e1e40db14a59893366c4091b4b61134222482e",
+      "sourceSha256": "64e13089d39f39b3eff099d0a610dd673cee37f77313514dc782d5226e797bcc",
+      "bytes": 26108
+    },
+    {
+      "sourcePath": "director-desktop/rules/foundation-asset-catalog/SKILL.md",
+      "destinationPath": "apps/desktop/rules/foundation-asset-catalog/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "9acad9029c218ff6bfa78dab0c76f20ab90b070d",
+      "sourceSha256": "569af266afa5197f6b219d356c87b0f3a04288fd8b986a3f87a37e287c0dd87b",
+      "bytes": 9107
+    },
+    {
+      "sourcePath": "director-desktop/rules/foundation-finishing-editor/SKILL.md",
+      "destinationPath": "apps/desktop/rules/foundation-finishing-editor/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "74a466f4933b08d6870ba4f631971cb6c84794e3",
+      "sourceSha256": "5f28919467dd4ea25bb84eac60d42aa8d314f750e97af28ca1557d85b14866e9",
+      "bytes": 9769
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/acting-blocking.md",
+      "destinationPath": "apps/desktop/rules/methods/acting-blocking.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c99c9e054e7cfa8edca7b447ce99f4865b207178",
+      "sourceSha256": "c8f4543a559a0369766cd522946163adebac5dfe8bad78dbe39e493145d21067",
+      "bytes": 14069
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/camera-emotion.md",
+      "destinationPath": "apps/desktop/rules/methods/camera-emotion.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "59494573e18aef1e36312cf3a54779b09c4a89f9",
+      "sourceSha256": "fa2804b8bd1e3e9b52cbd172b2f7b9dc2723024265f4457de25990513c944ca9",
+      "bytes": 18178
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/camera-path-repair.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/camera-path-repair.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "2fd26e6d10dc91493431735ef141986c8401f5f1",
+      "sourceSha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/comic-contrast.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/comic-contrast.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7148a63be67c30d81b585dcbdf02e1e8a0778065",
+      "sourceSha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/danger-rescue.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/danger-rescue.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "0f5d75b9d4123bb82067ae3f2c36d1272648280e",
+      "sourceSha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/editing-integrity.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/editing-integrity.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "65cada3068acc9ec4484798216e100fa0b1ce6c5",
+      "sourceSha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/expressive-emphasis.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/expressive-emphasis.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5a6d79cddb70b32edb9fcb60bc0a5dbc6d85b903",
+      "sourceSha256": "c8b8cc18adc85ac109a01fdaac9fdbeeeab337a8d0253cbda8d920caa0a17fe5",
+      "bytes": 2745
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/joy-acceptance.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/joy-acceptance.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "2ba7804a116f0626e881e1e8249c019b7a8d1898",
+      "sourceSha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/long-voice.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/long-voice.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7997050bb63bee86cf2a15b90045a84b5a653c7e",
+      "sourceSha256": "e0812d4cbaf7a40ff4b8655c4ebf68d8842cf221b8e4c695724712cd882001bf",
+      "bytes": 1831
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/quiet-nonhuman.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/quiet-nonhuman.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "51921bed0109640afd2381d06dea6244c4419e36",
+      "sourceSha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/scale-silence.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/scale-silence.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "865cbb7e89a83eadcb6f1f7ee8e16277d2e30278",
+      "sourceSha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/spatial-contact.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/spatial-contact.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "1a8761a436219feddad7e83b63d344a0723bc3ff",
+      "sourceSha256": "60bc191d84e225a13283c652c16d226d7b0b09a1467332707d4d5032ef74ef7b",
+      "bytes": 1374
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/cards/status-conflict.md",
+      "destinationPath": "apps/desktop/rules/methods/cards/status-conflict.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "cbd1dd7349c80f4683eab51880e5ed0b57d434b1",
+      "sourceSha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/fantasy-expression.md",
+      "destinationPath": "apps/desktop/rules/methods/fantasy-expression.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "bd9519839f689e24833102e68ada409f5c6b8dbd",
+      "sourceSha256": "fdca3d4e23b4c61d2a485b9560042146f5c3a0587fd4f6e834cedbb1795c031f",
+      "bytes": 24814
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/lighting-space.md",
+      "destinationPath": "apps/desktop/rules/methods/lighting-space.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c27289b62150d9b942d9e8e51addbe0ed934e150",
+      "sourceSha256": "d12bd04c16d8ab0a1da5022beb9263731025927f8ea0dcb902ca0bf27f1306a3",
+      "bytes": 5050
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/sound-rhythm.md",
+      "destinationPath": "apps/desktop/rules/methods/sound-rhythm.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "091094cd7ee56432a87dfcdd143b2c61e0c07bda",
+      "sourceSha256": "dd50cd16ee4430297ffdad330aa341426e65c4d6bdf09d46a7b39915a7ca41b6",
+      "bytes": 8389
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/storyboard-common.md",
+      "destinationPath": "apps/desktop/rules/methods/storyboard-common.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a2f5af921b0c3caf74c0882d1d70b9987b621541",
+      "sourceSha256": "02a63823900e1a0858fab86d7bc6819e6622075b969d8e4b6d385df0d487552c",
+      "bytes": 13634
+    },
+    {
+      "sourcePath": "director-desktop/rules/methods/storyboard-source-context.md",
+      "destinationPath": "apps/desktop/rules/methods/storyboard-source-context.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a13562afae48caa3367feade1d4dd0d1e3365609",
+      "sourceSha256": "a5daaefd50b9d944c3f2a0432339d77512272b8f33433af398c4dda70b08f700",
+      "bytes": 2860
+    },
+    {
+      "sourcePath": "director-desktop/rules/screenplay-fidelity/SKILL.md",
+      "destinationPath": "apps/desktop/rules/screenplay-fidelity/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "cb76764ed598150d63973c6a65428b549c62ae48",
+      "sourceSha256": "8746ed7ee06be797c817d7f73e8e9b8f548ef0238e82ff9fd10bf9d08c027f0b",
+      "bytes": 2377
+    },
+    {
+      "sourcePath": "director-desktop/rules/story-foundation/SKILL.md",
+      "destinationPath": "apps/desktop/rules/story-foundation/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "95ed0283af9b719b5251734a9a5f99c2f98eaed9",
+      "sourceSha256": "ff512dc45931daf82bebef6ec3b8c92c06d05cc27d4c6bd6676437718a13163d",
+      "bytes": 3402
+    },
+    {
+      "sourcePath": "director-desktop/rules/unit-performance-director/SKILL.md",
+      "destinationPath": "apps/desktop/rules/unit-performance-director/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6cc82ec4a116c3ea050c71322b1a63f5032232f8",
+      "sourceSha256": "70fba0987dda7804e7740dc6aaf4dd93262bb3d566ffec917214d1b17ef2557e",
+      "bytes": 21499
+    },
+    {
+      "sourcePath": "director-desktop/rules/unit-video-production/SKILL.md",
+      "destinationPath": "apps/desktop/rules/unit-video-production/SKILL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "023e41d39905ff9a6d07a98cffe5e6e2a73ac850",
+      "sourceSha256": "6fbac2064e5f752ce90d55d6df36776b5b4b5ec18810dbc453939a1b65e33ab0",
+      "bytes": 2282
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/Cargo.lock",
+      "destinationPath": "apps/desktop/src-tauri/Cargo.lock",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7abc481dc62834a6d33e733ae0ac1efffc261362",
+      "sourceSha256": "393354f276c15e7b3119a67eb7d77093a2e725628265d66eb1f0cc397845be8a",
+      "bytes": 139463
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/Cargo.toml",
+      "destinationPath": "apps/desktop/src-tauri/Cargo.toml",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "e7479869c28eed0067f530f9cb19b161d6259674",
+      "sourceSha256": "67e0cf0011845e9e63e3cc4fb3f26e5e1549598992cd5ffcd7cad6c9d7af5e1f",
+      "bytes": 1495
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/build.rs",
+      "destinationPath": "apps/desktop/src-tauri/build.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c613f58020e5e899490a51d7a24998ac934da7f9",
+      "sourceSha256": "4379ba89924184a9a57d189938af36565f876df56bc4edcca39fc5a2bd282e8a",
+      "bytes": 72
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/capabilities/default.json",
+      "destinationPath": "apps/desktop/src-tauri/capabilities/default.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "8a35f37527694afe151fa94ea4edd386c99cf781",
+      "sourceSha256": "5e5d4cda1dc7a39e267a25bfb7ea9b15907e2329eb302a447691973b7ce702cf",
+      "bytes": 119
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/128x128.png",
+      "destinationPath": "apps/desktop/src-tauri/icons/128x128.png",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "acdcdd9e72bf4059a5040861f9f1448699427fb0",
+      "sourceSha256": "70c398776209fdc73aa2c533f57f861d0bf696d144eac066b953eaf2efc4b042",
+      "bytes": 5292
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/128x128@2x.png",
+      "destinationPath": "apps/desktop/src-tauri/icons/128x128@2x.png",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c73b1249bfb1917f4343c2a6b3cea543b4fca473",
+      "sourceSha256": "e301e77652ab088b7b4e8efa6ac6f31be443ae238f946615ddbf30846735af78",
+      "bytes": 11003
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/32x32.png",
+      "destinationPath": "apps/desktop/src-tauri/icons/32x32.png",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ceb857534785291a9c72400f58fd458cbb6c598c",
+      "sourceSha256": "26e24c5d17db3adce008f97142af7dc7fb08e32d827cfd47ba001b165b3be541",
+      "bytes": 1137
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/64x64.png",
+      "destinationPath": "apps/desktop/src-tauri/icons/64x64.png",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "4db944a0ae9a42ea3e3d86abb6a73e6eb5bad3d5",
+      "sourceSha256": "7aff68c954ebe4b3858788d0cfbab8ad20335cbf4401cc7e0646b6acc4d12395",
+      "bytes": 2381
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/app-icon.svg",
+      "destinationPath": "apps/desktop/src-tauri/icons/app-icon.svg",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "eff32a018838703e444c174ff6ff94fd5fa252ae",
+      "sourceSha256": "8b3eafb3538e4e3108e91ee95fbefaaf5b792493a27f1c768be639f860929a06",
+      "bytes": 1071
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/icon.icns",
+      "destinationPath": "apps/desktop/src-tauri/icons/icon.icns",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7f8471e2d9bc8cdd56aeeea2359d8e03f11ed753",
+      "sourceSha256": "ee2e461bc2b11e5292d945e14d6900cfae99ed9946cf0404812c973d33eea947",
+      "bytes": 144620
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/icon.ico",
+      "destinationPath": "apps/desktop/src-tauri/icons/icon.ico",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ff1b213d011cc4af5edffd537ef9a26a1c5d101e",
+      "sourceSha256": "8fe61230d55c635568477741185a621156b73179ef131f95bcef8e811179423d",
+      "bytes": 22591
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/icons/icon.png",
+      "destinationPath": "apps/desktop/src-tauri/icons/icon.png",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a31683b8ac5871ce864cc0ad2c92f7d9c52fcf8a",
+      "sourceSha256": "ce39069d98bdf84983a9b13cfd3fef151bcf5cf0cf47dd1b14a48d2b4bb9aa69",
+      "bytes": 22398
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/bin/core.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/bin/core.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "12604ae37f2385c78340c0a20090cb10865bba3e",
+      "sourceSha256": "f1f404fa6dddba9c6a381f626382f8607ba8f87387634b2bc2af48068b3b8cc7",
+      "bytes": 731
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/binding.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/binding.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "48240fd76dabc0b4873dcf132ea01f37043cde1c",
+      "sourceSha256": "88a0c4d97a238b1ca5a4f02682a967cebfeca027fc11048946d3ab7b33ac71d9",
+      "bytes": 39088
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/dreamina_session.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/dreamina_session.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "b9cf6cb2161b48166438377d76bbe990531afe9a",
+      "sourceSha256": "76eedb7a185d01cdf57583735d6c3b8883ef27a286e8f6ddb67dafc947f3ef4c",
+      "bytes": 18639
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/engine.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/engine.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5aeeeaa136a6a8a74943918dd1f3387dfc207ce2",
+      "sourceSha256": "aff20f21fdc7e71aa41855cb66bfc240ecd416c4f1279db403cf3d8c1cd58765",
+      "bytes": 245095
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/engine_repair_tests.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/engine_repair_tests.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3f5eed76238efddcdb210b75056d045744d62d74",
+      "sourceSha256": "211729644d83a2aedd8bc3eab56e035289ac31727f8ffcdcd0e8aa9c6e02eeac",
+      "bytes": 72519
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/importer.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/importer.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6b8af843657828343a47bb624aacdc2c260532c1",
+      "sourceSha256": "7f78404c0893a0979fb1df133eccc4f4aaee5027820d410115cdbdbc28411180",
+      "bytes": 31694
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/lib.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/lib.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "bb1420c6a2a004d0bca6000f2367bd20ec070d10",
+      "sourceSha256": "514904f70c36519a50e69667de03bfc5becb45ce50b0f27b12dc46d49f36e849",
+      "bytes": 299
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/main.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/main.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "28db307a6e0f5c92dcfdefd6a191a6378374a9e3",
+      "sourceSha256": "fb7f6fab305b2dd4434c128b4d2bd3cd60e3d67891eed559aea5ef239f711381",
+      "bytes": 32182
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/media_probe.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/media_probe.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "78a475adccc6209cd0886b2f327e3e6f3302a45a",
+      "sourceSha256": "88f91cd46f8b8110b61e75ead2927ed5284c0c4d294372111c8955555a28fbf2",
+      "bytes": 22784
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/asset_visual_facts.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/asset_visual_facts.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "b8dff4dcf5c3844ed9855ac7960a495ff31c2146",
+      "sourceSha256": "9cc52b27e721a349b49a1218792bbec9c1ae47542614cd5915d5b13844b5560a",
+      "bytes": 139092
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/assets.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/assets.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a43cbfeb0800741e0dca6d4fec2f64fdd1f305a5",
+      "sourceSha256": "977935e3bd2bd8976275e997918906120f3f57e24e67e557e5ddf7bd974372e0",
+      "bytes": 101363
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/foundation_delivery.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/foundation_delivery.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "72f4e9225f53ff41813b47bc8f78d75869221765",
+      "sourceSha256": "bf3a9bd84f8dbbc5d46d63e94a0a3ecfc0ae3d83934cf95e62ab57b7c631f050",
+      "bytes": 346991
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/foundation_wire.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/foundation_wire.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "665bea9462e39b3188c76f05443900b76d3d61c0",
+      "sourceSha256": "edcb6b426f7141d22bbaf31e9df6701f774d4a3a5bc33e44f665e8820e78ae66",
+      "bytes": 37673
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/mod.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/mod.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5cbff2ebab03b04e764be1030c05361fd5302a3f",
+      "sourceSha256": "224e237b983b65440057d82fcc27d1de79192be35ff40b90deb2512c21bf2ab4",
+      "bytes": 64058
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/scene_edits.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/scene_edits.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7abc23c28843218ec60f9da4409f42eba3206365",
+      "sourceSha256": "97d6e9daafab870fa0a3bc882b92d01a9ab149ac86488ba2092afcb9a151f865",
+      "bytes": 30397
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/source.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/source.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "1236b45e2c4cf91109fd40e70afe715946065b14",
+      "sourceSha256": "77997aac7bc348713f6e34700daf9133502a8ef7cc0c89bb69d9554a070df231",
+      "bytes": 77482
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3f403ae5cb33d743c5bd2cab86f08198e224d56e",
+      "sourceSha256": "4a97d209081197cc31e9366cc7e8aa0b281e48963f8ac693c32c6dedf5c19a8d",
+      "bytes": 442620
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_assets.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_assets.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "69fe21346f388094ff9c4b5af76636ee50ee45f2",
+      "sourceSha256": "168a31e95c3fa0eb288fe8c216d8c51aa079797e3c03d7dafc616eaa32be0298",
+      "bytes": 23574
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_creative.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_creative.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "01417771d24096f85a1cc6b83af070c733725218",
+      "sourceSha256": "6a5c78816e8bbe02b1f211f1b11c3bf14663118a1e1d72e4b5ebcb1f43f9e015",
+      "bytes": 80900
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_dependencies.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_dependencies.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "18594f37941a9b16179170cbb9642e415141c2e3",
+      "sourceSha256": "9cfbdeac00c5031a8c0c9cc403cb2c909ccc8ff54bd37982c06c6dd66812e349",
+      "bytes": 17197
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_original.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_original.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7f6e23d1908e16e774d9e7b6ddaf764a15f11df1",
+      "sourceSha256": "65b7289ef49cedebae4723ce82cca9dbcc4624bf1b9e1e83120fb5d15756bdbd",
+      "bytes": 35043
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_schema.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_schema.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3732a62ac83f1ee6a7997294c44b802d612ae992",
+      "sourceSha256": "2453f52be611485b1a85e5b8e2adcaf1a92d4af802e5a5a83e189ed7b678ab91",
+      "bytes": 10371
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/pipeline/storyboard_transport.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/pipeline/storyboard_transport.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "0665f2589b3424a1d189194291ebe6098cbb50e3",
+      "sourceSha256": "f4c8728325b786d8c297d1d9caee5cc57e57cf717df4ebd86a9bee68262cd6f4",
+      "bytes": 90221
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/portable.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/portable.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "769e1d3c2b53f6b49dc2eb357974cc55e5993538",
+      "sourceSha256": "3a41682ea12fba5d6314b0e0d5be6d14be36f64ac3bc832277fc4d26697489b5",
+      "bytes": 14437
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/project_lifecycle_tests.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/project_lifecycle_tests.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ecabda63a03109ba915c53541f3e888c8d69c410",
+      "sourceSha256": "522f13cc73c1cf7fb8e9596821425c7c4ab10adc442f1d3b51708b82be9afe67",
+      "bytes": 16724
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/PROTOCOL.md",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/PROTOCOL.md",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d9d1925cd89716f439e7563a3ed09061337330b3",
+      "sourceSha256": "878be6ae81d27cdf9f64dca9497d28657114cde1b2026ac6bd16a78eeb0a86b6",
+      "bytes": 10260
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/bh.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/bh.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7556e182cd7dd112cd2a28b0ecb06d15fc002872",
+      "sourceSha256": "345d143e9c4dc1929b514cc3d08e9aefef1f6813d03ea6e7685b6ecb586b6734",
+      "bytes": 23688
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/chrome.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/chrome.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ba3939f56ccf9204ca0be42c36a8db21f6236db2",
+      "sourceSha256": "bf7fcae37c56f0940e2379c5c09d9ddaeafa75fe3632feff3c39583f515085e9",
+      "bytes": 24000
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/dreamina.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5ce0d28c8cb8c31d30748592faab926337201372",
+      "sourceSha256": "8e90e6be7644f40174f9eb9610226ffa7330c5ce5e9dd270aaa6d87f0c1ba6f4",
+      "bytes": 192298
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/mod.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "4a61c9ce03aaaf31f7b290ec624b7f593c3c6c6a",
+      "sourceSha256": "496f2825bb79b3e451dd8775b12935c8c43a80fd4107ea39727740f0b01e8a2c",
+      "bytes": 18001
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/verification.json",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/verification.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "8c86bf4ac3775cf4e268584cb68c78e505c75b3d",
+      "sourceSha256": "56af499c720f08940b73916bc10a7d89e82f855ae1c7e5672b6fc00e82e5744f",
+      "bytes": 2245
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/wire.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/wire.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c445b9c5a5fb60e0af706806df2f4d9b337651a7",
+      "sourceSha256": "9161ea20b5d4fe01811849817001c8d08ae4f7a8fefb5cc9639adb0b811a497c",
+      "bytes": 19862
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/providers/wire_tests.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/providers/wire_tests.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "265af4353167aa58ae7a83c1855c24332e3e12eb",
+      "sourceSha256": "acb0f082efeeb5775b3d7b3ba7541dd9f0d43cab22acc3798d74117df6e313b4",
+      "bytes": 8155
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/schema.sql",
+      "destinationPath": "apps/desktop/src-tauri/src/schema.sql",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d4ef2721b5ad061888db4dc96636a66609606ff1",
+      "sourceSha256": "c6438370c1b82bb9eb5df471136f22f14693f10962b72253b5f295562144a35c",
+      "bytes": 4342
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/store.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/store.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "81842f6919b72e9c8d53ec57f882f51422ece537",
+      "sourceSha256": "d4243deae4a360f56ad1ebfb801cb139f4f885b6eb5c5a4ca202287567697067",
+      "bytes": 146981
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/tasks.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/tasks.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "1d757ff5916ed9443850ae0d24383e7b2d56d39e",
+      "sourceSha256": "e05b37baffa607feaf6c7b1557dfffbf82d411eb4b1394a33f12ca02efd2ffea",
+      "bytes": 22817
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/text_cli.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/text_cli.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "da835b821fcac3d64f46582971c0eda65947a3a1",
+      "sourceSha256": "37652d057e7fa631c3359ff324a7461122e8bb8b464029e60324291825805769",
+      "bytes": 42850
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/text_executor.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/text_executor.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c5742577654708f11873487b0ebd6cf9d426da85",
+      "sourceSha256": "45f16b5b89e7bdf6e220e8de2ebb45e7815645a931d94a1a2db46ad82027f213",
+      "bytes": 476234
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/workflow.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/workflow.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "fd53b4a165643c52c9d8e1afcd2498cc379e8455",
+      "sourceSha256": "7e224a9acdb37668cb32357f66b0c3721a4a1abcd2a23846ae90a36435ea5a3e",
+      "bytes": 66375
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/src/workflow_tests.rs",
+      "destinationPath": "apps/desktop/src-tauri/src/workflow_tests.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "1d9f25e2650db7bc9c0b37deefbb5b490088184b",
+      "sourceSha256": "f0e39ab820917696c3da73090536e1caf19eb0296fa3c14cd3d570c35a28e6ec",
+      "bytes": 54447
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tauri.conf.json",
+      "destinationPath": "apps/desktop/src-tauri/tauri.conf.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "65a7572dca187f8519a7af7e4a2b85c6bc990979",
+      "sourceSha256": "83b42154702713945b9333feabe7cf618a4afbe088eb4ca1714354e81e91c171",
+      "bytes": 1104
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/acceptance.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/acceptance.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6b70a6fc9037b9209373659baa5f2ce4fbfae2ed",
+      "sourceSha256": "1756b0bce9e80f8785c4792fe1e0df3d0de1c63df957ec4321446f7f8a1896b1",
+      "bytes": 38056
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/asset_design_publication.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/asset_design_publication.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d288c125dc48d52980c7a4aca259d5ef268f37cc",
+      "sourceSha256": "86f503e569f83ff1edf57df4def97ade8ee1cc76f46564a44623cdcf47fcf553",
+      "bytes": 2712
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/asset_lifecycle.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/asset_lifecycle.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6f4566ecae5120cb08fd17d14b17bf4cd3535a64",
+      "sourceSha256": "92ffd227dff057c7ebeaac045618ee948de8126fb0a83ad21632e4b055772cbe",
+      "bytes": 12518
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/core.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/core.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "10a9a5e748fbfae08cbde503d8abe3a631e6b459",
+      "sourceSha256": "5a442ae0f6872a768d630785472994933c535cf2887d89d3b2fcba5a5fdfa988",
+      "bytes": 11194
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/dreamina_auth_recovery.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/dreamina_auth_recovery.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "78ba1a200835cdaa29d0686492037ae0a8529880",
+      "sourceSha256": "d3607ad58680efb8cf4b9721fc0429896fa76486336e4fec7b26b22804d3f1a1",
+      "bytes": 8421
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/foundation_batch_planning.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/foundation_batch_planning.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ecdcc8a241fc7e8f08b9f57b4a09ae55f773f9f5",
+      "sourceSha256": "b97b691775abd4639430d2973afc0b86a5454549f472a5892c0f92d22afac651",
+      "bytes": 2466
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/foundation_contracts.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/foundation_contracts.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "50b9ad473c59a5e01b16d9f121ad3d6ab6f21fd7",
+      "sourceSha256": "e28e5158757a510db45e149651e797b27310f68bef9b0acb95cfe2693a46db8a",
+      "bytes": 28964
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/foundation_rejection_replay.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/foundation_rejection_replay.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "a31c457274ee3dfc80f39a987b45c8e0e284e571",
+      "sourceSha256": "c39ea2d16cff9908df28ffb405ad0222ccd14f23a17cf12815f3d0b65c764a80",
+      "bytes": 25522
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/foundation_scene_publication.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/foundation_scene_publication.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6402afeb4bf5f8d8c14b2d9fc0cd92554d3617da",
+      "sourceSha256": "ebbc452be75e1d552ff82420543596a8bcb18b381b44130a200b5f08fee0d7d4",
+      "bytes": 4699
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/foundation_transport_resume.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/foundation_transport_resume.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d6ffa7f5317b25201d2043cebfc17053979c0400",
+      "sourceSha256": "5d1c625d6635978d1af2213e0fbaea8c89989bc3ad96294828109cf91626f5c9",
+      "bytes": 18791
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/migration.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/migration.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ad3ea1e70c4fde51c3a3c8aa86296a7ca30c33c2",
+      "sourceSha256": "c6776676d9e33537e21df0492c8c8d046fec950d64c7b0141f40a2bc68ee2d65",
+      "bytes": 16299
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/scene_material_binding.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/scene_material_binding.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "dcc513f3d95b49e32b7c3249e1e4e383fe9631d2",
+      "sourceSha256": "24530d534abf23104eeae501d0f532b3279b757344c42385280ddd5b0f4c2773",
+      "bytes": 24539
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/scheduler.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/scheduler.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "2ae1e949caa93e1a47d332d97d6c8a80fc264fc8",
+      "sourceSha256": "ca109e3bdd7bd8465a6a3f4142a7ce85bf27b019fd10cd79e97101c31f171602",
+      "bytes": 45925
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/source_scope.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/source_scope.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "8b6d7683cc843bf0eee823a4c0de61293591af73",
+      "sourceSha256": "b28d1a82ca712dde17f7fa6be25bd1f3b1c2cbea8785a16e268addf4aa3cda3d",
+      "bytes": 5907
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/stage13_roundtrip.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/stage13_roundtrip.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "69d6c01aef071eda098919ffb3326ada8e5be07d",
+      "sourceSha256": "f83ad6b4b2f18b1c6853ecec03b8e21db470c3b807acd66cb8f67f229cfcdf0f",
+      "bytes": 19112
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/task_results.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/task_results.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3d12b1d9a95e77abb86ceeb96b99d127ade07af9",
+      "sourceSha256": "7c4acf5a505b1bd2c348296d0e0c343e6d764c494b34d84b2fd2ec2d77055ae7",
+      "bytes": 50545
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/text_cache_contracts.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/text_cache_contracts.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "28b2678d4af7c9fd6fdf8439d743d9cbc70c8be8",
+      "sourceSha256": "bcd77a7e3ead5986ec0844d993f2bddd2ea0b3c1dccce08de7dd2f43bdc92771",
+      "bytes": 14084
+    },
+    {
+      "sourcePath": "director-desktop/src-tauri/tests/video_preflight.rs",
+      "destinationPath": "apps/desktop/src-tauri/tests/video_preflight.rs",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "7a7a88e0d551f9f7b1ea75077dac295f3e666894",
+      "sourceSha256": "68c8217dea8fb3c6169cccbb05d96397f0241b1f6142441f301a33397612a4c8",
+      "bytes": 19695
+    },
+    {
+      "sourcePath": "director-desktop/src/App.tsx",
+      "destinationPath": "apps/desktop/src/App.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c9d22026a3a7273b000e7b156140e4cb0cb27977",
+      "sourceSha256": "cdac7c638b2800ad78ebc14b9756cf2750f4f2433f1a28cb09241f72d929a075",
+      "bytes": 18887
+    },
+    {
+      "sourcePath": "director-desktop/src/AssetLifecycleDialogs.tsx",
+      "destinationPath": "apps/desktop/src/AssetLifecycleDialogs.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "8c467df2a50cc4a901a7bf135006e95f498aad84",
+      "sourceSha256": "65e411f524d1f13ffc249ab454fd91d464926a805088ca521b5adb0a01754d5e",
+      "bytes": 13167
+    },
+    {
+      "sourcePath": "director-desktop/src/AssetPanel.tsx",
+      "destinationPath": "apps/desktop/src/AssetPanel.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "9c01523888f965e3bef49cbb6707ab068bbe1b4c",
+      "sourceSha256": "0361aa06334e1bfdebe9d0c3a2416a49f649b2685165247443bfb3ed5e686ace",
+      "bytes": 26384
+    },
+    {
+      "sourcePath": "director-desktop/src/FoundationChoices.tsx",
+      "destinationPath": "apps/desktop/src/FoundationChoices.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "df83929c33bc51515c0ca5d98c60476b17127f5b",
+      "sourceSha256": "5f7f1f6b2fed603d9e877de026ab548412ffd6fca37df71a632e2c88addd93c7",
+      "bytes": 5712
+    },
+    {
+      "sourcePath": "director-desktop/src/InlineProjectCreate.tsx",
+      "destinationPath": "apps/desktop/src/InlineProjectCreate.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5cf48faadc350c168b7c6ed3ecdde6d596a0dd6e",
+      "sourceSha256": "e759cf64081d44a7853d8d91c1dba8c06f0c5c5d29866f6c09c96e59a5734e31",
+      "bytes": 1376
+    },
+    {
+      "sourcePath": "director-desktop/src/Panels.tsx",
+      "destinationPath": "apps/desktop/src/Panels.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6efadedf94d067a2bb2e099387376b09aa197bff",
+      "sourceSha256": "f45f085244cbc096673410621e7e749a13cfee8b42b8ae9a6bcef4e3118685e7",
+      "bytes": 25203
+    },
+    {
+      "sourcePath": "director-desktop/src/ProductionSettings.tsx",
+      "destinationPath": "apps/desktop/src/ProductionSettings.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "bbb39b8fb29230c387771c5b852d83ebcc8a0f8c",
+      "sourceSha256": "259edbb0c2a70a56f3d8d2f0f15ce635374118274b16723eef32b6f27bf7e4a1",
+      "bytes": 1251
+    },
+    {
+      "sourcePath": "director-desktop/src/ProjectLibrary.tsx",
+      "destinationPath": "apps/desktop/src/ProjectLibrary.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "24dfddc3674026cf628320fd7a592fa0fa1d0e8b",
+      "sourceSha256": "95b29f8d377fef52a6215cc0104cc5774cccc34615a2b8cc562e66d26ea9507b",
+      "bytes": 7056
+    },
+    {
+      "sourcePath": "director-desktop/src/SourceStructure.tsx",
+      "destinationPath": "apps/desktop/src/SourceStructure.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c3b28957aab42cce0bfd0f4f51a7cae6c5138a85",
+      "sourceSha256": "5ee90f31ea56cab37bedd3f77f0a70fe58ae4d0ca5b68ccc29e761b93a9245a9",
+      "bytes": 10946
+    },
+    {
+      "sourcePath": "director-desktop/src/Stage1Panel.tsx",
+      "destinationPath": "apps/desktop/src/Stage1Panel.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "45a282cf633d791011cd55c1ec74d83c46cec69b",
+      "sourceSha256": "0bdc8d77e06ef5da0d9882f50e4003d54cbdecf52894e99d16004cf9ac06726b",
+      "bytes": 17610
+    },
+    {
+      "sourcePath": "director-desktop/src/Stage3Panel.tsx",
+      "destinationPath": "apps/desktop/src/Stage3Panel.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "93c1acd102cf94b6655deb178bd712ec7b22ceba",
+      "sourceSha256": "17782df37c8aabfa8b9c59b4538af3f3cb5a22b5a24cb4e969c85dd00f7c6074",
+      "bytes": 17738
+    },
+    {
+      "sourcePath": "director-desktop/src/TextExecutionSettings.tsx",
+      "destinationPath": "apps/desktop/src/TextExecutionSettings.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "13674e8b1f91ee9a8cec4878b9cde2ced25b6134",
+      "sourceSha256": "74a7767227ddea84ecf3c7641f3457145534ff7188ae19c431c605fb08e28c2a",
+      "bytes": 10919
+    },
+    {
+      "sourcePath": "director-desktop/src/UnitAssetEditor.tsx",
+      "destinationPath": "apps/desktop/src/UnitAssetEditor.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "8b461ac61ff56a772bb08ef9960b220dd6d33ae1",
+      "sourceSha256": "23a671a9b19a59d3af1a53f589fed5b6f12f7d3042a5cb5cea2ca98325019e99",
+      "bytes": 6330
+    },
+    {
+      "sourcePath": "director-desktop/src/UnitPanel.tsx",
+      "destinationPath": "apps/desktop/src/UnitPanel.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d0e731ba5ecefe29eb636e7ef29abbf75cd89675",
+      "sourceSha256": "09b784c7b2ece04955bde840d93b91f3a8af41522b08e6290c33adb379044fc1",
+      "bytes": 35263
+    },
+    {
+      "sourcePath": "director-desktop/src/WorkflowProgress.tsx",
+      "destinationPath": "apps/desktop/src/WorkflowProgress.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "1e51502cb47ee036388e46f68f9b5be2235e2b67",
+      "sourceSha256": "04c689359c24e6a79b7cde964a76605ba6ea73a9272d93f921e9e6763ab5a551",
+      "bytes": 12387
+    },
+    {
+      "sourcePath": "director-desktop/src/api.ts",
+      "destinationPath": "apps/desktop/src/api.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "52924d610d0974611fb6a2f988835ca795f25da6",
+      "sourceSha256": "7b343cfe8ed4c3394e0d20509eba5de7d527696ca3dea2ac36fb4a4c60eb3d8d",
+      "bytes": 1834
+    },
+    {
+      "sourcePath": "director-desktop/src/assetManagement.css",
+      "destinationPath": "apps/desktop/src/assetManagement.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d6b8a9e91789e1e9ede2e2b8eb28f729b9e33743",
+      "sourceSha256": "2823fbe2699943545684df7f431ee08ee6ca4a1fe8d5217867a88c4814bba82c",
+      "bytes": 2502
+    },
+    {
+      "sourcePath": "director-desktop/src/assetManagement.test.ts",
+      "destinationPath": "apps/desktop/src/assetManagement.test.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "b631908ad558a76a42f1b41ab25fd6872326402d",
+      "sourceSha256": "921e68cf9a904d8c11211a8d65fc2fe0ac3e54f5e8eb04caf17c4e5db0585c0f",
+      "bytes": 6141
+    },
+    {
+      "sourcePath": "director-desktop/src/assetManagement.ts",
+      "destinationPath": "apps/desktop/src/assetManagement.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "e4b44f0fedcfc06a49b0214ac089c76b2a22578e",
+      "sourceSha256": "5dcba12a7bd1a9eefb5aed357008e6e32b68cd55bd660c849f9eed3ffae30d90",
+      "bytes": 4540
+    },
+    {
+      "sourcePath": "director-desktop/src/components.tsx",
+      "destinationPath": "apps/desktop/src/components.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "670d122aba7523765d546a4017251dbf0a115ddd",
+      "sourceSha256": "63d088b8b6ef57226f4e4b5e357f674ecefb4f44f165ea81f85077c1dc19cd11",
+      "bytes": 10133
+    },
+    {
+      "sourcePath": "director-desktop/src/contracts.test.ts",
+      "destinationPath": "apps/desktop/src/contracts.test.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "55ba8a85e0f5b7762e61e3af0366ec73dabec57f",
+      "sourceSha256": "a43952abba8d45ffb9dd4d68be1b638b6603e0c15be917a499cd3eedd29b84cd",
+      "bytes": 32658
+    },
+    {
+      "sourcePath": "director-desktop/src/contracts.ts",
+      "destinationPath": "apps/desktop/src/contracts.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "0950a554bc3b5a7a01bb07502d51476ef9af0ffe",
+      "sourceSha256": "81f822fa72e079722f755142f0dbdc30cde80e4f8cf5f86d99780beab63c3e19",
+      "bytes": 23574
+    },
+    {
+      "sourcePath": "director-desktop/src/generationState.test.ts",
+      "destinationPath": "apps/desktop/src/generationState.test.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6a866ebf8b329829ba05f7266b8a23d3818d673c",
+      "sourceSha256": "d75be274f3b83d485f5615ff8e0d73c47b1bff695378d084f874755350a0cc63",
+      "bytes": 3130
+    },
+    {
+      "sourcePath": "director-desktop/src/generationState.ts",
+      "destinationPath": "apps/desktop/src/generationState.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ce41e1e99d52528a4c015a53765ea9bd373764f9",
+      "sourceSha256": "cf125466cd96081f8f16ecce985fb413fd79d1bc939fca4b6ab3d55cdf18c6b4",
+      "bytes": 3136
+    },
+    {
+      "sourcePath": "director-desktop/src/inlineProjectCreate.css",
+      "destinationPath": "apps/desktop/src/inlineProjectCreate.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "d532ce4ff996f0ac62a3dceeed46b736ca791076",
+      "sourceSha256": "745d5e8dfde339d8bf7b7051779a7a38d8cba39ff64698fc8817c8c74d5bcabf",
+      "bytes": 770
+    },
+    {
+      "sourcePath": "director-desktop/src/main.tsx",
+      "destinationPath": "apps/desktop/src/main.tsx",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "c5bac042d8ef1f6ec0f54972b470dbe6c87f6013",
+      "sourceSha256": "e0a12b080d820a7519f87d494dadd6af075385a2fc9275283222267e2bad2ef0",
+      "bytes": 219
+    },
+    {
+      "sourcePath": "director-desktop/src/preview.ts",
+      "destinationPath": "apps/desktop/src/preview.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ba51feab82ad58e9ff6b61e1c8b2aa90694ed0fc",
+      "sourceSha256": "1d0c4c3b10911931fe9119334b764af00babd1fdda92463d0e8127453039a1f8",
+      "bytes": 8291
+    },
+    {
+      "sourcePath": "director-desktop/src/projectLibrary.css",
+      "destinationPath": "apps/desktop/src/projectLibrary.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "864364c9af3e7293424ca87165f8d03ad9b8afdd",
+      "sourceSha256": "772be94fff0fc3a98fcb2e5f2610c94d44f9325ee87501385ecdc4896b4bcf5d",
+      "bytes": 2647
+    },
+    {
+      "sourcePath": "director-desktop/src/stage-production.css",
+      "destinationPath": "apps/desktop/src/stage-production.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "ff580651ef5081d9b18fe4aec272fcd579d2c84d",
+      "sourceSha256": "93c1cf9fae501e4a592ca07df6dad4e078f0072294b9b6bce8c33b46254948c8",
+      "bytes": 12581
+    },
+    {
+      "sourcePath": "director-desktop/src/stageProduction.ts",
+      "destinationPath": "apps/desktop/src/stageProduction.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "b6f33ed6954fc3998437b1e3a960e8aa39a8a644",
+      "sourceSha256": "6006c2a7cc7fdcbd4bf654e1e5783885235705e77b4e64d4c2c482349bce9baa",
+      "bytes": 1734
+    },
+    {
+      "sourcePath": "director-desktop/src/styles.css",
+      "destinationPath": "apps/desktop/src/styles.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "cc09bd09dd58d2c4d206697161563b0129a60342",
+      "sourceSha256": "c4fe279411b3f95bab7e13e2948bcc49e894dd03ecfa9b82b087ce930d3da524",
+      "bytes": 41915
+    },
+    {
+      "sourcePath": "director-desktop/src/types.ts",
+      "destinationPath": "apps/desktop/src/types.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "6c7dbccc4bfed0384166a64317e2e2b36096318b",
+      "sourceSha256": "1f868641daf833d161fc3e8c0749c6f7ee6d4a2582fccee370966a4ebe9c4627",
+      "bytes": 7539
+    },
+    {
+      "sourcePath": "director-desktop/src/unitAssetEditing.test.ts",
+      "destinationPath": "apps/desktop/src/unitAssetEditing.test.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "75e20b689b7a35798583654a398d378c1739011a",
+      "sourceSha256": "62c34d504948dffb200475e29595de6c616142de1a87aa421ea1ea15d0cdfdf0",
+      "bytes": 2678
+    },
+    {
+      "sourcePath": "director-desktop/src/unitAssetEditing.ts",
+      "destinationPath": "apps/desktop/src/unitAssetEditing.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3b38b4210b48fde0bb2d77e32a03a777ce71d6e7",
+      "sourceSha256": "7f2bd5cb6fd78319cfd38bcbb004e163e13427083e4c901f424521aa18c17db1",
+      "bytes": 2955
+    },
+    {
+      "sourcePath": "director-desktop/src/unitAssetEditor.css",
+      "destinationPath": "apps/desktop/src/unitAssetEditor.css",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "cc8e1838cc6f947624f1513da5ec885a454ea6fc",
+      "sourceSha256": "b23600eec4e903f004bd26554d83ae9c3289230ba10ed1126c488a3ed20a2308",
+      "bytes": 1021
+    },
+    {
+      "sourcePath": "director-desktop/src/workflowProgressModel.test.ts",
+      "destinationPath": "apps/desktop/src/workflowProgressModel.test.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "4da7377e9b4d564dee2f9c2ef2500d88f40b7103",
+      "sourceSha256": "58fa0a33c879ae2c27900a94cfff5f2d7653812cb33c599396addc3fd47f8adb",
+      "bytes": 22281
+    },
+    {
+      "sourcePath": "director-desktop/src/workflowProgressModel.ts",
+      "destinationPath": "apps/desktop/src/workflowProgressModel.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "54543616d062c4f2c77d741e6e4e5b3463f25d81",
+      "sourceSha256": "6c10a583b5169910fbd16a5ce0a1f11cdd521778ec778a28dbb8a16a2664bf7d",
+      "bytes": 11145
+    },
+    {
+      "sourcePath": "director-desktop/tsconfig.json",
+      "destinationPath": "apps/desktop/tsconfig.json",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "cf1083523a66bbfb844e81c612aa5d1c13b7d8fb",
+      "sourceSha256": "d8306abda3d4c46346d99fde4d6f6864d00bf2d768a77d39de4f5a9294360319",
+      "bytes": 486
+    },
+    {
+      "sourcePath": "director-desktop/vite.config.ts",
+      "destinationPath": "apps/desktop/vite.config.ts",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "3476cbc8f960d56e9b6ea0f89b493b6fe833cf77",
+      "sourceSha256": "4da0cce803eccac8df9df90c61f117002bb81d53c6ab5bb1d970857c27a539f1",
+      "bytes": 379
+    },
+    {
+      "sourcePath": "director-desktop/tools/dreamina/1.4.19/multimodal2video-help.txt",
+      "destinationPath": "apps/desktop/tools/dreamina/1.4.19/multimodal2video-help.txt",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "5967b052a587feedeb7cb43ef3e5919fe5bf4391",
+      "sourceSha256": "c6b09d5a2abfe91ac7a75ca0bec3078d5483d4aa994ca2b20da354abadd687b1",
+      "bytes": 3624,
+      "purpose": "Recorded help text used by offline parser tests; not runtime binaries"
+    },
+    {
+      "sourcePath": "director-desktop/tools/dreamina/1.4.19/text2video-help.txt",
+      "destinationPath": "apps/desktop/tools/dreamina/1.4.19/text2video-help.txt",
+      "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sourceGitBlobSha1": "72fd383ea35a81bfdb84ab384874decd4344997a",
+      "sourceSha256": "5a140dc4094a06475bb3fdfce09f013b73532bbae7346ef588e762d9c7f973a0",
+      "bytes": 2447,
+      "purpose": "Recorded help text used by offline parser tests; not runtime binaries"
+    }
+  ],
+  "excluded": [
+    "private reports",
+    "live integration tests",
+    "old scripts/updaters",
+    "tool binaries",
+    "databases",
+    "credentials",
+    "media",
+    "local environment files"
+  ]
+}

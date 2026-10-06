@@ -1,0 +1,29 @@
+
+running 6 tests
+test text_executor::tests::q1_base_identity_rejection_never_uses_scope_migration_or_changed_snapshot ... ok
+test text_executor::tests::q1_base_identity_rejection_requires_call_validated_before_accepting_the_original_raw ... ok
+test text_executor::tests::q1_base_identity_rejection_requires_exact_current_error_and_full_binding ... ok
+test text_executor::tests::q1_outside_batch_scope_exception_is_not_available_for_other_errors ... ok
+test text_executor::tests::q1_outside_batch_scope_label_refuses_material_or_target_operations ... ok
+test text_executor::tests::q1_outside_batch_scope_label_reuses_only_the_untouched_synthetic_result ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 570 filtered out; finished in 0.29s
+
+
+running 5 tests
+test text_executor::tests::exact_q1_commit_failure_and_rejection_never_replace_raw_or_resubmit ... ok
+test text_executor::tests::exact_q1_drift_or_broken_binding_blocks_only_the_same_known_node ... ok
+test text_executor::tests::exact_q1_final_scope_error_with_ineligible_binding_never_resubmits ... ok
+test text_executor::tests::exact_q1_final_scope_response_preserves_original_error_and_replays_atomically ... ok
+test text_executor::tests::exact_q1_synthetic_response_replays_without_cli_and_preserves_raw_and_binding ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 571 filtered out; finished in 0.18s
+
+
+running 3 tests
+test text_executor::tests::auto_evidence_q1_replays_same_frozen_result_with_zero_cli_and_keeps_raw ... ok
+test text_executor::tests::auto_evidence_q1_requires_exact_auto_policy_profile_and_same_binding ... ok
+test text_executor::tests::auto_evidence_q1_still_invalid_stops_and_preserves_original_output ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 573 filtered out; finished in 0.18s
+

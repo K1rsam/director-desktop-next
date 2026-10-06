@@ -1,0 +1,51 @@
+{
+  "format": "director-sdk-provenance/v1",
+  "verifiedAt": "2026-10-06",
+  "platform": "linux",
+  "arch": "x64",
+  "node": "v24.19.0",
+  "officialDocumentation": "https://learn.chatgpt.com/docs/codex-sdk",
+  "officialSource": "https://github.com/openai/codex/tree/main/sdk/typescript",
+  "sdk": {
+    "version": "0.160.1",
+    "resolved": "https://registry.npmjs.org/@openai/codex-sdk/-/codex-sdk-0.160.1.tgz",
+    "integrity": "sha512-9KdvjPUNWrXFBIPezY6Yegifqe4Hx/8UMHdp/3tg5YwFj0laKd2YcyTZxrXLBg7znDZeGs4UioohWCwocfVJzQ==",
+    "license": "Apache-2.0",
+    "dependencies": {
+      "@openai/codex": "0.160.1"
+    },
+    "engines": {
+      "node": ">=18"
+    }
+  },
+  "runtimePackage": {
+    "version": "0.160.1",
+    "resolved": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.1.tgz",
+    "integrity": "sha512-f1yrJhwgimKQI1kYQlxdPJcFwkNZxZrbz7Hf89EAcnLqkQ7TiESzr2FgSZn13Ga5RuHjlVUfurzwq10wk9zw2g==",
+    "license": "Apache-2.0",
+    "bin": {
+      "codex": "bin/codex.js"
+    },
+    "engines": {
+      "node": ">=16"
+    },
+    "optionalDependencies": {
+      "@openai/codex-darwin-arm64": "npm:@openai/codex@0.160.1-darwin-arm64",
+      "@openai/codex-darwin-x64": "npm:@openai/codex@0.160.1-darwin-x64",
+      "@openai/codex-linux-arm64": "npm:@openai/codex@0.160.1-linux-arm64",
+      "@openai/codex-linux-x64": "npm:@openai/codex@0.160.1-linux-x64",
+      "@openai/codex-win32-arm64": "npm:@openai/codex@0.160.1-win32-arm64",
+      "@openai/codex-win32-x64": "npm:@openai/codex@0.160.1-win32-x64"
+    }
+  },
+  "tarballSha256": "2c8167e7921b9b0c693a7671042beb32ae92022fadff9b9e08103406e15a3a3d",
+  "tarballIntegrityVerified": true,
+  "installedSdkImplementationSha256": "d62ed107033bdba802b283c77d875e4bec3deb2704a910bb7e3f95059473b16f",
+  "installedSdkDeclarationsSha256": "954d28bec3db17316c2f6acbbd157210ded9f75143c50827215739110327c7ac",
+  "installedRuntimeBinary": false,
+  "installScriptsExecuted": false,
+  "modelCalls": 0,
+  "accountCalls": 0,
+  "liveExecutionEnabled": false,
+  "verification": "Official package integration against bundled synthetic subprocess only; no official runtime launched"
+}

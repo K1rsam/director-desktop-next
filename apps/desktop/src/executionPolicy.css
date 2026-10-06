@@ -1,0 +1,5 @@
+.execution-policy-banner{flex-shrink:0;padding:12px 28px;background:rgba(246,237,216,.72);border-bottom:1px solid rgba(163,132,78,.18);color:#766342;font-size:.75rem;line-height:1.65}
+.execution-policy-heading{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.execution-policy-heading strong{font-weight:600;color:#6c583b}.execution-policy-heading span{font-size:.6875rem}
+.execution-policy-banner p{margin:4px 0;font-size:.75rem}.execution-policy-banner details{margin-top:2px}.execution-policy-banner summary{cursor:pointer;font-size:.6875rem}.execution-policy-banner ul{margin:7px 0;padding-left:20px}.execution-policy-error{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+@media(max-width:700px){.execution-policy-banner{padding:10px 15px}.execution-policy-heading{gap:2px}.execution-policy-heading strong,.execution-policy-heading span{width:100%}}

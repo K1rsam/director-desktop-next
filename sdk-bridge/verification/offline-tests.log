@@ -1,0 +1,64 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 verify
+> npm run check && npm test
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 check
+> node --check src/bridge.mjs && node --check src/main.mjs && node --check test/bridge.test.mjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 test
+> node --test --test-concurrency=1 test/*.test.mjs
+
+✔ hello/inspect/execute default stays disabled and starts zero runtime processes (28.832425ms)
+✔ actual SDK preserves frozen model/reasoning/prompt/schema and uses no inherited credentials (184.406015ms)
+✔ local observe/replay uses no new SDK call, duplicate attempt rejected, next new attempt allowed after completion (283.103773ms)
+✔ identical duplicates are durable and do not overwrite or double-complete (167.984405ms)
+✔ out-of-order fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (141.627363ms)
+✔ early-complete fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (157.751311ms)
+✔ changed-thread fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (64.099949ms)
+✔ policy-violation fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (92.190912ms)
+✔ failed-after-text fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (105.99554ms)
+✔ same-item-mutated fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (121.592534ms)
+✔ oversized-event fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (167.141228ms)
+✔ malformed runtime JSON remains raw error evidence and is never repaired/resubmitted (136.255857ms)
+✔ invalid final domain JSON is preserved verbatim with parse error; transport completion is not acceptance (202.200756ms)
+✔ hash mismatch, backend change, identity mismatch and reasoning fallback are rejected before SDK start (3.487309ms)
+✔ one active attempt, bounded AbortSignal cancel, no process-tree success claim (24.609777ms)
+✔ restart recovers in-flight receipt as unknown; observe never creates a new turn (23.79374ms)
+✔ second worker cannot own same state directory (9.614264ms)
+✔ stdio fragmented UTF-8, malformed JSON, request version and duplicate IDs are bounded and deterministic (239.98327ms)
+✔ stdio fixture uses actual official SDK and cleanly returns a transport observation (394.142838ms)
+✔ cancel after runtime starts is bounded even when synthetic child ignores SIGTERM (1723.091201ms)
+✔ hard worker crash preserves unknown attempt and passive restart starts zero new runtimes (681.031489ms)
+✔ input frame bound closes stdio without creating an attempt (267.120282ms)
+✔ partial durable attempt directory blocks initialization rather than silently resetting intent (2.677059ms)
+✔ torn event journal cannot retain a trusted completed state after restart (142.701297ms)
+✔ installed official SDK version and executable implementation match pinned provenance (7.361429ms)
+✔ bounded disconnect retains directory ownership while an uncooperative synthetic child still runs (1745.790708ms)
+✔ persisted model tampering fails closed before local replay (189.766646ms)
+✔ persisted compiledPrompt tampering fails closed before local replay (66.314343ms)
+✔ persisted compiledSchema tampering fails closed before local replay (91.599319ms)
+✔ persisted semanticRequestHash tampering fails closed before local replay (86.039014ms)
+✔ persisted executionFingerprint tampering fails closed before local replay (96.439134ms)
+✔ persisted rawResult tampering fails closed before local replay (134.755603ms)
+✔ parallel stale-lock contenders cannot both own the worker (123.943774ms)
+✔ stranded recovery guard fails closed and is never auto-reclaimed (250.94454ms)
+✔ unknown persisted state cannot release a worker budget (108.939502ms)
+✔ persisted threadId metadata is bound by the full receipt envelope checksum (157.937748ms)
+✔ persisted state metadata is bound by the full receipt envelope checksum (169.294698ms)
+✔ persisted usage metadata is bound by the full receipt envelope checksum (185.425793ms)
+✔ persisted error metadata is bound by the full receipt envelope checksum (142.992519ms)
+✔ persisted lastSequence metadata is bound by the full receipt envelope checksum (129.662484ms)
+✔ persisted domainAccepted metadata is bound by the full receipt envelope checksum (171.37361ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9522.630665

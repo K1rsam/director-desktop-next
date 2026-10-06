@@ -1,0 +1,99 @@
+{
+  "schema": "director-next-offline-verification/v1",
+  "date": "2026-10-06",
+  "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "rustc": "1.99.0 (b940084d7 2026-09-28)",
+    "node": "v24.19.0"
+  },
+  "rust": {
+    "profile": "release",
+    "passed": 716,
+    "failed": 0,
+    "ignored": 24,
+    "suites": 22,
+    "command": "cargo test --release --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features --no-fail-fast -- --test-threads=1"
+  },
+  "frontend": {
+    "passed": 81,
+    "failed": 0,
+    "typecheck": "passed through tsc -b in npm run build",
+    "build": "passed",
+    "renderedComponentsAndMockedIpc": "passed",
+    "commands": [
+      "npm --prefix apps/desktop run test:frontend",
+      "npm --prefix apps/desktop run build"
+    ]
+  },
+  "sourceLock": {
+    "frozenCandidates": 22,
+    "sourceFilesPinned": 144,
+    "candidateActive": false,
+    "status": "passed"
+  },
+  "coreSmoke": {
+    "status": "passed",
+    "separateProcessCalls": 11,
+    "sourceEpisodes": 2,
+    "sourcePreserved": true,
+    "restartPreserved": true,
+    "externalActionsBlocked": 6,
+    "generationJobs": 0
+  },
+  "nativeMac": "NOT_RUN",
+  "nativeWindows": "NOT_RUN",
+  "browserLayout": "BLOCKED Chromium Unix socket permissions; no screenshots or native claims",
+  "creativeComparison": "NOT_RUN: actual adopted Mac runtime and drafts not yet integrated",
+  "sdkCoreWiring": "PENDING; official sidecar has separate offline evidence, no live execution",
+  "initialFailureResolution": [
+    "Five inherited fake CLI fixtures lacked Unix execute permission required for snapshot discovery; malformed executable bytes retained so unexpected launch cannot run a model",
+    "One inherited keyring fixture relied on persistence between Entry instances unavailable in Linux keyring mock; unit tests now use process-local synthetic credentials behind the native adapter, no host keychain"
+  ],
+  "logs": [
+    {
+      "path": "docs/verification/m1/core-release-test-reviewed.log",
+      "sha256": "46dcd48e68440af199d89d3b80e900ed9530b42c866104fe7a82f1ea3df197cd",
+      "bytes": 90553
+    },
+    {
+      "path": "docs/verification/m1/frontend-reviewed-tests.log",
+      "sha256": "4dd105003e89f5fd714fc885eeed963acab566b207e6379c00183793901f6a7e",
+      "bytes": 8762
+    },
+    {
+      "path": "docs/verification/m1/frontend-reviewed-build.log",
+      "sha256": "b10c7baa407062a5590825a39eb8c55ee450c0cd9b8f40a4b0816451db834ee0",
+      "bytes": 740
+    },
+    {
+      "path": "docs/verification/m1/source-lock-final.json",
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52",
+      "bytes": 239
+    },
+    {
+      "path": "docs/verification/m1/offline-smoke-final.json",
+      "sha256": "e16ac189debb22289913b4b69de151046912a0641dd195ae4e5e7543c2159b33",
+      "bytes": 171
+    }
+  ],
+  "sdkBridge": {
+    "package": "@openai/codex-sdk",
+    "version": "0.160.1",
+    "passed": 41,
+    "failed": 0,
+    "skipped": 0,
+    "liveCalls": 0,
+    "rustExecutionWiring": false
+  },
+  "review": {
+    "status": "GO_FOR_OFFLINE_M1_ONLY",
+    "fixes": [
+      "SDK stale worker-lock recovery race",
+      "SDK full receipt envelope integrity",
+      "FrozenAttempt ID binding and Prepared evidence/state rollback",
+      "SDK UI scope wording and removed stale updater"
+    ]
+  }
+}

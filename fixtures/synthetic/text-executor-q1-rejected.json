@@ -1,0 +1,196 @@
+{
+  "error": "子形象重复或再次声明基础形象",
+  "snapshot": {
+    "stage": "foundation:Q1",
+    "skill": "foundation-finishing-editor",
+    "model": "synthetic-test-model",
+    "reasoning": "medium",
+    "input": {
+      "sourceSha256": "83cc5fd123717a2194f9e92461a102ccf1afb6d07e14ccef1a1448ae28576617",
+      "source": {
+        "columns": [
+          "rowId",
+          "line",
+          "episodeId",
+          "sceneId",
+          "kind",
+          "speaker",
+          "channel",
+          "start",
+          "end",
+          "text"
+        ],
+        "coordinateSystem": "UTF-16 half-open",
+        "rows": [
+          [
+            "row:83cc5fd12371:0:41",
+            1,
+            "episode:83cc5fd12371:1",
+            "scene:83cc5fd12371:1",
+            "body",
+            null,
+            null,
+            0,
+            41,
+            "Synthetic fixture actor checks the lamp.\n"
+          ]
+        ]
+      },
+      "scope": [
+        "episode:83cc5fd12371:1"
+      ],
+      "delivery": {
+        "method": "foundation-delivery/v2",
+        "scope": [
+          "episode:83cc5fd12371:1"
+        ],
+        "batchIndex": 0
+      },
+      "candidates": [
+        {
+          "key": "CH_synthetic_actor",
+          "name": "Synthetic actor",
+          "sourceRefsPurpose": "SOURCE_SCOPE",
+          "sourceScope": {
+            "kind": "PROGRAM_SCOPE",
+            "sourceSha256": "83cc5fd123717a2194f9e92461a102ccf1afb6d07e14ccef1a1448ae28576617"
+          },
+          "variants": [
+            {
+              "key": "CH_synthetic_actor:base",
+              "name": "Synthetic actor",
+              "isBase": true,
+              "scope": {
+                "kind": "GLOBAL"
+              },
+              "note": "Synthetic base identity",
+              "usageEpisodes": [
+                "episode:83cc5fd12371:1"
+              ],
+              "sceneRefs": [],
+              "sourceRefsPurpose": "SOURCE_SCOPE",
+              "sourceScope": {
+                "kind": "PROGRAM_SCOPE",
+                "sourceSha256": "83cc5fd123717a2194f9e92461a102ccf1afb6d07e14ccef1a1448ae28576617"
+              }
+            },
+            {
+              "key": "CH_synthetic_actor:coat",
+              "name": "Synthetic coat",
+              "isBase": false,
+              "scope": {
+                "kind": "UNRESOLVED"
+              },
+              "note": "Synthetic future coat",
+              "usageEpisodes": [
+                "episode:83cc5fd12371:2"
+              ],
+              "sceneRefs": [],
+              "sourceRefsPurpose": "SOURCE_SCOPE",
+              "sourceScope": {
+                "kind": "PROGRAM_SCOPE",
+                "sourceSha256": "83cc5fd123717a2194f9e92461a102ccf1afb6d07e14ccef1a1448ae28576617"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "schema": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "ASSET_OPTIMIZATION_DESKTOP_V2"
+          ]
+        },
+        "sourceSha256": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "changes": {
+          "type": "object"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "format",
+        "sourceSha256",
+        "coverage",
+        "changes"
+      ],
+      "additionalProperties": false
+    },
+    "ruleSnapshot": {
+      "primary": {
+        "id": "foundation-finishing-editor",
+        "version": "synthetic/v1",
+        "content": "Synthetic Q1 replay rule. Preserve frozen inputs and validate before acceptance.\n",
+        "sha256": "4cd0c3313988e15a619f5c048b50d0c27db361f849d15b1b6527d51c620ffcc1"
+      },
+      "methods": []
+    },
+    "structuredOutputTransport": "strict-optionals/v1",
+    "executorPolicy": "codex-isolated/v1",
+    "executorIdentity": {
+      "provider": "codex",
+      "executable": "synthetic-never-run"
+    }
+  },
+  "result": {
+    "format": "ASSET_OPTIMIZATION_DESKTOP_V2",
+    "sourceSha256": "83cc5fd123717a2194f9e92461a102ccf1afb6d07e14ccef1a1448ae28576617",
+    "coverage": [
+      "episode:83cc5fd12371:1"
+    ],
+    "changes": {
+      "assets": [
+        {
+          "key": "CH_synthetic_actor",
+          "variants": [
+            {
+              "key": "CH_synthetic_actor:base",
+              "scope": {
+                "kind": "SCENES",
+                "scenes": [
+                  {
+                    "episodeId": "episode:83cc5fd12371:1",
+                    "sceneId": "scene:83cc5fd12371:1"
+                  }
+                ]
+              },
+              "note": "Synthetic base scope patch"
+            },
+            {
+              "key": "CH_synthetic_actor:base",
+              "scope": {
+                "kind": "SCENES",
+                "scenes": [
+                  {
+                    "episodeId": "episode:83cc5fd12371:1",
+                    "sceneId": "scene:83cc5fd12371:1"
+                  }
+                ]
+              },
+              "note": "Synthetic base scope patch"
+            }
+          ]
+        }
+      ],
+      "removeAssetKeys": [],
+      "mergeAssets": []
+    },
+    "issues": []
+  }
+}

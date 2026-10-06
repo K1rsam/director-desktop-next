@@ -1,0 +1,30 @@
+import { useEffect, useState } from 'react';
+import { desktop, preview, request } from './api';
+import { Button, messageOf } from './components';
+import { OFFLINE_EXECUTION_POLICY } from './executionPolicy';
+import type { ExecutionPolicy } from './executionPolicy';
+import './executionPolicy.css';
+
+export function ExecutionPolicyBanner() {
+  const [policy, setPolicy] = useState<ExecutionPolicy>(OFFLINE_EXECUTION_POLICY);
+  const [state, setState] = useState<'checking' | 'verified' | 'failed'>(desktop ? 'checking' : 'verified');
+  const [error, setError] = useState(''), [retry, setRetry] = useState(0);
+  useEffect(() => {
+    if (!desktop) return;
+    let active = true;
+    setState('checking'); setError('');
+    void request<ExecutionPolicy>({ action: 'getExecutionPolicy' }).then(next => {
+      if (active) { setPolicy(next); setState('verified'); }
+    }).catch(reason => { if (active) { setError(messageOf(reason)); setState('failed'); } });
+    return () => { active = false; };
+  }, [retry]);
+  return <section className="execution-policy-banner" aria-label="产品执行状态" data-execution-mode={policy.mode}>
+    <div className="execution-policy-heading"><strong>Director Desktop Next · 离线准备模式</strong><span>真实生成关闭 · Stage 3 创作包未启用</span></div>
+    <p id="offline-action-reason">可整理本地原文、编辑资产与分镜、查看历史和导入导出。文本、图片、视频生成及账户接入暂未开放。</p>
+    <details><summary>查看执行边界{desktop ? state === 'checking' ? ' · 正在核对本地核心' : state === 'verified' ? ' · 本地核心已核验' : ' · 策略核验未完成' : preview ? ' · 只读示例' : ''}</summary>
+      <ul>{policy.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>
+      <p>“准备所选素材”仍依赖渠道核验，此版本也保持关闭。浏览器示例仅供阅读。</p>
+      {error && <div className="execution-policy-error" role="status"><span>{error}</span><Button icon="refresh" onClick={() => setRetry(value => value + 1)}>重新核对策略</Button></div>}
+    </details>
+  </section>;
+}

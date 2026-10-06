@@ -1,0 +1,16 @@
+node_modules/
+dist/
+target/
+.local/
+.director-next/
+*.sqlite
+*.sqlite-*
+.env
+.env.*
+*.log
+reports/
+private-test-inputs/
+__pycache__/
+*.partial
+.DS_Store
+*.tsbuildinfo

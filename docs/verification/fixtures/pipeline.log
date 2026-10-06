@@ -1,0 +1,16 @@
+
+running 7 tests
+test pipeline::foundation_delivery::tests::compact_profile_fits_synthetic_ten_episode_catalogue_in_one_editor_request ... 10 episodes: legacy Q1=79163 compact exact Q1=41160 candidate 45065 -> 21318, wire input=23018
+ok
+test pipeline::foundation_delivery::tests::synthetic_editor_patches_base_and_exact_split_scenes_without_a_new_model_call ... ok
+test pipeline::foundation_delivery::tests::synthetic_ten_episode_catalogue_recovers_all_47_assets_without_guessing_source ... ok
+test pipeline::foundation_wire::tests::synthetic_f2_q1_replies_and_inputs_roundtrip_without_text_changes ... rejected-task.json: input 12573 -> 7077, response 10497 -> 7497
+rejected-q1.json: input 60947 -> 44459, response 1499 -> 895
+rejected-q1-final.json: input 13974 -> 9775, response 425 -> 294
+ok
+test pipeline::scene_edits::tests::synthetic_q1_plans_prove_only_the_six_exact_cut_line_children ... ok
+test text_executor::tests::exact_q1_synthetic_response_replays_without_cli_and_preserves_raw_and_binding ... ok
+test text_executor::tests::q1_outside_batch_scope_label_reuses_only_the_untouched_synthetic_result ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 569 filtered out; finished in 5.49s
+

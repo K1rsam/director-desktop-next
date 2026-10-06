@@ -1,0 +1,5 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 evidence
+> node test/record-evidence.mjs
+

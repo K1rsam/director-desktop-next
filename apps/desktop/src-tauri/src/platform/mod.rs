@@ -1,0 +1,102 @@
+//! Narrow native boundary; source identity, workflows and business rules stay shared.
+use std::{
+    fs,
+    io::Write,
+    path::{Path, PathBuf},
+};
+pub const APPLICATION_ID: &str = "app.director.next";
+pub const CREDENTIAL_SERVICE: &str = "director-desktop-next";
+pub const HOME_MARKER: &str = "director-next-home.json";
+
+/// Never adopt an older app's registry merely because a caller passes its directory.
+pub fn ensure_isolated_home(home: &Path) -> Result<(), String> {
+    fs::create_dir_all(home).map_err(|e| e.to_string())?;
+    let marker = home.join(HOME_MARKER);
+    if marker.exists() {
+        let value: serde_json::Value =
+            serde_json::from_slice(&fs::read(&marker).map_err(|e| e.to_string())?)
+                .map_err(|e| format!("应用目录标识无效: {e}"))?;
+        if value["applicationId"] != APPLICATION_ID {
+            return Err("拒绝打开其他应用的数据目录".into());
+        }
+        return Ok(());
+    }
+    if home.join("projects.json").exists() || home.join("project.sqlite").exists() {
+        return Err("拒绝自动接管已有工程目录；请使用新的 director-desktop-next 数据目录".into());
+    }
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(marker)
+        .map_err(|e| e.to_string())?;
+    file.write_all(
+        format!("{{\"applicationId\":\"{APPLICATION_ID}\",\"version\":1}}\n").as_bytes(),
+    )
+    .map_err(|e| e.to_string())?;
+    file.sync_all().map_err(|e| e.to_string())
+}
+
+/// Only media directories belonging to this registered project enter the native asset scope.
+/// Database, raw requests, logs, backups and credentials are not webview assets.
+pub fn media_scopes(project: &Path) -> Result<Vec<PathBuf>, String> {
+    let root = project.canonicalize().map_err(|e| e.to_string())?;
+    let mut scopes = Vec::new();
+    for name in ["media", "thumbnails"] {
+        let path = project.join(name);
+        if !path.exists() {
+            continue;
+        }
+        let path = path.canonicalize().map_err(|e| e.to_string())?;
+        if !path.starts_with(&root) || path == root {
+            return Err("媒体目录越出登记项目范围".into());
+        }
+        scopes.push(path);
+    }
+    Ok(scopes)
+}
+
+/// Native credentials are isolated by the new application's service name.
+/// Unit tests use a process-local synthetic store, never the user's keychain.
+#[cfg(not(test))]
+pub fn read_credential(account: &str) -> Result<String, String> {
+    keyring::Entry::new(CREDENTIAL_SERVICE, account)
+        .map_err(|e| e.to_string())?
+        .get_password()
+        .map_err(|e| e.to_string())
+}
+#[cfg(not(test))]
+pub fn write_credential(account: &str, value: &str) -> Result<(), String> {
+    keyring::Entry::new(CREDENTIAL_SERVICE, account)
+        .map_err(|e| e.to_string())?
+        .set_password(value)
+        .map_err(|e| e.to_string())
+}
+#[cfg(test)]
+fn synthetic_credentials() -> &'static std::sync::Mutex<std::collections::HashMap<String, String>> {
+    static STORE: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, String>>> =
+        std::sync::OnceLock::new();
+    STORE.get_or_init(Default::default)
+}
+#[cfg(test)]
+pub fn read_credential(account: &str) -> Result<String, String> {
+    synthetic_credentials()
+        .lock()
+        .map_err(|e| e.to_string())?
+        .get(account)
+        .cloned()
+        .ok_or("No synthetic credential".into())
+}
+#[cfg(test)]
+pub fn write_credential(account: &str, value: &str) -> Result<(), String> {
+    synthetic_credentials()
+        .lock()
+        .map_err(|e| e.to_string())?
+        .insert(account.into(), value.into());
+    Ok(())
+}
+#[cfg(test)]
+pub fn remove_synthetic_credential(account: &str) {
+    if let Ok(mut store) = synthetic_credentials().lock() {
+        store.remove(account);
+    }
+}

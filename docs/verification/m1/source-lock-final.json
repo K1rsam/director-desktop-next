@@ -1,0 +1,1 @@
+{"status": "passed", "frozenCandidates": 22, "pinnedSourceFiles": 144, "candidateRuntimeActive": false, "checks": ["candidate bytes", "pinned migration index", "private fixture exclusion", "new app identity", "empty default asset scope"]}
