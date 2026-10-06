@@ -426,49 +426,136 @@ async fn replay_requires_exact_workflow_step_snapshot_identity_and_known_error()
         };
         let old_evidence = job_evidence(&store, &job);
         let generation_calls = fixture.generation_calls();
-        let result = executor.execute(request).await;
+        let original_steps: String = store.conn().unwrap().query_row(
+            "SELECT COALESCE(json_group_array(json_array(node_key,stage,request_hash,state,text_job_id,result,error)), '[]') FROM workflow_steps WHERE workflow_id=?1",
+            [&run], |row| row.get(0),
+        ).unwrap();
+        let result = executor.execute(request.clone()).await;
         assert_ne!(
             result.as_ref().ok(),
             Some(&raw),
             "unmatched {change} reused rejected raw result"
         );
-        let count: i64 = store
-            .conn()
-            .unwrap()
-            .query_row("SELECT COUNT(*) FROM jobs WHERE kind='text'", [], |r| {
-                r.get(0)
-            })
-            .unwrap();
+        assert_eq!(
+            store
+                .conn()
+                .unwrap()
+                .query_row("SELECT COUNT(*) FROM jobs WHERE kind='text'", [], |r| r
+                    .get::<_, i64>(0))
+                .unwrap(),
+            1,
+            "unfrozen {change} cannot create a fresh text job"
+        );
+        assert_eq!(
+            fixture.generation_calls(),
+            generation_calls,
+            "unfrozen {change} cannot dispatch even the synthetic runtime"
+        );
+        assert_eq!(
+            job_evidence(&store, &job),
+            old_evidence,
+            "unfrozen {change} must retain original snapshot/raw/receipt/error/state"
+        );
+
         if change == "model" {
             assert_eq!(
                 result.unwrap_err(),
                 "所选文本模型不在 CLI 模型目录中，请刷新并选择模型"
             );
+            let preflight = director_core::text_cli::resolve_settings(&json!({
+                "textProvider":"codex", "codexPath":executor_path,
+                "textModel":request.model, "reasoning":request.reasoning
+            }))
+            .await
+            .unwrap_err();
             assert_eq!(
-                count, 1,
-                "an unavailable model fails before a new text job is created"
+                preflight,
+                "所选文本模型不在 CLI 模型目录中，请刷新并选择模型"
             );
             assert_eq!(
                 fixture.generation_calls(),
                 generation_calls,
-                "readiness rejection cannot execute generation"
+                "an unavailable model stays blocked through explicit preflight"
             );
         } else {
+            assert!(
+                result
+                    .unwrap_err()
+                    .contains("CODEX_UNMANAGED_IDENTITY_CHANGED"),
+                "changed {change} must fail closed until its native identity is frozen"
+            );
+            let settings = director_core::text_cli::resolve_settings(&json!({
+                "textProvider":"codex", "codexPath":executor_path,
+                "textModel":request.model, "reasoning":request.reasoning
+            }))
+            .await
+            .unwrap();
+            assert_eq!(settings["textCliVersion"], "codex-cli offline-fixture");
+            assert_eq!(settings["textCliExecutable"], settings["codexPath"]);
             assert_eq!(
-                count, 2,
-                "unmatched {change} must take the normal fresh-job path"
+                fixture.generation_calls(),
+                generation_calls,
+                "explicit preflight only reads the synthetic runtime contract"
+            );
+            // Never relabel or overwrite the historical two-field workflow to
+            // authorize a fresh request. The standalone case stays standalone;
+            // otherwise the caller explicitly starts a newly frozen workflow.
+            let fresh_run = if change == "no_workflow" {
+                None
+            } else {
+                Some(store.add_job("workflow", "foundation.run", "local", "local",
+                    &json!({"runnerVersion":"desktop-runner/v1", "stage":"foundation.run", "input":{"settings":settings}}),
+                    "running").unwrap())
+            };
+            let fresh = SavedTextExecutor {
+                store: store.clone(),
+                settings: settings.clone(),
+                workflow_id: fresh_run,
+            };
+            assert_eq!(
+                fresh.execute(request.clone()).await.unwrap(),
+                json!({"draft":"fresh-offline-result"}),
+                "preflighted {change} returns only its fresh synthetic result"
             );
             assert_eq!(
-                result.unwrap(),
-                json!({"draft":"fresh-offline-result"}),
-                "{change} must return only the fresh offline result"
+                store
+                    .conn()
+                    .unwrap()
+                    .query_row("SELECT COUNT(*) FROM jobs WHERE kind='text'", [], |r| r
+                        .get::<_, i64>(0))
+                    .unwrap(),
+                2,
+                "preflighted {change} creates exactly one fresh job"
             );
             assert_eq!(
                 fixture.generation_calls(),
                 generation_calls + 1,
-                "a valid fresh {change} request executes the offline fixture once"
+                "preflighted {change} executes the synthetic fixture exactly once"
+            );
+            let new_snapshot: String = store
+                .conn()
+                .unwrap()
+                .query_row(
+                    "SELECT snapshot FROM jobs WHERE kind='text' AND id!=?1",
+                    [&job],
+                    |r| r.get(0),
+                )
+                .unwrap();
+            let new_snapshot: Value = serde_json::from_str(&new_snapshot).unwrap();
+            assert_eq!(
+                new_snapshot["executorIdentity"],
+                json!({"provider":"codex","executable":settings["textCliExecutable"],"version":settings["textCliVersion"]}),
+                "new dispatch records the actually inspected three-field identity"
             );
         }
+        let current_steps: String = store.conn().unwrap().query_row(
+            "SELECT COALESCE(json_group_array(json_array(node_key,stage,request_hash,state,text_job_id,result,error)), '[]') FROM workflow_steps WHERE workflow_id=?1",
+            [&run], |row| row.get(0),
+        ).unwrap();
+        assert_eq!(
+            current_steps, original_steps,
+            "{change} must not replace the original legacy workflow checkpoint"
+        );
         assert_eq!(
             job_evidence(&store, &job),
             old_evidence,

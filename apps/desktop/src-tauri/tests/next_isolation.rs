@@ -156,14 +156,12 @@ fn frozen_transport_identity_blocks_cross_backend_retry_and_survives_restart() {
     assert_eq!(loaded.state, AttemptState::SubmissionUnknown);
 }
 #[tokio::test]
-async fn sdk_stub_reports_unavailable_and_never_falls_back() {
-    let sdk = UnavailableSdkTransport;
-    assert_eq!(sdk.inspect().await.unwrap()["available"], false);
-    assert!(sdk
-        .execute(&attempt(Backend::CodexSdk))
-        .await
-        .unwrap_err()
-        .contains("SDK_NOT_IMPLEMENTED"));
+async fn sdk_shared_backend_reports_honest_live_gate_without_fallback() {
+    let status=director_core::text_sdk::status(&json!({})).await;
+    assert_eq!(status["available"],false);
+    assert_eq!(status["sharedRustExecutor"],true);
+    assert_eq!(status["sdk"]["version"],"0.160.1");
+    assert!(director_core::text_sdk::resolve_for_workflow(&json!({})).await.unwrap_err().contains("SDK_LIVE_DISABLED"));
 }
 
 #[tokio::test]

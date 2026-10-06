@@ -2,9 +2,11 @@
  * Backend dispatch enforces the same boundary independently of these UI guards.
  */
 export type ExecutionPolicy = {
-  mode: 'offline_prepare_only';
-  liveExecutionAllowed: false;
-  stage3CreativePackStatus: 'inactive';
+  mode: 'offline_prepare_only' | 'native_cli_acceptance';
+  liveExecutionAllowed: boolean;
+  stage3CreativePackStatus: 'inactive' | 'verified_active';
+  allowedActions?: string[];
+  acceptance?: Record<string, unknown>;
   reasons: string[];
 };
 export type PolicyRequest = { action: string; [key: string]: unknown };
@@ -21,8 +23,20 @@ export const OFFLINE_EXECUTION_POLICY: ExecutionPolicy = {
   ],
 };
 
+let activePolicy: ExecutionPolicy = OFFLINE_EXECUTION_POLICY;
+const policyListeners = new Set<() => void>();
+export function currentExecutionPolicy(): ExecutionPolicy { return activePolicy; }
+export function subscribeExecutionPolicy(listener: () => void): () => void {
+  policyListeners.add(listener); return () => { policyListeners.delete(listener); };
+}
+export function installExecutionPolicy(policy: ExecutionPolicy): void {
+  activePolicy = { ...policy, reasons: [...policy.reasons], allowedActions: policy.allowedActions ? [...policy.allowedActions] : undefined };
+  for (const listener of policyListeners) listener();
+}
+const NATIVE_EXTRA_ACTIONS = new Set(['foundation.run', 'images.design', 'workflows.resume', 'textCli.status', 'storyboard.run', 'storyboard.decision.resolve']);
+
 const LOCAL_READ_ACTIONS = new Set([
-  'getExecutionPolicy', 'projects.list', 'files.choose', 'legacy.inspect', 'workspace.get',
+  'getExecutionPolicy', 'textSdk.status', 'images.previewPrompt', 'projects.list', 'files.choose', 'legacy.inspect', 'workspace.get',
   'units.get', 'units.versions.list', 'foundation.choices.list', 'assets.get', 'assets.usage', 'jobs.detail',
 ]);
 const LOCAL_WRITE_ACTIONS = new Set([
@@ -61,7 +75,10 @@ export function classifyAction(input: PolicyRequest | string): ActionCategory {
 }
 
 export function actionBlockReason(input: PolicyRequest | string): string | null {
-  switch (classifyAction(input)) {
+  const action = typeof input === 'string' ? input : input.action;
+  const category = classifyAction(input);
+  if (activePolicy.mode === 'native_cli_acceptance' && NATIVE_EXTRA_ACTIONS.has(action) && activePolicy.allowedActions?.includes(action)) return null;
+  switch (category) {
     case 'local_read': case 'local_write': return null;
     case 'generation': return '离线准备模式：产品端真实文本、图片与视频生成尚未开放。';
     case 'provider': return '离线准备模式：渠道访问、远端查询与渠道素材准备尚未开放。';
@@ -78,15 +95,34 @@ export function assertOfflineAction(input: PolicyRequest): void {
 export function validateExecutionPolicy(value: unknown): ExecutionPolicy {
   if (!value || typeof value !== 'object') throw new Error('本地核心未返回有效的执行策略。');
   const policy = value as Record<string, unknown>;
-  if (policy.mode !== 'offline_prepare_only' || policy.liveExecutionAllowed !== false || policy.stage3CreativePackStatus !== 'inactive' || !Array.isArray(policy.reasons) || !policy.reasons.every(reason => typeof reason === 'string')) {
-    throw new Error('本地核心执行策略与当前离线版本不一致；外部执行保持关闭。');
+  if (!Array.isArray(policy.reasons) || !policy.reasons.every(reason => typeof reason === 'string')) throw new Error('执行策略缺少说明，外部执行保持关闭。');
+  if (policy.mode === 'offline_prepare_only' && policy.liveExecutionAllowed === false && policy.stage3CreativePackStatus === 'inactive') {
+    return { mode: 'offline_prepare_only', liveExecutionAllowed: false, stage3CreativePackStatus: 'inactive', reasons: [...policy.reasons] };
   }
-  return { mode: 'offline_prepare_only', liveExecutionAllowed: false, stage3CreativePackStatus: 'inactive', reasons: [...policy.reasons] };
+  const scope = policy.acceptance && typeof policy.acceptance === 'object' ? policy.acceptance as Record<string, unknown> : {};
+  const safeActions = new Set([...LOCAL_READ_ACTIONS, ...LOCAL_WRITE_ACTIONS, ...NATIVE_EXTRA_ACTIONS]);
+  const actions = policy.allowedActions;
+  const stage3 = scope.stage3AdapterVerified === true;
+  if (policy.version !== 'execution-policy/v2' || policy.mode !== 'native_cli_acceptance' || policy.liveExecutionAllowed !== true
+      || scope.backend !== 'codex' || scope.model !== 'gpt-6.1-sol' || scope.reasoning !== 'medium'
+      || scope.sdkLiveAllowed !== false || scope.realVideoAllowed !== false || scope.newWorkflowsPerPhase !== 1
+      || !/^[a-f0-9]{64}$/.test(String(scope.sourceSha256 || ''))
+      || JSON.stringify(scope.storyboardEpisodeNumbers) !== '[1,2]'
+      || policy.stage3CreativePackStatus !== (stage3 ? 'verified_active' : 'inactive')
+      || !Array.isArray(actions) || !actions.every(action => typeof action === 'string' && safeActions.has(action))
+      || (!stage3 && actions.some(action => ['storyboard.run', 'storyboard.decision.resolve'].includes(action)))) {
+    throw new Error('本地核心执行策略与有界验收合同不一致；外部执行保持关闭。');
+  }
+  return { mode: 'native_cli_acceptance', liveExecutionAllowed: true, stage3CreativePackStatus: stage3 ? 'verified_active' : 'inactive', reasons: [...policy.reasons], allowedActions: [...actions], acceptance: { ...scope } };
 }
 
 /** Keep the guard ahead of IPC, including direct callers that bypass a disabled button. */
 export async function dispatchOfflineRequest<T>(input: PolicyRequest, transport: (input: PolicyRequest) => Promise<T>): Promise<T> {
   assertOfflineAction(input);
   const result = await transport(input);
-  return input.action === 'getExecutionPolicy' ? validateExecutionPolicy(result) as T : result;
+  if (input.action === 'getExecutionPolicy') {
+    try { const policy = validateExecutionPolicy(result); installExecutionPolicy(policy); return policy as T; }
+    catch (error) { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); throw error; }
+  }
+  return result;
 }

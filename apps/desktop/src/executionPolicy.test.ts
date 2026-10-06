@@ -96,3 +96,16 @@ test('automatic catalog discovery does not read providers in offline mode', asyn
   await discover(); await discover();
   assert.equal(calls, 0);
 });
+
+test('operator native scope only opens approved CLI actions and never SDK or media', async () => {
+  const { installExecutionPolicy, OFFLINE_EXECUTION_POLICY } = await import('./executionPolicy.ts');
+  const scope = { version: 'execution-policy/v2', mode: 'native_cli_acceptance', liveExecutionAllowed: true, stage3CreativePackStatus: 'inactive', reasons: ['synthetic bounded native scope'], allowedActions: ['getExecutionPolicy', 'foundation.run', 'images.design', 'textCli.status'], acceptance: { sourceSha256: 'a'.repeat(64), backend: 'codex', model: 'gpt-6.1-sol', reasoning: 'medium', storyboardEpisodeNumbers: [1, 2], stage3AdapterVerified: false, sdkLiveAllowed: false, realVideoAllowed: false, newWorkflowsPerPhase: 1 } };
+  try {
+    installExecutionPolicy(validateExecutionPolicy(scope));
+    assert.equal(actionBlockReason('foundation.run'), null);
+    assert.equal(actionBlockReason('images.design'), null);
+    for (const action of ['storyboard.run', 'images.run', 'images.produce', 'videos.prepare', 'videos.submit', 'textCli.login']) assert.ok(actionBlockReason(action));
+    assert.ok(actionBlockReason({ action: 'settings.save', settings: { textApiKey: 'synthetic' } }));
+    for (const changed of [ { ...scope, allowedActions: [...scope.allowedActions, 'videos.submit'] }, { ...scope, allowedActions: [...scope.allowedActions, 'storyboard.run'] }, { ...scope, acceptance: { ...scope.acceptance, reasoning: 'max' } }, { ...scope, acceptance: { ...scope.acceptance, sdkLiveAllowed: true } } ]) assert.throws(() => validateExecutionPolicy(changed));
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});

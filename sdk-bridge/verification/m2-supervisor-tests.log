@@ -1,0 +1,31 @@
+    Blocking waiting for file lock on build directory
+warning: unused import: `CompiledStoryboardTransport`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `director-desktop-next` (lib test) generated 2 warnings (run `cargo fix --lib -p director-desktop-next --tests` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 2m 09s
+     Running unittests src/lib.rs (/workspace/shared/director-next-m2-target/release/deps/director_core-64d330f171179569)
+
+running 4 tests
+test text_sdk::tests::sdk_stderr_flood_retains_bounded_exact_prefix_and_fails_closed ... ok
+test text_sdk::tests::sdk_frames_reassemble_split_utf8_and_reject_partial_invalid_and_large_frames ... ok
+test text_sdk::tests::sdk_identity_rejects_cli_shape_unknown_fields_and_package_or_policy_drift ... ok
+test text_sdk::tests::sdk_cancel_interrupts_active_pipe_owner_and_never_claims_stopped ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 617 filtered out; finished in 0.42s
+

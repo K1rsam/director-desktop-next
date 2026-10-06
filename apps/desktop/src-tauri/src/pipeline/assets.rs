@@ -289,6 +289,7 @@ fn reference_design_card(asset: &Value, design: Option<&Value>) -> Value {
 }
 
 fn reusable_parent_design<'a>(
+    input: &Value,
     asset: &'a Value,
     assets: &[Value],
     source_sha: &str,
@@ -297,7 +298,8 @@ fn reusable_parent_design<'a>(
     parent: Option<&str>,
 ) -> Option<&'a Value> {
     let design = asset.get("design")?;
-    if text(design, "schemaVersion") != "asset-design/v1"
+    if !super::asset_design_contract::design_receipt_current(input, asset)
+        || text(design, "schemaVersion") != "asset-design/v1"
         || text(design, "sourceSha256") != source_sha
         || text(design, "assetId") != text(asset, "id")
         || text(design, "variantId") != text(asset, "variantId")
@@ -335,6 +337,16 @@ fn reusable_parent_design<'a>(
     Some(design)
 }
 
+/// Pure preflight shared by direct image submission and one-click. A prompt is
+/// never proof that unresolved source state has become applicable.
+pub fn validate_asset_visual_gate(input: &Value, asset: &Value) -> Result<(), String> {
+    let assets = input["assets"].as_array().ok_or("缺少资产目录")?;
+    let parents = assets.iter().filter_map(|a|resolve_asset_dependency(assets,a).ok().map(|p|(text(a,"id").to_owned(),p))).collect();
+    let by_id = assets.iter().map(|a|(text(a,"id"),a)).collect();
+    let known = input["source"]["rows"].as_array().into_iter().flatten().filter_map(|r|r["id"].as_str()).collect();
+    design_facts(input,asset,&by_id,&parents,&known).map(|_|())
+}
+
 pub fn image_production_policy(settings: &Value) -> &'static str {
     if settings["requireImageTrialReview"].as_bool() == Some(true) {
         "trialReview"
@@ -355,7 +367,7 @@ pub fn automatic_design_required(input: &Value, asset: &Value) -> bool {
     automatic_design_stale(input, asset)
 }
 
-fn automatic_design_stale(input: &Value, asset: &Value) -> bool {
+pub(super) fn automatic_design_stale(input: &Value, asset: &Value) -> bool {
     if text(asset, "prompt").trim().is_empty() {
         return true;
     }
@@ -410,6 +422,7 @@ fn automatic_design_stale(input: &Value, asset: &Value) -> bool {
         );
     }
     reusable_parent_design(
+        input,
         asset,
         assets,
         source_sha,
@@ -682,6 +695,10 @@ pub async fn run_asset_design(
                     continue;
                 }
             }
+            if let Err(reason) = validate_asset_visual_gate(&design_basis,asset) {
+                blocked.push(json!({"assetId":id,"variantId":variant,"reason":reason}));
+                failed.insert(id.clone()); pending.remove(&id); progress = true; continue;
+            }
             if (automatic || !explicitly_selected.contains(&id))
                 && !text(asset, "prompt").trim().is_empty()
             {
@@ -741,6 +758,7 @@ pub async fn run_asset_design(
                         .any(|design| text(design, "assetId") == parent)
                 });
                 if let Some(design) = reusable_parent_design(
+                    &design_basis,
                     asset,
                     assets,
                     &source.sha256,
@@ -773,16 +791,18 @@ pub async fn run_asset_design(
                 .as_deref()
                 .and_then(|p| available_designs.get(p));
             let mode = if parent.is_some() { "DERIVED" } else { "BASE" };
-            let production_direction = input
-                .pointer("/foundation/directionConfirmed")
-                .and_then(Value::as_bool)
-                .filter(|confirmed| *confirmed)
-                .and_then(|_| input.pointer("/foundation/productionDirection"));
+            let production_direction = super::asset_design_contract::production_direction(input);
+            let design_receipt = super::asset_design_contract::design_receipt(&design_basis, asset)?;
+            let comparison_designs = input["comparisonDesignsByAssetId"].get(&id).and_then(Value::as_array).cloned().unwrap_or_else(||super::asset_design_contract::comparison_designs(input, asset));
             let allowed_references: Vec<String> = parent.into_iter().map(str::to_string).collect();
             let output_schema = obj(
                 json!({"schemaVersion":choices(&["asset-design/v1"]),"assetId":{"type":"string","enum":[id]},"variantId":{"type":"string","enum":[variant]},"prompt":string(),"freeDesignScope":string(),"sourceRefs":refs(&evidence.iter().map(|r|r.id.clone()).collect::<Vec<_>>()),"referenceVariantIds":refs(&allowed_references)}),
             );
             let mut design_input = json!({"sourceSha256":source.sha256,"designMode":mode,"asset":asset_design_card(asset),"facts":facts,"deltaFacts":delta_facts,"evidence":evidence,"parentDesign":parent_design,"parentAsset":parent.and_then(|p|by_id.get(p)).map(|asset|asset_design_card(asset)),"referenceCatalog":parent.and_then(|p|by_id.get(p)).map(|asset|vec![asset_design_card(asset)]).unwrap_or_default(),"productionDirection":production_direction,"imageEvidence":"NO_PIXELS_READ","instruction":"执行designMode确定的C基础/D派生岗位。referenceVariantIds只使用指定直接来源资产行id；基础形象为空。名称只作显示，不推断身份。原文仅在evidence物化一次；facts与deltaFacts不重抄原句。未提供当前旧提示词与历史候选，不以历史代替证据。"});
+            design_input["projectVisualStyle"] = json!(super::asset_design_contract::project_visual_style(&input["settings"]));
+            design_input["imagePresentation"] = super::asset_design_contract::image_presentation(&input["settings"], asset);
+            design_input["comparisonDesigns"] = json!(comparison_designs);
+            let frozen_context = json!({"version":super::asset_design_contract::DESIGN_PROFILE,"projectVisualStyle":design_input["projectVisualStyle"],"productionDirection":design_input["productionDirection"],"imagePresentation":design_input["imagePresentation"],"comparisonDesigns":design_input["comparisonDesigns"],"model":model,"reasoning":reasoning,"textProvider":input["settings"]["textProvider"],"textBackend":input["settings"]["textBackend"]});
             if reference_parent.as_deref() != parent {
                 design_input["inlineReference"] = json!({"directAssetId":parent,"reusedDesignAssetId":reference_parent,"instruction":"直接来源为INLINE覆盖态，parentDesign复用其明确来源形象；referenceVariantIds仍按指定直接来源id输出，不新增独立INLINE图片。"});
             }
@@ -880,6 +900,8 @@ pub async fn run_asset_design(
                         map.insert("status".into(), json!("candidate"));
                         map.insert("designMode".into(), json!(mode));
                         map.insert("inputFingerprint".into(), json!(fingerprint));
+                        map.insert("designReceipt".into(), design_receipt.clone());
+                        map.insert("frozenContext".into(), frozen_context.clone());
                         Ok(())
                     },
                 )
@@ -906,6 +928,10 @@ pub async fn run_asset_design(
                     let mut updated_asset = (*asset).clone();
                     updated_asset["prompt"] = output["prompt"].clone();
                     updated_asset["promptOrigin"] = json!("AI");
+                    updated_asset["design"] = output.clone();
+                    if let Some(rows) = design_basis["assets"].as_array_mut() {
+                        if let Some(saved) = rows.iter_mut().find(|a| text(a,"id")==id) { *saved = updated_asset.clone(); }
+                    }
                     available_designs.insert(
                         id.clone(),
                         reference_design_card(&updated_asset, Some(&output)),
@@ -1527,6 +1553,8 @@ mod tests {
         let child = json!({"id":"child","baseAssetId":"person","variantId":"hurt","prompt":"","sourceAssetId":"parent","sourceRefs":[row]});
         let mut input =
             json!({"source":source,"assets":[parent,child],"selection":{"assetIds":["child"]}});
+        input["assets"][0]["design"]["designReceipt"] = super::super::asset_design_contract::design_receipt(&input,&input["assets"][0]).unwrap();
+        let parent = input["assets"][0].clone();
         let executor = CountingDesigner {
             requests: std::sync::Mutex::new(Vec::new()),
         };
@@ -1875,11 +1903,11 @@ mod tests {
             assert!(request.rule_snapshot["primary"]["content"]
                 .as_str()
                 .unwrap()
-                .contains("# C 岗：基础资产形象设计"));
+                .contains("BASE 人物设计"));
             assert!(request.rule_snapshot["primary"]["content"]
                 .as_str()
                 .unwrap()
-                .contains("# D 岗：派生形象图生图变化说明"));
+                .contains("DERIVED："));
             let asset = &request.input["asset"];
             Ok(
                 json!({"schemaVersion":"asset-design/v1","assetId":if self.invalid=="identity"{"wrong"}else{text(asset,"id")},"variantId":asset["variantId"],"prompt":"完整资产外观","freeDesignScope":"非剧情背景补足","sourceRefs":if self.invalid=="source"{json!(["unknown-row"])}else{asset["sourceRefs"].clone()},"referenceVariantIds":if self.invalid=="reference"{json!([text(asset,"id")])}else{json!([])}}),
@@ -1960,7 +1988,8 @@ mod tests {
         let child = json!({"id":"child","baseAssetId":"person","variantId":"base","sourceAssetId":"parent","prompt":"旧AI子形象","promptOrigin":"AI","sourceRefs":[row],"design":valid_design("child","旧AI子形象",json!(["parent"]))});
         let current = json!({"id":"current","variantId":"base","prompt":"有效AI形象","promptOrigin":"AI","sourceRefs":[row],"design":valid_design("current","有效AI形象",json!([]))});
         let manual = json!({"id":"manual","variantId":"base","prompt":"手写设计无需强制重做","promptOrigin":"MANUAL","sourceRefs":[]});
-        let input = json!({"source":source,"assets":[parent,child,current,manual],"settings":{"trialApproved":false},"imageProductionPolicy":"automatic","selection":{"assetIds":["parent","child","current","manual"]}});
+        let mut input = json!({"source":source,"assets":[parent,child,current,manual],"settings":{"trialApproved":false},"imageProductionPolicy":"automatic","selection":{"assetIds":["parent","child","current","manual"]}});
+        input["assets"][2]["design"]["designReceipt"] = super::super::asset_design_contract::design_receipt(&input, &input["assets"][2]).unwrap();
         assert!(automatic_design_required(&input, &input["assets"][0]));
         assert!(!automatic_design_required(&input, &input["assets"][2]));
         assert!(!automatic_design_required(&input, &input["assets"][3]));

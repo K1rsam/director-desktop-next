@@ -13,7 +13,7 @@
 - 原始文本、JSON parse error、SDK 暴露事件和本地恢复证据分别保留；transport completion 绝不代表领域采用
 - Linux 离线测试通过；无产品模型、API、用户账号或真实 Codex runtime 调用
 
-没有修改 Rust 业务核心、创作规则或 React bundle。Rust 产品入口的接线和 SDK UI 状态由主实现单独管理。本文件中的 Rust 映射是下一检查点的建议，不冒充已经接入 SavedTextExecutor。
+M2 已把官方包运输接入 SavedTextExecutor、既有 jobs/raw/领域校验/恢复与 SDK 设置 UI。具体接线、持久身份、跨语言端到端证据及剩余原生门禁见 [SDK_CORE_INTEGRATION.md](SDK_CORE_INTEGRATION.md)。创作原件没有改写，SDK live 仍关闭。
 
 ## 2. 为什么选定 TypeScript SDK
 
@@ -58,7 +58,7 @@ node src/main.mjs --state-dir /absolute/dedicated/worker-directory
 node src/main.mjs --state-dir /absolute/synthetic-worker --offline-fixture happy
 ```
 
-`--offline-fixture` 只接受源码中列出的合成场景，不接受任意 executable 路径；由测试代码生成一个执行自带 `fake-codex.mjs` 的 POSIX 包装器，真正 SDK 调用它。没有真实 Codex 或模型服务。当前该包装器拒绝 Windows；macOS 没有本轮实机证据。
+`--offline-fixture` 只接受源码中列出的合成场景，不接受任意 executable 路径；M2 由测试代码生成合成 Node bootstrap，以已安装的原生 Node 可执行文件承接官方 SDK 发出的 `exec` 参数，再执行自带 `fake-codex.mjs`。这条 fixture 路径不用 shell、.cmd 或额外子进程，不修改官方 SDK 实现；受控 NODE_OPTIONS 只指向该合成 bootstrap，不继承用户环境。Windows 不再被代码无条件拒绝，共同测试也不再按 POSIX 条件跳过；Windows/macOS 仍须实际运行原生 CI，本轮没有两平台通过证据。
 
 ## 4. 协议 v1
 
@@ -154,9 +154,9 @@ attempt_1/
 
 执行 deadline 默认 30 分钟；取消/退出给活动 task 最多 500ms 等待，之后仍为 unknown。该时间是等待预算，不是磁盘系统调用的硬实时上界，也不表示进程树已经停止。父进程关闭时本桥按有界等待退出；后代进程状态仍必须按 unknown 管理。
 
-## 6. Rust 接线建议（未实施）
+## 6. Rust 接线合同（M2 已接线，原生发布仍受限）
 
-暂不修改 `TextTransport`、`SavedTextExecutor` 或 UI。下一检查点可增加一个仅控制面可用的 `OfficialSdkTransport`：
+M2 的 `text_sdk.rs::OfficialSdkTransport` 与 SavedTextExecutor 已落实下述运输合同；详细实现和测试见 SDK_CORE_INTEGRATION.md。生产控制面仅状态可用，SDK live 预检仍阻断：
 
 1. 使用受控绝对 Node/sidecar 路径和新产品专用 state directory；不得从 PATH 静默选另一个 runtime，不得传用户环境全集
 2. `inspect()` 发送 hello/inspect，严格核对 protocolVersion/package/version/capabilities。`available:false` 或 `liveCallsAllowed:false` 不得变成可派发状态
@@ -169,7 +169,7 @@ attempt_1/
 9. 当前 `FrozenAttempt::observe` 使用严格递增 sequence。桥 observation 的 lastSequence 是最后一条 SDK journal 序号；如果 Rust 已消费该序号的所有中间事件，则终态需要独立投影递增序号或单独 terminal receipt 应用路径。不能直接复用 lastSequence 把最终完成丢掉，也不能改写原 SDK journal 序号
 10. 父进程的 SQLite/attempt 目录仍是业务事实来源。桥只保存运输证据，不直接写数据库、项目成果或媒体目录
 
-未来若实现 Rust client，需增加真实子进程跨语言 contract test，而非仅模拟消息对象。本轮未把 SDK 包依赖加入 React。
+M2 已增加 Rust SavedTextExecutor → 真 Node/官方 SDK → 合成子进程 → 原 raw/领域采用拒绝/重启缓存的跨语言 contract tests，SDK 包仍未加入 React。
 
 ## 7. 明确发布阻断项
 
@@ -181,7 +181,7 @@ attempt_1/
 4. 固定 SDK 不暴露现有 CLI 隔离合同的所有启动 flags，例如 ignore-user-config/ignore-rules。当前显式 env、read-only、approval never、web disabled 是合成参数验证，不能证明真实 runtime 的配置、规则、工具、扩展及凭据加载隔离
 5. 官方 runtime 在合成 HOME/断网/无凭据下的加载检查未运行；账号、实际模型、额度、真实输出质量和 latency 均未测试
 6. Node/SDK/runtime/helper/许可证配套打包、干净 Windows/macOS、中文长路径完整发行物、系统进程树清理、退出和回滚均未验收
-7. SDK 与 Rust 产品执行通道尚未接线；仅保留偏好/显式拒绝不等于双入口的最终可用交付
+7. M2 已接入共用 Rust 执行通道并测试离线合同；它不等于真实 SDK 生成及完整双平台发行物已通过验收
 
 如果后续正式要求 passive 对账或严格进程资源控制，需重新评估可满足条件的官方 SDK 能力与版本，或向用户说明缺口。不得自动改为自写 app-server 客户端并继续称官方 SDK。
 
@@ -200,9 +200,9 @@ attempt_1/
 | Linux：实际 SDK + 合成 subprocess | 41 项通过 |
 | 官方 runtime 无生成加载检查 | 未运行 |
 | SDK 真实模型调用 | 未授权、未运行，调用数 0 |
-| Rust↔Node 产品执行路径 | 未接线 |
+| Rust↔Node 产品执行路径 | M2 已接入 SavedTextExecutor；官方 SDK 合成跨语言测试通过，生产 live 关闭 |
 | macOS 原生 SDK | 未运行 |
-| Windows 原生 SDK | 未运行；当前合成 launcher 不支持 |
+| Windows 原生 SDK | 未运行；M2 已有 native Node 合成 launcher 路径，共同测试不跳过，等待原生 CI |
 
 依赖证明：`sdk-bridge/verification/package-provenance.json`。日志不含用户剧本、真实环境全集、auth 文件或生产数据库。
 

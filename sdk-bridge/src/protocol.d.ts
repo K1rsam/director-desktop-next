@@ -34,6 +34,11 @@ export interface BridgeRequest {
 export interface RawResult { rawText: string; parsedJson: unknown | null; parseError: string | null; domainAccepted: false }
 export interface Receipt {
   attemptId: string;
+  semanticRequestHash: string;
+  executionFingerprint: string;
+  attemptEnvelopeHash: string | null;
+  compiledPromptSha256: string;
+  compiledSchemaSha256: string;
   backend: 'codex_sdk';
   state: 'dispatching' | 'running' | 'cancel_requested' | 'submission_unknown' | 'transport_completed';
   threadId: string | null;

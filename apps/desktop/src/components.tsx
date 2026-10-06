@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { mediaUrl } from './api';
-import { actionBlockReason } from './executionPolicy';
+import { actionBlockReason, currentExecutionPolicy, subscribeExecutionPolicy } from './executionPolicy';
 import { assetImages } from './contracts';
 import type { Asset, Media, Provider, Workspace } from './types';
 
@@ -27,6 +27,7 @@ const paths: Record<IconName, ReactNode> = {
 };
 export function Icon({ name, size = 18 }: { name: IconName; size?: number }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>; }
 export function Button({ children, icon, executionAction, variant = 'secondary', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: IconName; executionAction?: string; variant?: 'primary' | 'secondary' | 'ghost' | 'caution' }) {
+  useSyncExternalStore(subscribeExecutionPolicy, currentExecutionPolicy, currentExecutionPolicy);
   const blocked = executionAction ? actionBlockReason(executionAction) : null;
   return <button type="button" {...props} disabled={props.disabled || !!blocked} title={blocked || props.title} data-execution-action={executionAction} aria-describedby={blocked ? 'offline-action-reason' : props['aria-describedby']} className={`button ${variant} ${props.className || ''}`}>{icon && <Icon name={icon} />}{children}</button>;
 }

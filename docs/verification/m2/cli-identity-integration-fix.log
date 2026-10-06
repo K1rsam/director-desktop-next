@@ -1,0 +1,72 @@
+    Blocking waiting for file lock on build directory
+   Compiling director-desktop-next v0.1.0 (/workspace/shared/director-desktop-next-m2/apps/desktop/src-tauri)
+warning: unused imports: `CompiledStoryboardTransport` and `STORYBOARD_LOSSLESS_INPUT_RULE`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 |     STORYBOARD_LOSSLESS_INPUT_RULE, STORYBOARD_TRANSPORT_LIMIT,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `finish_transport_characters` is never used
+   --> src/pipeline/storyboard.rs:110:4
+    |
+110 | fn finish_transport_characters(request: &TextRequest) -> Result<usize, String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `expand_storyboard_schema` is never used
+   --> src/pipeline/storyboard_transport.rs:767:15
+    |
+767 | pub(super) fn expand_storyboard_schema(schema: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `expand_storyboard_input` is never used
+   --> src/pipeline/storyboard_transport.rs:771:15
+    |
+771 | pub(super) fn expand_storyboard_input(input: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `safe_launch_fingerprint_for` is never used
+   --> src/providers/dreamina.rs:675:4
+    |
+675 | fn safe_launch_fingerprint_for(proxy: &ProxyEnvironment) -> String {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `director-desktop-next` (lib) generated 6 warnings (run `cargo fix --lib -p director-desktop-next` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 47.96s
+     Running tests/foundation_rejection_replay.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_rejection_replay-aeb4b032386b374a)
+
+running 6 tests
+test private_saved_first_batch_is_accepted_and_next_batch_stops_without_generation ... ignored, requires DIRECTOR_FOUNDATION_REPLAY_FIXTURE pointing to a private saved request; no generation is permitted
+test variant_label_regression_replays_only_the_original_job_and_rechecks_parent_changes ... ok
+test unsupported_reasoning_rejects_before_a_new_job_or_generation_and_holds_original_raw ... ok
+test true_cross_episode_result_remains_rejected_without_cli_or_a_new_text_job ... ok
+test known_context_rejection_revalidates_same_job_without_any_cli_and_keeps_audit ... ok
+test replay_requires_exact_workflow_step_snapshot_identity_and_known_error ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.50s
+
+     Running tests/text_cache_contracts.rs (/workspace/shared/director-next-m2-target/release/deps/text_cache_contracts-82eaa0605e3281e5)
+
+running 4 tests
+test changed_api_endpoint_cannot_reuse_accepted_workflow_or_global_cache ... ok
+test different_native_executor_identity_cannot_reuse_accepted_output ... ok
+test accepted_materialized_result_survives_reopen_and_reuses_without_cli ... ok
+test received_and_rejected_outputs_are_never_completed_cache_after_reopen ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.33s
+

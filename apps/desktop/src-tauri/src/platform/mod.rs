@@ -57,8 +57,29 @@ pub fn media_scopes(project: &Path) -> Result<Vec<PathBuf>, String> {
 
 /// Native credentials are isolated by the new application's service name.
 /// Unit tests use a process-local synthetic store, never the user's keychain.
+/// Capability is a platform contract, not a claim that the user's keychain was accessed.
+pub fn credential_backend_status() -> serde_json::Value {
+    let supported = cfg!(any(target_os = "windows", target_os = "macos"));
+    serde_json::json!({"platform":std::env::consts::OS,"supported":supported,
+        "persistentBackendConfigured":supported,"nativeAccessVerified":false,
+        "service":CREDENTIAL_SERVICE,"plaintextFallback":false})
+}
+#[cfg(not(test))]
+fn require_persistent_credentials() -> Result<(), String> {
+    use keyring::credential::CredentialPersistence;
+    if !cfg!(any(target_os = "windows", target_os = "macos"))
+        || !matches!(
+            keyring::default::default_credential_builder().persistence(),
+            CredentialPersistence::UntilDelete
+        )
+    {
+        return Err("CREDENTIAL_BACKEND_UNSUPPORTED: 此平台没有获验证的持久原生凭据后端，不保存设置且不明文回退".into());
+    }
+    Ok(())
+}
 #[cfg(not(test))]
 pub fn read_credential(account: &str) -> Result<String, String> {
+    require_persistent_credentials()?;
     keyring::Entry::new(CREDENTIAL_SERVICE, account)
         .map_err(|e| e.to_string())?
         .get_password()
@@ -66,6 +87,7 @@ pub fn read_credential(account: &str) -> Result<String, String> {
 }
 #[cfg(not(test))]
 pub fn write_credential(account: &str, value: &str) -> Result<(), String> {
+    require_persistent_credentials()?;
     keyring::Entry::new(CREDENTIAL_SERVICE, account)
         .map_err(|e| e.to_string())?
         .set_password(value)

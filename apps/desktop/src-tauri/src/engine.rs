@@ -61,6 +61,7 @@ pub struct Engine {
     dreamina_sessions: Arc<DreaminaSessions>,
     live_accounts: bool,
     offline_only: bool,
+    native_acceptance: Option<Arc<crate::native_acceptance::NativeAcceptance>>,
     pub stop: AtomicBool,
 }
 struct VideoChannel {
@@ -288,6 +289,34 @@ impl Engine {
         crate::platform::ensure_isolated_home(&home)?;
         Self::build(home, Arc::new(crate::execution_policy::OfflineChannels), false, true)
     }
+    pub fn with_native_acceptance(home:PathBuf, grant:crate::native_acceptance::AcceptanceGrant)->Result<Arc<Self>> {
+        let acceptance=crate::native_acceptance::NativeAcceptance::open(&home,grant)?;
+        // Media channels and their automatic scheduler remain disabled. Only bounded
+        // explicit CLI text operations can cross this separate acceptance boundary.
+        let mut engine=Self::build(home,Arc::new(crate::execution_policy::OfflineChannels),true,true)?;
+        Arc::get_mut(&mut engine).ok_or("验收引擎初始化所有权无效")?.native_acceptance=Some(Arc::new(acceptance));
+        for project in engine.project_list()? {
+            if let Ok(store)=engine.store(s(&project,"id")) {
+                if let Err(error)=engine.native_acceptance.as_ref().unwrap().reconcile_unbound(&store) {
+                    store.event("","operation_error",&json!({"code":"NATIVE_ACCEPTANCE_RECOVERY_HELD","message":error}))?;
+                }
+            }
+        }
+        Ok(engine)
+    }
+    fn reserve_native_workflow(&self,request:&Value,source:&Value,settings:&Value)->Result<Value> {
+        if let Some(acceptance)=&self.native_acceptance {
+            let reservation=acceptance.reserve(request,source,settings,crate::execution_policy::creative_runtime_ready())?;
+            Ok(acceptance.receipt(&reservation))
+        } else {Ok(Value::Null)}
+    }
+    fn bind_native_workflow(&self,store:&Store,receipt:&Value,job_id:&str)->Result<()> {
+        if let Some(acceptance)=&self.native_acceptance {
+            let reservation=serde_json::from_value::<crate::native_acceptance::Reservation>(receipt.clone()).map_err(|_|"验收工作流缺少原预约标记")?;
+            acceptance.bind_workflow(&reservation,&store.job(job_id)?)?;
+        }
+        Ok(())
+    }
     pub fn with_channels(home: PathBuf, channels: Arc<dyn Channels>) -> Result<Arc<Self>> {
         Self::build(home, channels, false, false)
     }
@@ -303,6 +332,7 @@ impl Engine {
             dreamina_sessions: Arc::new(DreaminaSessions::default()),
             live_accounts,
             offline_only,
+            native_acceptance: None,
             stop: AtomicBool::new(false),
         });
         for p in engine.project_list()? {
@@ -463,8 +493,11 @@ impl Engine {
         Ok(result)
     }
     pub fn config(&self, store: &Store, provider: &str) -> Result<(ProviderConfig, String)> {
+        self.config_with_settings(store, provider, &store.settings()?)
+    }
+    fn config_with_settings(&self, store: &Store, provider: &str, settings: &Value) -> Result<(ProviderConfig, String)> {
         if provider == "dreamina" && self.live_accounts {
-            let config = self.dreamina_config(store)?;
+            let config = self.dreamina_config_with_settings(settings)?;
             let account = self.dreamina_sessions.snapshot(&config)?;
             let identity = s(&account, "accountKey");
             return Ok((
@@ -479,7 +512,6 @@ impl Engine {
                 },
             ));
         }
-        let settings = store.settings()?;
         let project = store.project()?;
         let pid = s(&project, "id");
         let env = format!(
@@ -517,8 +549,31 @@ impl Engine {
         };
         Ok((cfg, account))
     }
+    fn generation_config(&self, store: &Store, summary: &Value) -> Result<(ProviderConfig,String)> {
+        // pending_jobs deliberately returns a small projection, never mistake it
+        // for the original submission snapshot.
+        let full = store.job(s(summary,"id"))?;
+        let job=&full;
+        let provider=s(job,"provider");
+        if !job["snapshot"]["frozenSettings"].is_object() {return self.config(store,provider);}
+        let mut settings=job["snapshot"]["frozenSettings"].clone();
+        // Channel parameters are frozen, but current identity must still be
+        // verified. Never label changed credentials as the old saved account.
+        if !self.live_accounts || provider!="dreamina" {
+            let account_key=format!("{provider}AccountId");
+            settings[&account_key]=store.settings()?[&account_key].clone();
+        }
+        if let Some(path)=job["snapshot"]["providerConfig"]["cliPath"].as_str() {settings["dreaminaPath"]=json!(path);}
+        let (config,account)=self.config_with_settings(store,provider,&settings)?;
+        let config = if job["snapshot"]["providerConfig"].is_object() {
+            serde_json::from_value(job["snapshot"]["providerConfig"].clone()).map_err(|e|format!("冻结图片渠道配置无效：{e}"))?
+        } else {config};
+        Ok((config,account))
+    }
     fn dreamina_config(&self, store: &Store) -> Result<ProviderConfig> {
-        let settings = store.settings()?;
+        self.dreamina_config_with_settings(&store.settings()?)
+    }
+    fn dreamina_config_with_settings(&self, settings: &Value) -> Result<ProviderConfig> {
         let cli = if s(&settings, "dreaminaPath").is_empty() {
             bundled_dreamina().map(|p| json!(p)).unwrap_or(Value::Null)
         } else {
@@ -846,8 +901,11 @@ impl Engine {
     }
     pub fn dispatch(self: &Arc<Self>, request: Value) -> Result<Value> {
         let action = s(&request, "action");
-        if action == "getExecutionPolicy" { return Ok(crate::execution_policy::report()); }
-        if self.offline_only { crate::execution_policy::check(&request)?; }
+        if action == "getExecutionPolicy" {
+            return Ok(match &self.native_acceptance {Some(a)=>crate::execution_policy::native_report(a),None=>crate::execution_policy::report()});
+        }
+        if self.native_acceptance.is_some() { crate::execution_policy::check_native_action(&request)?; }
+        else if self.offline_only { crate::execution_policy::check(&request)?; }
         // File pickers and library reads must not hold a project lifecycle reservation.
         match action {
             "projects.list" => return Ok(json!(self.project_list()?)),
@@ -888,6 +946,22 @@ impl Engine {
         // marker outlives synchronous work, and spawned workers acquire their own marker.
         let _operation = self.acquire_keys(project_worker_keys(&store, vec![])?)?;
         drop(lifecycle);
+        let request = if let Some(acceptance)=&self.native_acceptance {
+            let scoped=request.clone();
+            if ["foundation.run","images.design","storyboard.run"].contains(&action) {
+                acceptance.grant.check_start(&request,&store.source()?,&store.settings()?,crate::execution_policy::creative_runtime_ready())?;
+            } else if ["workflows.resume","storyboard.decision.resolve"].contains(&action) {
+                let job=store.job(s(&request,"workflowId"))?;
+                acceptance.check_resume(&request,&job,&store.source()?)?;
+            } else if action=="source.import" {
+                if let Some(text)=request["text"].as_str() {
+                    if pipeline::digest(text)!=acceptance.grant.locked_source_sha256 { return Err("验收导入文本不是获准原文，未覆盖项目".into()); }
+                } else {
+                    acceptance.grant.verify_document(&fs::read(s(&request,"path")).map_err(|e|e.to_string())?)?;
+                }
+            }
+            scoped
+        } else {request.clone()};
         match action {
             "workspace.get" => {
                 store.ensure_current_images()?;
@@ -934,6 +1008,12 @@ impl Engine {
                 let run = json!({"action":"storyboard.run","projectId":request["projectId"],"episodeIds":[unit["episodeId"]],"unitIds":[unit["id"]],"revisionInstruction":request["instruction"]});
                 self.spawn_production(store.clone(), run)?;
             }
+            "images.previewPrompt" => {
+                let asset = store.active_asset(s(&request,"assetId"))?;
+                let settings = store.settings()?;
+                let presentation = pipeline::asset_design_contract::image_presentation(&settings,&asset);
+                return Ok(json!({"prompt":pipeline::asset_design_contract::compile_image_prompt(s(&asset,"prompt"),pipeline::asset_design_contract::project_visual_style(&settings),&presentation),"promptBody":asset["prompt"],"imagePresentation":presentation,"assetVersion":asset["version"]}));
+            }
             "assets.get" => return store.get("assets", s(&request, "assetId")),
             "assets.usage" => return store.asset_usage(s(&request, "assetId")),
             "jobs.detail" => {
@@ -970,6 +1050,9 @@ impl Engine {
                     let decisions: Vec<pipeline::BoundaryDecision> =
                         serde_json::from_value(request["decisions"].clone())
                             .map_err(|e| e.to_string())?;
+                    if decisions.iter().any(|d| d.kind == "independent_episode" && d.confirmation.as_ref().is_none_or(|proof| proof.source_version != expected)) {
+                        return Err("独立同号集确认版本已过期，请刷新后再确认".into());
+                    }
                     pipeline::apply_boundary_decisions(&source, &decisions)?
                 };
                 let resolved = serde_json::to_value(resolved).map_err(|e| e.to_string())?;
@@ -1090,8 +1173,11 @@ impl Engine {
                 .iter()
                 .any(|k| data.get(*k).is_some() && data[*k] != old[*k])
                 {
-                    store.invalidate_unsubmitted("生成设置已变化，请重新准备")?;
+                    store.invalidate_unsubmitted_settings("生成设置已变化，请重新准备")?;
                 }
+            }
+            "textSdk.status" => {
+                return Ok(crate::text_cli::control_runtime()?.block_on(crate::text_sdk::status(&store.settings()?)));
             }
             "textCli.status"
             | "textCli.login"
@@ -1227,6 +1313,9 @@ impl Engine {
             "jobs.close_unknown" => {
                 let key = s(&request, "jobId");
                 let _guard = self.acquire_keys(vec![format!("job:{key}")])?;
+                if store.job(key)?["provider"] == "codex_sdk" {
+                    return Err("SDK_UNRESOLVED_HELD: 缺少远端被动对账及进程树停止证明，保留 SDK 原执行，不通过关闭记录重发".into());
+                }
                 store.close_unknown_job(
                     key,
                     request["confirmedNotAccepted"].as_bool() == Some(true),
@@ -1492,7 +1581,7 @@ impl Engine {
                     continue;
                 }
                 let key = s(&j, "id").to_owned();
-                let (cfg, account) = self.config(&store, provider)?;
+                let (cfg, account) = self.generation_config(&store,&j)?;
                 let st = store.clone();
                 let channels = self.channels.clone();
                 // A durable ID is always query/download-only, even if an old
@@ -1720,6 +1809,9 @@ impl Engine {
                 continue;
             }
             let dependency_check: Result<bool> = (|| {
+                if j["snapshot"]["sourceChain"].is_array() && json!(pipeline::asset_design_contract::source_chain(&assets,&a)?) != j["snapshot"]["sourceChain"] {
+                    return Err("等待期间指定来源设计已变化，保留冻结请求，请重新制作关联图片".into());
+                }
                 for key in j["snapshot"]["dependencyJobIds"]
                     .as_array()
                     .into_iter()
@@ -2226,13 +2318,27 @@ impl Engine {
         r: &Value,
         check: impl FnOnce(&ProviderConfig, &str) -> ProviderResult<String>,
     ) -> Result<Value> {
-        let settings = store.settings()?;
+        self.queue_images_frozen(store, r, &store.settings()?, |config,account| {
+            let checked = check(config,account)?;
+            if self.live_accounts && config.kind == "dreamina" {
+                let current = self.dreamina_config(store).map_err(|e|ProviderError::new("CONFIG_CHANGED",e))?;
+                if serde_json::to_value(current).ok() != serde_json::to_value(config).ok() {
+                    return Err(ProviderError::new("CONFIG_CHANGED","即梦 CLI 配置在账户核实时已变化，请重试图片制作"));
+                }
+            }
+            Ok(checked)
+        })
+    }
+    fn queue_images_frozen(
+        &self, store: &Store, r: &Value, settings: &Value,
+        check: impl FnOnce(&ProviderConfig, &str) -> ProviderResult<String>,
+    ) -> Result<Value> {
         let provider = s(r, "provider");
         let model = s(r, "model");
         if model.is_empty() {
             return Err("请选择图片模型".into());
         }
-        let (config, cached_account) = self.config(store, provider)?;
+        let (config, cached_account) = self.config_with_settings(store, provider, settings)?;
         let account = if provider == "dreamina" && self.live_accounts {
             // Long asset design may outlive a failed background identity check.
             // Inspect the official account now; a cached failure is not logout proof.
@@ -2253,7 +2359,7 @@ impl Engine {
             if account.trim().is_empty() {
                 return Err("即梦未返回可核实的账户身份，未排入新的图片生成任务".into());
             }
-            let current = self.dreamina_config(store)?;
+            let current = self.dreamina_config_with_settings(settings)?;
             if serde_json::to_value(&current).map_err(|e| e.to_string())?
                 != serde_json::to_value(&config).map_err(|e| e.to_string())?
             {
@@ -2261,7 +2367,13 @@ impl Engine {
             }
             account
         } else {
-            self.require_account(store, provider)?;
+            let key=format!("{provider}AccountId");
+            if ["dreamina","bh","chrome"].contains(&provider) && store.settings()?[&key] != settings[&key] {
+                return Err("图片制作期间账户身份已变化，请恢复原账户或发起新制作".into());
+            }
+            if ["dreamina", "bh", "chrome"].contains(&provider) && s(settings, &format!("{provider}AccountId")).trim().is_empty() {
+                return Err("冻结图片设置缺少稳定账户标签，请在新制作请求中选择账户".into());
+            }
             cached_account
         };
         let selected = r["assetIds"].as_array();
@@ -2272,6 +2384,8 @@ impl Engine {
             return Err("图片选择必须使用有效资产ID".into());
         }
         let assets = store.values("assets")?;
+        let gate_input = json!({"source":store.source()?,"foundation":store.foundation()?,"assets":assets,"selection":{"assetIds":r["assetIds"]}});
+        let visual_blocked = pipeline::asset_visual_facts::cached_visual_check_asset_ids(&gate_input)?;
         let policy = r["imageProductionPolicy"]
             .as_str()
             .filter(|p| ["automatic", "trialReview"].contains(p))
@@ -2334,6 +2448,10 @@ impl Engine {
                 if !independent_image(a) {
                     return Err("此形象沿用来源素材或为纯声音，无需独立出图".into());
                 }
+                if visual_blocked.iter().any(|id|id==s(a,"id")) {
+                    return Err("视觉状态尚未归属或本批不适用裁决已失效，请先重新核对设计依据；已有提示词不能绕过".into());
+                }
+                pipeline::validate_asset_visual_gate(&gate_input, a)?;
                 if s(a, "prompt").is_empty() {
                     return Err("资产缺少图片设计提示词".into());
                 }
@@ -2378,9 +2496,10 @@ impl Engine {
                     refs.clear();
                     state = "waiting_dependency";
                 }
-                let style = s(&settings, "visualStyle");
-                let prompt = compile_image_prompt(s(a, "prompt"), style);
-                let snapshot = json!({"requestId":id(),"kind":"image","provider":provider,"model":model,"prompt":prompt,"promptBody":a["prompt"],"visualStyle":style,"imageProductionPolicy":policy,"assetId":a["id"],"assetVersion":a["version"],"variantId":a["variantId"],"sourceVersion":store.source()?["version"],"sourceVariantId":a["sourceVariantId"],"ratio":settings["ratio"],"resolution":settings.get("imageResolution").cloned().unwrap_or(json!("2K")),"references":refs,"dependencyJobIds":dependency_job_ids,"options":{},"autoSubmit":true,"ruleSnapshot":pipeline::rule_snapshot("asset-image-production")?});
+                let style = pipeline::asset_design_contract::project_visual_style(settings);
+                let presentation = pipeline::asset_design_contract::image_presentation(settings, a);
+                let prompt = pipeline::asset_design_contract::compile_image_prompt(s(a, "prompt"), style, &presentation);
+                let snapshot = json!({"requestId":id(),"kind":"image","provider":provider,"model":model,"prompt":prompt,"promptBody":a["prompt"],"visualStyle":style,"imagePresentation":presentation,"frozenSettings":settings,"providerConfig":config,"designReceipt":a["design"]["designReceipt"],"designContext":a["design"]["frozenContext"],"sourceChain":pipeline::asset_design_contract::source_chain(&assets,a)?,"imageProductionPolicy":policy,"assetId":a["id"],"assetVersion":a["version"],"variantId":a["variantId"],"sourceVersion":store.source()?["version"],"sourceVariantId":a["sourceVariantId"],"ratio":presentation["ratio"],"resolution":settings.get("imageResolution").cloned().unwrap_or(json!("2K")),"references":refs,"dependencyJobIds":dependency_job_ids,"options":{},"autoSubmit":true,"ruleSnapshot":pipeline::rule_snapshot("asset-image-production")?});
                 store.add_job("image", s(a, "id"), provider, &account, &snapshot, state)
             })();
             match result {
@@ -2442,7 +2561,7 @@ impl Engine {
         )?;
         let runtime = tokio::runtime::Runtime::new().map_err(|e| e.to_string())?;
         input["settings"] =
-            runtime.block_on(crate::text_cli::resolve_settings(&input["settings"]))?;
+            runtime.block_on(resolve_text_execution_settings(&input["settings"]))?;
         input["foundationPhase"] = json!("APPLY_DECISION");
         input["confirmedDecisions"] = json!(decisions);
         input["foundationModelInputProfile"] = json!(pipeline::foundation_wire::PROFILE);
@@ -2457,7 +2576,7 @@ impl Engine {
         let mut input = production_input(&store, &request)?;
         let runtime = tokio::runtime::Runtime::new().map_err(|error| error.to_string())?;
         input["settings"] =
-            runtime.block_on(crate::text_cli::resolve_settings(&input["settings"]))?;
+            runtime.block_on(resolve_text_execution_settings(&input["settings"]))?;
         if stage == "foundation.run" {
             // Freeze the new transport on new runs only. Resuming an existing
             // workflow keeps its original input and accepted request identities.
@@ -2490,17 +2609,43 @@ impl Engine {
             let tx = c.transaction().map_err(|e| e.to_string())?;
             crate::workflow::verify_guard(&tx, &guard)?;
         }
-        let snapshot = json!({"runnerVersion":"desktop-runner/v1","foundationMethod":if stage=="foundation.run" {json!("foundation-delivery/v2")}else{Value::Null},"stage":stage,"sourceVersion":input["source"]["version"],"selection":input["selection"],"planningProfile":input["capabilities"],"input":input,"guard":guard,"rules":rules});
+        let native_receipt=self.reserve_native_workflow(&request,&input["source"],&input["settings"])?;
+        let snapshot = json!({"runnerVersion":"desktop-runner/v1","foundationMethod":if stage=="foundation.run" {json!("foundation-delivery/v2")}else{Value::Null},"stage":stage,"sourceVersion":input["source"]["version"],"selection":input["selection"],"planningProfile":input["capabilities"],"input":input,"guard":guard,"rules":rules,"nativeAcceptance":native_receipt});
         let job = if input["foundationPhase"] == "AUTO_INTERPRET" {
             store.reserve_foundation_auto_workflow(&snapshot)?
         } else {
             store.add_job("workflow", stage, "local", "local", &snapshot, "queued")?
         };
+        self.bind_native_workflow(&store,&native_receipt,&job)?;
         self.execute_production(store, &job, snapshot)
     }
     fn resume_production(self: &Arc<Self>, store: Store, request: &Value) -> Result<()> {
         let id = s(request, "workflowId");
         let job = store.job(id)?;
+        if job["snapshot"]["stage"]=="images.design" {
+            if s(request,"action")!="workflows.resume" || s(&job,"kind")!="workflow" || !["failed","interrupted","partially_blocked","blocked"].contains(&s(&job,"status")) {
+                return Err("请选择中断的原资产文字设计流程".into());
+            }
+            let snapshot=job["snapshot"].clone();
+            let original=&snapshot["stage2Context"];
+            if !original.is_object() || original["designRuleSha256"].as_str().is_none() || snapshot["sourceVersion"]!=store.source()?["version"] {
+                return Err("原资产设计缺少完整冻结上下文或源版本已变化，保留原稿且不重发".into());
+            }
+            let current_assets=store.values("assets")?;
+            let current=json!({"source":store.source()?,"foundation":store.foundation()?,"assets":current_assets,"selection":original["selection"],"settings":snapshot["settings"]});
+            let prior_facts=if job["result"]["publication"]["status"]=="held_partial" {&Value::Null} else {&job["result"]};
+            pipeline::asset_design_contract::validate_resume_facts(original,prior_facts,&current)?;
+            for asset in original["assets"].as_array().ok_or("缺少原冻结资产")?.iter().filter(|a|original["selection"]["assetIds"].as_array().is_none_or(|ids|ids.contains(&a["id"]))) {
+                let updated=current_assets.iter().find(|a|a["id"]==asset["id"]).ok_or("原设计目标已删除，未重发")?;
+                if pipeline::asset_design_contract::asset_semantics(asset)!=pipeline::asset_design_contract::asset_semantics(updated) {
+                    return Err("原设计目标语义已变化，原回包和预算保留".into());
+                }
+                let chain=|assets:&[Value],asset:&Value|->Result<Value>{Ok(json!(pipeline::asset_design_contract::source_chain(assets,asset)?.iter().map(|a|json!({"assetId":a["assetId"],"semanticVersion":a["semanticVersion"]})).collect::<Vec<_>>()))};
+                if chain(original["assets"].as_array().unwrap(),asset)?!=chain(&current_assets,updated)? {return Err("原设计直接来源链已变化，未重发".into());}
+            }
+            store.event(id,"asset_design_resume_requested",&json!({"sameWorkflow":true,"snapshotSha256":pipeline::digest(&snapshot.to_string()),"newWorkflowCreated":false}))?;
+            return self.execute_asset_stage(store,id.to_string(),snapshot);
+        }
         // Early Stage2 records incorrectly called a wholly/partly blocked
         // image-production run completed. Resume is an explicit continuation
         // using its saved selection/settings; never rewrite that old receipt.
@@ -2653,7 +2798,7 @@ impl Engine {
         }
         let all_assets = store.values("assets")?;
         let (wanted, _) = image_closure(&store, &all_assets, r["assetIds"].as_array());
-        let saved_settings = if let Some(origin) = r.get("imageResumeOrigin") {
+        let (saved_settings, original_context) = if let Some(origin) = r.get("imageResumeOrigin") {
             let old = store.job(s(origin, "workflowId"))?;
             if origin["version"] != "image-production-resume/v1"
                 || !image_production_resume_eligible(&old)
@@ -2672,9 +2817,9 @@ impl Engine {
             if actual != expected {
                 return Err("图片续跑不能修改冻结选集、资产或渠道参数".into());
             }
-            old["snapshot"]["settings"].clone()
+            (old["snapshot"]["settings"].clone(),old["snapshot"]["stage2Context"].clone())
         } else {
-            store.settings()?
+            (store.settings()?,Value::Null)
         };
         let policy = pipeline::image_production_policy(&saved_settings);
         r["imageProductionPolicy"] = json!(policy);
@@ -2684,7 +2829,37 @@ impl Engine {
             .filter(|j| s(j, "kind") == "image" && is_active_generation(s(j, "status")))
             .map(|j| j["entityId"].clone())
             .collect();
-        let design_input = json!({"source":store.source()?,"foundation":store.foundation()?,"assets":all_assets,"activeImageAssetIds":active_image_ids,"selection":{"assetIds":wanted}});
+        let mut design_input = json!({"source":store.source()?,"foundation":store.foundation()?,"assets":all_assets,"settings":saved_settings,"activeImageAssetIds":active_image_ids,"selection":{"assetIds":wanted}});
+        design_input["designRuleSha256"] = if original_context.is_object() {
+            original_context["designRuleSha256"].clone()
+        } else {
+            pipeline::rule_snapshot("asset-art-director")?["sha256"].clone()
+        };
+        if original_context.is_object() {
+            let old_job=store.job(s(&r["imageResumeOrigin"],"workflowId"))?;
+            pipeline::asset_design_contract::validate_resume_facts(&original_context,&old_job["result"],&design_input)?;
+            for key in &wanted {
+                let old = original_context["assets"].as_array().into_iter().flatten().find(|a|s(a,"id")==key).ok_or("续跑原冻结资产不存在")?;
+                let current = all_assets.iter().find(|a|s(a,"id")==key).ok_or("续跑资产不存在")?;
+                if pipeline::asset_design_contract::asset_semantics(old) != pipeline::asset_design_contract::asset_semantics(current) {
+                    return Err("图片续跑的资产语义版本已变化，请发起新制作；原请求未改写".into());
+                }
+                let original_assets = original_context["assets"].as_array().ok_or("续跑原冻结资产目录缺失")?;
+                let topology = |chain: Vec<Value>| chain.iter().map(|a|json!({"assetId":a["assetId"],"semanticVersion":a["semanticVersion"]})).collect::<Vec<_>>();
+                if topology(pipeline::asset_design_contract::source_chain(original_assets,old)?) != topology(pipeline::asset_design_contract::source_chain(&all_assets,current)?) {
+                    return Err("图片续跑的指定来源语义版本已变化，请发起新制作".into());
+                }
+            }
+            design_input["comparisonDesignsByAssetId"] = original_context["comparisonDesignsByAssetId"].clone();
+            // The current immutable fact receipts carry repair budgets. Direction and
+            // comparisons remain those captured by the original workflow.
+            design_input["foundation"]["directionConfirmed"] = original_context["foundation"]["directionConfirmed"].clone();
+            design_input["foundation"]["productionDirection"] = original_context["foundation"]["productionDirection"].clone();
+        } else {
+            let mut comparisons = json!({});
+            for asset in &all_assets { comparisons[s(asset,"id")] = json!(pipeline::asset_design_contract::comparison_designs(&design_input,asset)); }
+            design_input["comparisonDesignsByAssetId"] = comparisons;
+        }
         let needs_visual_check =
             pipeline::asset_visual_facts::cached_visual_check_required(&design_input)?;
         let needs_design = stage == "images.design"
@@ -2698,13 +2873,15 @@ impl Engine {
         }
         let execution_settings = if needs_design {
             let runtime = tokio::runtime::Runtime::new().map_err(|error| error.to_string())?;
-            runtime.block_on(crate::text_cli::resolve_settings(&saved_settings))?
+            runtime.block_on(resolve_text_execution_settings(&saved_settings))?
         } else {
             saved_settings
         };
         let version = store.source()?["version"].clone();
-        let snapshot = json!({"stage":stage,"sourceVersion":version,"settings":execution_settings,"request":r,"imageProductionPolicy":policy});
-        let engine = self.clone();
+        design_input["settings"] = execution_settings.clone();
+        let native_receipt=self.reserve_native_workflow(&r,&design_input["source"],&execution_settings)?;
+        let stage2_context = design_input;
+        let snapshot = json!({"runnerVersion":"stage2-runner/v1","stage":stage,"sourceVersion":version,"settings":execution_settings,"request":r,"imageProductionPolicy":policy,"stage2Context":stage2_context,"nativeAcceptance":native_receipt});
         let job = store.add_job(
             "workflow",
             &format!("{stage}:{}", s(&r, "episodeId")),
@@ -2713,26 +2890,37 @@ impl Engine {
             &snapshot,
             "queued",
         )?;
+        self.bind_native_workflow(&store,&native_receipt,&job)?;
+        self.execute_asset_stage(store,job,snapshot)
+    }
+    fn execute_asset_stage(self:&Arc<Self>,store:Store,job:String,snapshot:Value)->Result<()> {
+        let stage=s(&snapshot,"stage").to_string();
+        let r=snapshot["request"].clone();
+        let execution_settings=snapshot["settings"].clone();
+        let stage2_context=snapshot["stage2Context"].clone();
+        let version=snapshot["sourceVersion"].clone();
+        let engine=self.clone();
+        store.ensure_workflow_storage()?;
         let status_store = store.clone();
         let status_job = job.clone();
         let result=self.spawn_exclusive(format!("pipeline:{}",s(&store.project()?,"id")),move||{
             let runtime=tokio::runtime::Runtime::new().map_err(|e|e.to_string())?;
             let result:Result<Value>=runtime.block_on(async{
-                store.update_job(&job,"running",&json!({}))?;let settings=execution_settings;let exec=SavedTextExecutor{store:store.clone(),settings:settings.clone(),workflow_id:None};
+                store.update_job(&job,"running",&json!({}))?;let settings=execution_settings;let exec=SavedTextExecutor{store:store.clone(),settings:settings.clone(),workflow_id:Some(job.clone())};
                 let model=s(&settings,"textModel");let reasoning=s(&settings,"reasoning");
                 match stage.as_str(){
-                    "images.design"=>{let source=image_design_source(&store)?;let basis=store.foundation()?;let basis_version=basis["version"].as_i64().unwrap_or(0);let input=json!({"source":source,"foundation":basis,"assets":store.values("assets")?,"settings":settings,"selection":{"assetIds":r["assetIds"]}});let output=pipeline::run_asset_design(&input,&exec,model,reasoning).await?;store.publish_asset_design(version.as_i64().ok_or("原文版本缺失")?,basis_version,&output)?;Ok(output)},
+                    "images.design"=>{image_design_source(&store)?;let basis_version=stage2_context["foundation"]["version"].as_i64().unwrap_or(0);let input=stage2_context.clone();let output=pipeline::run_asset_design(&input,&exec,model,reasoning).await?;store.finish_asset_design_workflow(version.as_i64().ok_or("原文版本缺失")?,basis_version,&output,&job)},
                     "images.produce"=>{
-                        let mut all=store.values("assets")?;
+                        let mut all=stage2_context["assets"].as_array().cloned().ok_or("缺少冻结资产上下文")?;
                         for asset in &mut all {
                             if asset.pointer("/preparation/mode").and_then(Value::as_str)==Some("INLINE") {asset["adoptedMediaId"]=json!(store.adopted(s(asset,"id"),s(asset,"variantId"))?);}
                         }
                         let (wanted,dependency_errors)=image_closure(&store,&all,r["assetIds"].as_array());
-                        let basis=store.foundation()?;
+                        let basis=stage2_context["foundation"].clone();
                         let basis_version=basis["version"].as_i64().unwrap_or(0);
                         let policy=r["imageProductionPolicy"].as_str().filter(|p|["automatic","trialReview"].contains(p)).unwrap_or_else(||pipeline::image_production_policy(&settings));
                         let active_image_ids:Vec<_>=store.job_summaries()?.iter().filter(|j|s(j,"kind")=="image"&&is_active_generation(s(j,"status"))).map(|j|j["entityId"].clone()).collect();
-                        let input=json!({"source":store.source()?,"foundation":basis,"assets":all,"settings":settings,"imageProductionPolicy":policy,"automaticDesign":true,"activeImageAssetIds":active_image_ids,"selection":{"assetIds":wanted}});
+                        let input=json!({"source":stage2_context["source"],"foundation":basis,"assets":all,"settings":settings,"comparisonDesignsByAssetId":stage2_context["comparisonDesignsByAssetId"],"imageProductionPolicy":policy,"automaticDesign":true,"activeImageAssetIds":active_image_ids,"selection":{"assetIds":wanted}});
                         let needs_design=all.iter().any(|a|wanted.iter().any(|id|id==s(a,"id"))&&pipeline::automatic_design_required(&input,a));
                         let needs_visual_check=pipeline::asset_visual_facts::cached_visual_check_required(&input)?;
                         let needs_asset_step=needs_design||needs_visual_check;
@@ -2764,7 +2952,7 @@ impl Engine {
                             if already_active||refreshed.contains(key)||store.adopted(key,s(a,"variantId"))?.is_none(){ids.push(json!(key));}
                         }
                         generation["assetIds"]=json!(ids);
-                        let report=engine.queue_images(&store,&generation)?;
+                        let report=engine.queue_images_frozen(&store,&generation,&settings,|config,account|engine.checked_account(config,account))?;
                         if let (Some(blocked),Some(queue_blocked))=(output["blocked"].as_array_mut(),report["blocked"].as_array()){blocked.extend(queue_blocked.iter().cloned());}
                         output["status"]=json!(if output["blocked"].as_array().is_some_and(|blocked|!blocked.is_empty()){"partially_blocked"}else if report["queuedCount"].as_u64().unwrap_or(0)>0{"queuedForGeneration"}else if report["reusedCount"].as_u64().unwrap_or(0)>0{"processingExisting"}else{"noGenerationNeeded"});
                         output["imageProductionPolicy"]=json!(policy);
@@ -2778,7 +2966,7 @@ impl Engine {
                     },
                     _=>Err("未知阶段".into())
                 }
-            });match result{Ok(v)=>store.update_job(&job,image_stage_completion_state(&v),&json!({"result":v})),Err(e)=>store.update_job(&job,"failed",&json!({"error":e}))}
+            });match result{Ok(v)=>if stage=="images.design"{Ok(())}else{store.update_job(&job,image_stage_completion_state(&v),&json!({"result":v}))},Err(e)=>store.update_job(&job,"failed",&json!({"error":e}))}
         });
         if let Err(e) = &result {
             status_store.update_job(&status_job, "failed", &json!({"error":e}))?;
@@ -3039,7 +3227,7 @@ fn save_video_parameters_and_invalidate(
     let changed_at = now();
     // Shared ratio affects image requests; video-only settings never invalidate image work.
     // The same transaction closes the settings/claim race on other channel workers.
-    tx.execute("UPDATE jobs SET state='stale',error='视频参数或能力版本已变化，请重新准备',next_attempt_at=0,updated_at=?1 WHERE (task_id IS NULL OR task_id='') AND (receipt IS NULL OR receipt IN ('','null','{}')) AND state IN ('queued','preparing','ready','waiting_dependency') AND ((kind='video' AND (provider!=?2 OR COALESCE(json_extract(snapshot,'$.model'),'')!=?3 OR COALESCE(json_extract(snapshot,'$.ratio'),'')!=?4 OR COALESCE(json_extract(snapshot,'$.resolution'),'')!=?5 OR COALESCE(json_extract(snapshot,'$.capabilityVersion'),'')!=?6)) OR (kind='image' AND COALESCE(json_extract(snapshot,'$.ratio'),?4)!=?4))",rusqlite::params![changed_at,s(parameters,"videoProvider"),s(parameters,"videoModel"),s(parameters,"ratio"),s(parameters,"videoResolution"),capability_version]).map_err(|e|e.to_string())?;
+    tx.execute("UPDATE jobs SET state='stale',error='视频参数或能力版本已变化，请重新准备',next_attempt_at=0,updated_at=?1 WHERE (task_id IS NULL OR task_id='') AND (receipt IS NULL OR receipt IN ('','null','{}')) AND state IN ('queued','preparing','ready','waiting_dependency') AND ((kind='video' AND (provider!=?2 OR COALESCE(json_extract(snapshot,'$.model'),'')!=?3 OR COALESCE(json_extract(snapshot,'$.ratio'),'')!=?4 OR COALESCE(json_extract(snapshot,'$.resolution'),'')!=?5 OR COALESCE(json_extract(snapshot,'$.capabilityVersion'),'')!=?6)) OR (kind='image' AND json_type(snapshot,'$.frozenSettings') IS NULL AND COALESCE(json_extract(snapshot,'$.ratio'),?4)!=?4))",rusqlite::params![changed_at,s(parameters,"videoProvider"),s(parameters,"videoModel"),s(parameters,"ratio"),s(parameters,"videoResolution"),capability_version]).map_err(|e|e.to_string())?;
     tx.execute("INSERT INTO metadata VALUES('changed_at',?1) ON CONFLICT(key) DO UPDATE SET value=excluded.value",[changed_at]).map_err(|e|e.to_string())?;
     tx.commit().map_err(|e| e.to_string())
 }
@@ -3323,14 +3511,6 @@ fn independent_image(asset: &Value) -> bool {
         asset.pointer("/preparation/mode").and_then(Value::as_str),
         Some("INLINE" | "AUDIO" | "UNRESOLVED")
     )
-}
-fn compile_image_prompt(body: &str, style: &str) -> String {
-    let body = body.trim();
-    let style = style.trim();
-    if style.is_empty() || style == "未选择" || body.starts_with(style) {
-        return body.to_owned();
-    }
-    format!("{style}，\n{body}")
 }
 fn self_capabilities(store: &Store) -> Result<Value> {
     let settings = store.settings()?;
@@ -5312,5 +5492,14 @@ mod production_input_transport_tests {
         assert!(foundation
             .get(pipeline::storyboard_dependencies::PROFILE_FIELD)
             .is_none());
+    }
+}
+
+/// Freeze the requested backend before creating workflow jobs; no implicit fallback.
+async fn resolve_text_execution_settings(settings:&Value)->Result<Value> {
+    match s(settings,"textProvider") {
+        "codex_sdk" => crate::text_sdk::resolve_for_workflow(settings).await,
+        "" | "codex" | "api" => crate::text_cli::resolve_settings(settings).await,
+        _ => Err("UNKNOWN_TEXT_BACKEND: 未知文本入口，不自动改用 CLI 或 API".into()),
     }
 }

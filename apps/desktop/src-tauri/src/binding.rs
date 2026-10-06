@@ -556,6 +556,15 @@ pub fn validate_generation_snapshot(store: &Store, snapshot: &Value) -> Result<(
         if asset["version"] != snapshot["assetVersion"] {
             return Err("图片设计版本已变化，请重新准备".into());
         }
+        let assets = store.values("assets")?;
+        if snapshot["sourceChain"].is_array() && json!(crate::pipeline::asset_design_contract::source_chain(&assets,&asset)?) != snapshot["sourceChain"] {
+            return Err("冻结图片来源设计语义版本已变化，请重新准备".into());
+        }
+        let gate = json!({"source":store.source()?,"foundation":store.foundation()?,"assets":assets,"selection":{"assetIds":[asset["id"]]}});
+        crate::pipeline::validate_asset_visual_gate(&gate,&asset)?;
+        if crate::pipeline::asset_visual_facts::cached_visual_check_required(&gate)? {
+            return Err("视觉状态待核对，已有提示词不能绕过未归属或不适用裁决".into());
+        }
         if !snapshot["sourceVersion"].is_null()
             && store.source()?["version"] != snapshot["sourceVersion"]
         {

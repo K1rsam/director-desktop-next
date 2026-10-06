@@ -1,5 +1,6 @@
 //! Source-bound production pipeline. Models author decisions; Rust copies and validates evidence.
 pub mod asset_visual_facts;
+pub mod asset_design_contract;
 mod assets;
 pub mod foundation_delivery;
 pub(crate) mod foundation_wire;
@@ -10,7 +11,7 @@ pub(crate) mod storyboard_dependencies;
 mod storyboard_transport;
 
 pub use assets::{
-    automatic_design_required, image_production_policy, resolve_asset_dependency, run_asset_design,
+    automatic_design_required, image_production_policy, resolve_asset_dependency, run_asset_design, validate_asset_visual_gate,
 };
 use async_trait::async_trait;
 pub use scene_edits::execute_foundation_scene_edits;
@@ -1531,7 +1532,7 @@ mod tests {
             {
                 "2.0.0"
             } else if rule.id == "asset-art-director" {
-                "1.3.0"
+                "2.0.0"
             } else if [
                 "screenplay-fidelity",
                 "story-foundation",

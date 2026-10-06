@@ -6,6 +6,8 @@ use std::path::Path;
 
 pub const OFFLINE_ACTIONS: &[&str] = &[
     "getExecutionPolicy",
+    "textSdk.status",
+    "images.previewPrompt",
     "projects.list",
     "projects.create",
     "projects.archive",
@@ -48,7 +50,7 @@ pub fn report() -> Value {
     json!({"version":"execution-policy/v1", "mode":"offline_prepare_only",
         "liveExecutionAllowed":false, "stage3CreativePackStatus":"inactive",
         "allowedActions":OFFLINE_ACTIONS,
-        "reasons":["云端离线工程验收不调用模型、渠道或宿主账户。", "第三阶段候选正文等待实际采用的 Mac 运行包核对。"],
+        "reasons":["云端离线工程验收不调用模型、渠道或宿主账户。", "第三阶段原件已核对一致，运行适配仍待验证。"],
         "textBackends":[{"id":"codex_cli","status":"preserved_not_enabled"},{"id":"codex_sdk","status":"offline_contract_only"}],
         "localAcceptance":{"backend":"codex_cli","model":"gpt-6.1-sol","reasoning":"medium"}})
 }
@@ -100,4 +102,45 @@ impl Channels for OfflineChannels {
     fn reconcile(&self, _: &ProviderConfig, _: &str) -> ProviderResult<QueryResult> {
         blocked()
     }
+}
+
+// Stage3 remains structurally closed until the verified Mac runtime adapter is integrated.
+// No mutable settings flag or provenance-only manifest can bypass this code gate.
+pub fn creative_runtime_ready() -> bool {
+    false
+}
+pub const NATIVE_TEXT_ACTIONS: &[&str] = &[
+    "foundation.run",
+    "images.design",
+    "workflows.resume",
+    "textCli.status",
+];
+pub fn check_native_action(request: &Value) -> Result<(), String> {
+    let action = request["action"].as_str().unwrap_or("");
+    if OFFLINE_ACTIONS.contains(&action) {
+        return check(request);
+    }
+    if NATIVE_TEXT_ACTIONS.contains(&action) {
+        return Ok(());
+    }
+    if ["storyboard.run", "storyboard.decision.resolve"].contains(&action)
+        && creative_runtime_ready()
+    {
+        return Ok(());
+    }
+    Err(format!(
+        "NATIVE_ACCEPTANCE_SCOPE_BLOCKED: {action} 未在本轮有界入口开放"
+    ))
+}
+pub fn native_report(acceptance: &crate::native_acceptance::NativeAcceptance) -> Value {
+    let mut allowed = OFFLINE_ACTIONS.to_vec();
+    allowed.extend_from_slice(NATIVE_TEXT_ACTIONS);
+    if creative_runtime_ready() {
+        allowed.extend_from_slice(&["storyboard.run", "storyboard.decision.resolve"]);
+    }
+    json!({"version":"execution-policy/v2","mode":"native_cli_acceptance","liveExecutionAllowed":true,
+        "stage3CreativePackStatus":if creative_runtime_ready(){"verified_active"}else{"inactive"},
+        "allowedActions":allowed,"acceptance":acceptance.status(creative_runtime_ready()),
+        "credentialBackend":crate::platform::credential_backend_status(),
+        "reasons":["仅对显式授权文件哈希绑定的10集原文执行第一/二阶段文字工作。","CLI固定gpt-6.1-sol / medium；每阶段只有一个新工作流，恢复保留原任务。","Stage3适配未通过前保持关闭；SDK真实调用、未核验免费图片和真实视频均关闭。"]})
 }

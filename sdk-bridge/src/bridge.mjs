@@ -161,7 +161,7 @@ export class OfficialSdkBridge {
     return this.publicReceipt(record);
   }
   publicReceipt(record) {
-    return { attemptId: record.attempt.attemptId, state: record.state, backend: 'codex_sdk', threadId: record.threadId, turnId: null, lastSequence: record.lastSequence, rawResult: record.rawResult, error: record.error, usage: record.usage, domainAccepted: false, processTreeStopProven: false, remoteObservationSupported: false, receiptRelativePath: `${record.attempt.attemptId}/receipt.json` };
+    return { attemptId: record.attempt.attemptId, semanticRequestHash: record.attempt.semanticRequestHash, executionFingerprint: record.attempt.executionFingerprint, attemptEnvelopeHash: record.attempt.attemptEnvelopeHash ?? null, compiledPromptSha256: record.compiledPromptSha256, compiledSchemaSha256: record.compiledSchemaSha256, state: record.state, backend: 'codex_sdk', threadId: record.threadId, turnId: null, lastSequence: record.lastSequence, rawResult: record.rawResult, error: record.error, usage: record.usage, domainAccepted: false, processTreeStopProven: false, remoteObservationSupported: false, receiptRelativePath: `${record.attempt.attemptId}/receipt.json` };
   }
   async execute(message) {
     requireThat(this.fixture, 'SDK_LIVE_DISABLED', 'Live SDK execution is disabled; no fallback or runtime was started');

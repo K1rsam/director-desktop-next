@@ -11,9 +11,10 @@ struct Fixture {
     directory: tempfile::TempDir,
     executable: PathBuf,
     counter: PathBuf,
+    settings: Value,
 }
 impl Fixture {
-    fn new() -> Self {
+    async fn new() -> Self {
         let directory = tempfile::Builder::new()
             .prefix("director-text-cache-中文 ")
             .tempdir()
@@ -100,10 +101,26 @@ fn main() {
             "fixture compilation failed: {}",
             String::from_utf8_lossy(&compiled.stderr)
         );
+        // Fresh dispatch uses the same real preflight/freeze path as the app.
+        // This probes only our just-compiled, non-networked synthetic runtime.
+        let settings = director_core::text_cli::resolve_settings(&json!({
+            "textProvider":"codex", "codexPath":executable,
+            "textModel":"offline-fixture-model", "reasoning":"medium"
+        }))
+        .await
+        .unwrap();
+        assert_eq!(settings["textCliVersion"], "codex-cli offline-fixture");
+        assert_eq!(settings["textCliExecutable"], settings["codexPath"]);
+        assert!(PathBuf::from(settings["textCliExecutable"].as_str().unwrap()).is_file());
+        assert!(
+            !counter.exists(),
+            "read-only synthetic preflight never generates"
+        );
         Self {
             directory,
             executable,
             counter,
+            settings,
         }
     }
     fn store(&self) -> Store {
@@ -123,7 +140,7 @@ fn main() {
     fn executor(&self, store: &Store, workflow_id: Option<String>) -> SavedTextExecutor {
         SavedTextExecutor {
             store: store.clone(),
-            settings: json!({"textProvider":"codex", "codexPath":self.executable}),
+            settings: self.settings.clone(),
             workflow_id,
         }
     }
@@ -176,7 +193,7 @@ fn step_state(store: &Store, run: &str) -> String {
 
 #[tokio::test]
 async fn accepted_materialized_result_survives_reopen_and_reuses_without_cli() {
-    let fixture = Fixture::new();
+    let fixture = Fixture::new().await;
     let store = fixture.store();
     let run = workflow(&store);
     let executor = fixture.executor(&store, Some(run.clone()));
@@ -223,7 +240,7 @@ async fn accepted_materialized_result_survives_reopen_and_reuses_without_cli() {
 #[tokio::test]
 async fn received_and_rejected_outputs_are_never_completed_cache_after_reopen() {
     for reject in [false, true] {
-        let fixture = Fixture::new();
+        let fixture = Fixture::new().await;
         let store = fixture.store();
         let run = workflow(&store);
         let executor = fixture.executor(&store, Some(run.clone()));
@@ -264,7 +281,7 @@ async fn received_and_rejected_outputs_are_never_completed_cache_after_reopen() 
 
 #[tokio::test]
 async fn different_native_executor_identity_cannot_reuse_accepted_output() {
-    let fixture = Fixture::new();
+    let fixture = Fixture::new().await;
     let store = fixture.store();
     let run = workflow(&store);
     let first = fixture.executor(&store, Some(run.clone()));
@@ -280,7 +297,12 @@ async fn different_native_executor_identity_cannot_reuse_accepted_output() {
     std::fs::copy(&fixture.executable, &alternative).unwrap();
     let changed = SavedTextExecutor {
         store: Store::open(store.root.clone()).unwrap(),
-        settings: json!({"textProvider":"codex","codexPath":alternative}),
+        settings: director_core::text_cli::resolve_settings(&json!({
+            "textProvider":"codex", "codexPath":alternative,
+            "textModel":"offline-fixture-model", "reasoning":"medium"
+        }))
+        .await
+        .unwrap(),
         workflow_id: Some(run),
     };
     assert_eq!(changed.execute(request).await.unwrap(), value);

@@ -294,6 +294,11 @@ fn main() {
             development_server_at_start: development_server_available(),
         }
     });
+    let acceptance_grant = args.iter().position(|a| a == "--native-cli-acceptance").map(|i| {
+        assert!(verification.is_none(), "启动烟测不能同时启用真实文本验收");
+        let path=std::path::PathBuf::from(args.get(i+1).expect("--native-cli-acceptance requires a grant path"));
+        director_core::native_acceptance::AcceptanceGrant::from_file(&path).expect("验收授权文件不合法")
+    });
     let setup_verification = verification.clone();
     let page_verification = verification.clone();
     let closing = Arc::new(std::sync::atomic::AtomicBool::new(false));
@@ -304,7 +309,10 @@ fn main() {
             let home = match &setup_verification { Some(v) => v.home.clone(), None => app.path().app_data_dir()? };
             // Diagnostic projects have no channel account configured. Disable live-account
             // lookup so automatic Stage 4 preflight fails locally without touching a user session.
-            let engine = Engine::new(home).map_err(std::io::Error::other)?;
+            let engine = match &acceptance_grant {
+                Some(grant) => Engine::with_native_acceptance(home,grant.clone()),
+                None => Engine::new(home),
+            }.map_err(std::io::Error::other)?;
             if let Some(v) = &setup_verification {
                 if engine.project_list().map_err(std::io::Error::other)?.is_empty() {
                     let project = engine.dispatch(serde_json::json!({"action":"projects.create","title":"桌面启动离线验证"})).map_err(std::io::Error::other)?;

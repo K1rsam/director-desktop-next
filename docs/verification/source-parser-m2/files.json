@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "source-parser-m2-evidence/v1",
+  "pinnedReference": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+  "selectiveDeltaReference": "8548e9f5917b8960f693a052e395f3b6e4048b1e",
+  "sourceVersionsRetained": [
+    "source-parser/v1",
+    "source-parser/v2",
+    "source-parser/v3",
+    "source-parser/v4",
+    "source-parser/v5"
+  ],
+  "newSourceVersion": "source-parser/v6",
+  "newDecisionVersion": "boundary-decision/v2",
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/pipeline/source.rs",
+      "bytes": 104371,
+      "sha256": "86d22780f826f0279a4e0f067fcea17c7c27427476d4ae4a1df3bb8531bc8cd2"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/pipeline/source_m2_tests.rs",
+      "bytes": 16272,
+      "sha256": "5423963e18d6b4b7af417570e0540a012c495039af42e1ad0f6f5f36db12869d"
+    },
+    {
+      "path": "apps/desktop/src/Stage3Panel.tsx",
+      "bytes": 19027,
+      "sha256": "533ac684d8b569b6c7ce237805e57d8f19052167ef6b744b8fbb24a745445e5f"
+    },
+    {
+      "path": "apps/desktop/src/SourceStructure.tsx",
+      "bytes": 15130,
+      "sha256": "1490b557bba5a5f79e3e7944ab09998d7d551db05b5f3060f6782f2368ea0058"
+    },
+    {
+      "path": "apps/desktop/src/sourceParserUI.test.ts",
+      "bytes": 5031,
+      "sha256": "af1b74d74e1fec4ecfaaf2aee9b5c0fbb2d494356001259e0ae6087a6b32cb0d"
+    }
+  ],
+  "syntheticFixturesOnly": true,
+  "modelExecutions": 0,
+  "remoteWrites": 0,
+  "nativePlatformVerification": false,
+  "verification": {
+    "rustReleaseLib": {
+      "passed": 601,
+      "failed": 0,
+      "ignored": 20,
+      "log": "rust-full-core.log"
+    },
+    "frontend": {
+      "passed": 84,
+      "failed": 0,
+      "log": "frontend-all.log"
+    },
+    "typecheck": "passed",
+    "productionUiBuild": "passed",
+    "ignoredTestsRun": false
+  }
+}

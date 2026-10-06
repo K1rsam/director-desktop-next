@@ -1,0 +1,126 @@
+{
+  "format": "director-m2-sdk-offline-proof/v1",
+  "date": "2026-10-06",
+  "platform": "Linux x64",
+  "node": "v24.19.0",
+  "sdk": {
+    "package": "@openai/codex-sdk",
+    "version": "0.160.1",
+    "installedImplementationSha256": "d62ed107033bdba802b283c77d875e4bec3deb2704a910bb7e3f95059473b16f"
+  },
+  "rustExecutionWiring": true,
+  "sdkLiveEnabled": false,
+  "modelCalls": 0,
+  "accountCalls": 0,
+  "officialCodexRuntimeProcesses": 0,
+  "zeroLiveEvidence": [
+    "Production SDK resolve/preflight returns SDK_LIVE_DISABLED before creating jobs or a Node process",
+    "Rust fixture configuration is cfg(test)-only",
+    "Actual official SDK invokes the explicitly selected native Node synthetic executable; bundled fake-codex imports only node:fs",
+    "The subprocess environment is an explicit synthetic replacement with no user credentials or config; its NODE_OPTIONS references only the generated synthetic bootstrap",
+    "Accepted restart cache, post-completion crash reconciliation, unknown holds, and revision-budget tests assert no additional synthetic execution"
+  ],
+  "tests": {
+    "sdkRustCoreAndSupervisor": {
+      "passed": 18,
+      "failed": 0,
+      "ignored": 0
+    },
+    "bridge": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sharedRustLibrary": {
+      "passed": 606,
+      "failed": 0,
+      "ignored": 20
+    },
+    "allRustSuites": {
+      "passed": 775,
+      "failed": 0,
+      "ignored": 24
+    },
+    "frontend": {
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0
+    },
+    "frontendTypecheck": "passed",
+    "frontendBuild": "passed"
+  },
+  "nativeWindowsVerified": false,
+  "nativeMacOSVerified": false,
+  "portableFixtureImplemented": true,
+  "remainingGates": [
+    "SDK live is not authorized this round",
+    "No passive remote observation or turn ID in pinned TypeScript SDK",
+    "AbortSignal does not establish a process-tree stop proof",
+    "SDK internal stderr/line buffers are not resource-bounded by the Rust wrapper",
+    "Real runtime isolation/config/credential loading and Node/SDK/runtime/helper packaging need Windows/macOS native verification"
+  ],
+  "evidence": [
+    {
+      "path": "sdk-bridge/verification/m2-sdk-final-tests.log",
+      "sha256": "7ceb4de5fd6cdac8a01412ecb4d2e65ac5005932ef8e29e68d45935fa21719fe"
+    },
+    {
+      "path": "sdk-bridge/verification/m2-offline-tests.log",
+      "sha256": "003cdc72f80ff1ba8459e6aaf145412df950c0ebf1bbfb7e6216440b6babf626"
+    },
+    {
+      "path": "sdk-bridge/verification/m2-final-all-core.log",
+      "sha256": "2fce86f61a6f63185b0aa4be2fc6b7a2bd54926780ad3c02f7e392e45fef87fc"
+    },
+    {
+      "path": "sdk-bridge/verification/m2-final-isolation.log",
+      "sha256": "1c83a85b08394d981bddd8d48caa675d37c8ae185a6a3ce1487ae47c6ad1484c"
+    },
+    {
+      "path": "sdk-bridge/verification/m2-ui-tests.log",
+      "sha256": "2205abeaf159af58a0d9ab48b456e33de5b9509e930daf915d330dfef294547a"
+    },
+    {
+      "path": "sdk-bridge/verification/m2-ui-typecheck.log",
+      "sha256": "4394750c4a4ccf6c6410666577d57aa84c3252d983601359bb7bc60ae591f44d"
+    }
+  ],
+  "sourceManifest": {
+    "path": "sdk-bridge/verification/m2-source-manifest.json",
+    "sha256": "f452409be3c1bbf5d7603cf03021501284aa005e827f8b5df122501c0aaa82fa"
+  },
+  "notes": "All final counts above come from the complete post-review M2 run. Older worker logs remain historical checkpoints. Actual official SDK used only synthetic subprocesses; product model calls remain zero.",
+  "priorWorkerCheckpointTests": {
+    "sdkRustFocused": {
+      "passed": 17,
+      "failed": 0,
+      "ignored": 0
+    },
+    "bridge": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sharedRustLibrary": {
+      "passed": 601,
+      "failed": 0,
+      "ignored": 20
+    },
+    "isolation": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0
+    },
+    "frontend": {
+      "passed": 82,
+      "failed": 0,
+      "skipped": 0
+    },
+    "frontendTypecheck": "passed"
+  },
+  "finalIntegratedEvidence": {
+    "path": "docs/verification/M2.json",
+    "sha256": "5dde6d2a03e794436cc714a6f8893e21264e5f386cd4a95cdc147df16160b180",
+    "bytes": 6245
+  }
+}

@@ -1,0 +1,63 @@
+    Blocking waiting for file lock on build directory
+warning: unused import: `CompiledStoryboardTransport`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `director-desktop-next` (lib test) generated 2 warnings (run `cargo fix --lib -p director-desktop-next --tests` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 1m 43s
+     Running unittests src/lib.rs (/workspace/shared/director-next-m2-target/release/deps/director_core-64d330f171179569)
+
+running 36 tests
+test pipeline::source::m2_tests::old_unsorted_decision_dialect_stays_valid_without_silent_reordering ... ok
+test pipeline::source::m2_tests::latin_suffix_names_and_combining_marks_keep_exact_identity_and_explicit_cues ... ok
+test pipeline::source::m2_tests::exact_inline_scene_dialogue_retains_scene_speaker_quote_and_utf16 ... ok
+test pipeline::source::m2_tests::reparse_rejects_boundary_decision_when_episode_membership_cannot_be_proven ... ok
+test pipeline::source::m2_tests::punctuation_scene_headers_and_numeric_narrative_are_distinct ... ok
+test pipeline::source::tests::altered_or_reordered_source_rejected ... ok
+test pipeline::source::m2_tests::reparse_refuses_same_hash_when_scene_members_changed_and_preserves_old_edits ... ok
+test pipeline::source::m2_tests::unrelated_location_first_dashed_scene_keeps_old_contract ... ok
+test pipeline::source::tests::background_titles_are_explicit_not_nearby_body_wording ... ok
+test pipeline::source::m2_tests::decisions_later_then_earlier_rebuild_episode_scene_and_member_order ... ok
+test pipeline::source::tests::explicit_bare_and_combined_scene_headers_without_rewriting ... ok
+test pipeline::source::m2_tests::ambiguous_inline_scene_and_multiple_speakers_stay_blocking ... ok
+test pipeline::source::tests::explicit_front_matter_is_context_and_existing_episode_scene_ids_stay_stable ... ok
+test pipeline::source::tests::numbered_labels_post_channel_hints_and_parenthetical_colons ... ok
+test pipeline::source::tests::case_insensitive_explicit_voice_labels_preserve_locked_text_and_speaker_case ... ok
+test pipeline::source::tests::numbered_character_with_delivery_cue_is_not_silenced_by_a_display_header ... ok
+test pipeline::source::tests::scene_mentions_scores_and_utc_colon_are_body ... ok
+test pipeline::source::tests::source_classification_cannot_be_tampered_and_decision_keeps_existing_episode ... ok
+test pipeline::source::tests::reparse_keeps_all_confirmed_boundary_decisions_and_exact_source_coordinates ... ok
+test pipeline::source::tests::source_structuring_private_first10_docx_prefix_has_exact_ten_production_episodes ... ignored, requires private DIRECTOR_SOURCE_STRUCTURING_FIXTURE; reads only, no model or database
+test pipeline::source::tests::source_structuring_adjacent_equal_headings_share_one_exact_boundary ... ok
+test pipeline::source::m2_tests::reparse_remaps_split_and_metadata_only_with_exact_scene_and_episode_evidence ... ok
+test pipeline::source::tests::numbered_display_fields_remain_picture_text_and_keep_explicit_voices ... ok
+test pipeline::source::tests::source_structuring_body_and_scene_separate_real_duplicate_numbers ... ok
+test pipeline::source::tests::unknown_prefix_stays_a_local_issue_without_inventing_an_episode ... ok
+test pipeline::source::tests::unknown_boundaries_require_decision_without_changing_text ... ok
+test pipeline::source::tests::source_structuring_zero_is_complete_auxiliary_not_an_extra_production_episode ... ok
+test pipeline::source::tests::utf16_crlf_exact_coverage_and_quotes ... ok
+test pipeline::source::tests::system_message_wrapper_is_spoken_and_legacy_metadata_upgrades_without_source_changes ... ok
+test pipeline::source::tests::old_voice_metadata_cannot_be_silently_relabelled_under_either_parser_contract ... ok
+test pipeline::source::tests::source_structuring_tight_scene_metadata_is_versioned_and_rejects_numeric_prose ... ok
+test pipeline::source::tests::unversioned_legacy_sources_keep_their_original_contract_until_explicit_reparse ... ok
+test pipeline::source::m2_tests::duplicate_episode_confirmation_is_exact_persistent_and_cannot_be_borrowed ... ok
+test pipeline::source::tests::voice_label_upgrade_requires_explicit_reparse_and_keeps_all_source_identities ... ok
+test pipeline::source::tests::source_structuring_frozen_v1_v2_v3_replay_without_boundary_migration ... ok
+test pipeline::source::m2_tests::old_v1_through_v5_replay_frozen_and_reject_new_metadata_without_reparse ... ok
+
+test result: ok. 35 passed; 0 failed; 1 ignored; 0 measured; 585 filtered out; finished in 0.79s
+

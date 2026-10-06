@@ -1,0 +1,81 @@
+{
+  "format": "director-m2-sdk-source-manifest/v1",
+  "scope": "SDK-related integrated M2 source after review; M1 unchanged; complete repository tracked by publication manifest",
+  "files": [
+    {
+      "path": "apps/desktop/src-tauri/src/text_executor.rs",
+      "sha256": "45354b93e75e738552f50ece82eb638ebe478f25441412db1d6e4d41f568e97c",
+      "bytes": 543800
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/text_sdk.rs",
+      "sha256": "dcc9e6821e24ed4c0a3cda4beb053a546a75e58ab6464e797d06f20c511f944f",
+      "bytes": 34376
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/text_transport.rs",
+      "sha256": "5a808c6dc2cb4081f699dc2724f412f90f483b8d62f349181e347036d6bb0c4f",
+      "bytes": 9898
+    },
+    {
+      "path": "apps/desktop/src-tauri/tests/foundation_rejection_replay.rs",
+      "sha256": "b370ce556056d4478c7833756630101dc5c101ad2a9f843a7a9dbdf6b1639f11",
+      "bytes": 29676
+    },
+    {
+      "path": "apps/desktop/src-tauri/tests/next_isolation.rs",
+      "sha256": "a6d814c2e2bcbe96b9cd987bdb6714d40474bc81db1b72df87b3471acb1b5861",
+      "bytes": 9611
+    },
+    {
+      "path": "apps/desktop/src-tauri/tests/text_cache_contracts.rs",
+      "sha256": "abfc2d21f19dab3d4857b1232115fa0d354c1a9706e0d40c651a8eec04ee1ca9",
+      "bytes": 15053
+    },
+    {
+      "path": "apps/desktop/src/TextExecutionSettings.tsx",
+      "sha256": "366c5a0666259656793166a95216221f98a308820fbebd9cff69f53c6ec3271e",
+      "bytes": 14927
+    },
+    {
+      "path": "docs/SDK_BRIDGE.md",
+      "sha256": "c4b05fe29a2fc5dc4be7a5436a80f19a157004ba02d302c67fd9f5ff6432500d",
+      "bytes": 16700
+    },
+    {
+      "path": "docs/SDK_CORE_INTEGRATION.md",
+      "sha256": "ec98fa273347dc190f201ada74c3af135c9ca70171d700b58fd3c7e1ab36ce97",
+      "bytes": 9820
+    },
+    {
+      "path": "sdk-bridge/README.md",
+      "sha256": "5d2e128d4e71ee1b30088d6038e12acbde7b4811593512ff99121a03bf72b28d",
+      "bytes": 1291
+    },
+    {
+      "path": "sdk-bridge/src/bridge.mjs",
+      "sha256": "638b3e62c829cbc5ec2bc2bc2fc5177eca4d1751687b6b59387c7f53847af3f1",
+      "bytes": 24640
+    },
+    {
+      "path": "sdk-bridge/src/protocol.d.ts",
+      "sha256": "af5ac07ad925a17b3cbca732294fe4b76275f9681733682dfd6c7d9174c969a0",
+      "bytes": 1846
+    },
+    {
+      "path": "sdk-bridge/test/bridge.test.mjs",
+      "sha256": "c44a34fbe56b0f08776cb48d30e8206ca9004c1e7c76e8c3a9098110919acd81",
+      "bytes": 24466
+    },
+    {
+      "path": "sdk-bridge/test/fixture-runtime.mjs",
+      "sha256": "52e4c55ea5a4adbddf4ad30aca9fc3a2a00ce7fd47c36df3965ddf1a4bfb8e66",
+      "bytes": 2165
+    },
+    {
+      "path": "sdk-bridge/test/fixtures/fake-codex.mjs",
+      "sha256": "82bf7f541e21365cc60c5011720d07314064eeb419cb3593d0e28302c61a1e4f",
+      "bytes": 3493
+    }
+  ]
+}

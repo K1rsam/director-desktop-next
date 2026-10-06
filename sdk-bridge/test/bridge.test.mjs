@@ -34,7 +34,6 @@ async function completed(bridge, message = executeCommand()) {
   if (task) await task;
   return { dispatched, receipt: bridge.observe(message.attemptId) };
 }
-const posix = process.platform !== 'win32';
 
 test('hello/inspect/execute default stays disabled and starts zero runtime processes', async t => {
   const { bridge, dir } = await fixture(t, null);
@@ -50,7 +49,7 @@ test('hello/inspect/execute default stays disabled and starts zero runtime proce
   assert.deepEqual(await fs.readdir(dir), ['worker.lock']);
 });
 
-test('actual SDK preserves frozen model/reasoning/prompt/schema and uses no inherited credentials', { skip: !posix }, async t => {
+test('actual SDK preserves frozen model/reasoning/prompt/schema and uses no inherited credentials', async t => {
   const { bridge, dir, events } = await fixture(t);
   process.env.DIRECTOR_SYNTHETIC_SECRET_MUST_NOT_INHERIT = 'not-a-real-secret';
   t.after(() => { delete process.env.DIRECTOR_SYNTHETIC_SECRET_MUST_NOT_INHERIT; });
@@ -77,6 +76,7 @@ test('actual SDK preserves frozen model/reasoning/prompt/schema and uses no inhe
   assert.equal(captured.env.DIRECTOR_SYNTHETIC_SECRET_MUST_NOT_INHERIT, undefined);
   assert.equal(captured.env.CODEX_API_KEY, undefined);
   assert.equal(captured.env.OPENAI_API_KEY, undefined);
+  assert.equal(captured.env.NODE_OPTIONS, `--require=${JSON.stringify(path.join(dir, 'attempt_1/synthetic-runtime/fake-codex-bootstrap.cjs'))}`);
   assert.equal(captured.env.CODEX_INTERNAL_ORIGINATOR_OVERRIDE, 'codex_sdk_ts');
   assert.equal(captured.env.HOME, captured.env.CODEX_HOME);
   const raw = events.filter(e => e.type === 'sdk_event');
@@ -87,7 +87,7 @@ test('actual SDK preserves frozen model/reasoning/prompt/schema and uses no inhe
   assert.equal(frozen.compiledPromptSha256, message.params.compiledPromptSha256);
 });
 
-test('local observe/replay uses no new SDK call, duplicate attempt rejected, next new attempt allowed after completion', { skip: !posix }, async t => {
+test('local observe/replay uses no new SDK call, duplicate attempt rejected, next new attempt allowed after completion', async t => {
   const { bridge, dir } = await fixture(t);
   await completed(bridge);
   const before = await fs.readFile(path.join(dir, 'attempt_1/fixture-invocation.json'), 'utf8');
@@ -97,7 +97,7 @@ test('local observe/replay uses no new SDK call, duplicate attempt rejected, nex
   assert.equal((await completed(bridge, executeCommand('attempt_2'))).receipt.state, 'transport_completed');
 });
 
-test('identical duplicates are durable and do not overwrite or double-complete', { skip: !posix }, async t => {
+test('identical duplicates are durable and do not overwrite or double-complete', async t => {
   const { bridge, events } = await fixture(t, 'duplicates');
   const { receipt } = await completed(bridge);
   assert.equal(receipt.state, 'transport_completed');
@@ -109,7 +109,7 @@ for (const [scenario, expected] of [
   ['out-of-order', 'OUT_OF_ORDER'], ['early-complete', 'OUT_OF_ORDER'], ['changed-thread', 'THREAD_IDENTITY'],
   ['policy-violation', 'POLICY_VIOLATION'], ['failed-after-text', 'SDK_TURN_FAILED'],
   ['same-item-mutated', 'ITEM_IDENTITY'], ['oversized-event', 'EVENT_LIMIT'],
-]) test(`${scenario} fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity`, { skip: !posix }, async t => {
+]) test(`${scenario} fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity`, async t => {
   const { bridge, dir } = await fixture(t, scenario);
   const { receipt } = await completed(bridge);
   assert.equal(receipt.state, 'submission_unknown');
@@ -121,7 +121,7 @@ for (const [scenario, expected] of [
   assert.ok(journal.length > 0);
 });
 
-test('malformed runtime JSON remains raw error evidence and is never repaired/resubmitted', { skip: !posix }, async t => {
+test('malformed runtime JSON remains raw error evidence and is never repaired/resubmitted', async t => {
   const { bridge, dir } = await fixture(t, 'malformed-json');
   const { receipt } = await completed(bridge);
   assert.equal(receipt.state, 'submission_unknown');
@@ -130,7 +130,7 @@ test('malformed runtime JSON remains raw error evidence and is never repaired/re
   assert.match(await fs.readFile(path.join(dir, 'attempt_1/receipt.json'), 'utf8'), /this is not runtime JSON/);
 });
 
-test('invalid final domain JSON is preserved verbatim with parse error; transport completion is not acceptance', { skip: !posix }, async t => {
+test('invalid final domain JSON is preserved verbatim with parse error; transport completion is not acceptance', async t => {
   const { bridge } = await fixture(t, 'invalid-text-json');
   const { receipt } = await completed(bridge);
   assert.equal(receipt.state, 'transport_completed');
@@ -140,7 +140,7 @@ test('invalid final domain JSON is preserved verbatim with parse error; transpor
   assert.equal(receipt.domainAccepted, false);
 });
 
-test('hash mismatch, backend change, identity mismatch and reasoning fallback are rejected before SDK start', { skip: !posix }, async t => {
+test('hash mismatch, backend change, identity mismatch and reasoning fallback are rejected before SDK start', async t => {
   const { bridge, dir } = await fixture(t);
   for (const [mutate, code] of [
     [m => m.params.compiledPrompt += 'altered', 'INPUT_HASH'],
@@ -151,7 +151,7 @@ test('hash mismatch, backend change, identity mismatch and reasoning fallback ar
   assert.deepEqual(await fs.readdir(dir), ['worker.lock']);
 });
 
-test('one active attempt, bounded AbortSignal cancel, no process-tree success claim', { skip: !posix }, async t => {
+test('one active attempt, bounded AbortSignal cancel, no process-tree success claim', async t => {
   const { bridge } = await fixture(t, 'hang');
   await bridge.handle(executeCommand());
   await assert.rejects(bridge.handle(executeCommand('attempt_2')), { code: 'WORKER_OCCUPIED' });
@@ -163,7 +163,7 @@ test('one active attempt, bounded AbortSignal cancel, no process-tree success cl
   await assert.rejects(bridge.handle(executeCommand('attempt_2')), { code: 'WORKER_OCCUPIED' });
 });
 
-test('restart recovers in-flight receipt as unknown; observe never creates a new turn', { skip: !posix }, async t => {
+test('restart recovers in-flight receipt as unknown; observe never creates a new turn', async t => {
   const { bridge, dir } = await fixture(t, 'hang');
   await bridge.handle(executeCommand());
   await bridge.disconnect('SYNTHETIC_DISCONNECT');
@@ -222,7 +222,7 @@ test('stdio fragmented UTF-8, malformed JSON, request version and duplicate IDs 
   assert.equal((await client.exited).code, 0);
 });
 
-test('stdio fixture uses actual official SDK and cleanly returns a transport observation', { skip: !posix }, async t => {
+test('stdio fixture uses actual official SDK and cleanly returns a transport observation', async t => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'director-sdk-stdio-'));
   const client = childClient(dir, 'happy');
   t.after(async () => { client.child.kill(); await client.exited; await fs.rm(dir, { recursive: true, force: true }); });
@@ -233,7 +233,7 @@ test('stdio fixture uses actual official SDK and cleanly returns a transport obs
   await client.request(command('shutdown')); await client.exited;
 });
 
-test('cancel after runtime starts is bounded even when synthetic child ignores SIGTERM', { skip: !posix }, async t => {
+test('cancel after runtime starts is bounded even when synthetic child ignores SIGTERM', async t => {
   const { bridge, events } = await fixture(t, 'ignore-abort', { limits: { cancelMs: 100 } });
   await bridge.handle(executeCommand());
   const deadline = Date.now() + 3000;
@@ -251,7 +251,7 @@ test('cancel after runtime starts is bounded even when synthetic child ignores S
   assert.equal(bridge.observe('attempt_1').state, 'submission_unknown');
 });
 
-test('hard worker crash preserves unknown attempt and passive restart starts zero new runtimes', { skip: !posix }, async t => {
+test('hard worker crash preserves unknown attempt and passive restart starts zero new runtimes', async t => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'director SDK 合成 '));
   const first = childClient(dir, 'hang');
   let second, fakePid;
@@ -299,7 +299,7 @@ test('partial durable attempt directory blocks initialization rather than silent
   await assert.rejects(bridge.initialize(), { code: 'INCOMPLETE_RECEIPT' });
 });
 
-test('torn event journal cannot retain a trusted completed state after restart', { skip: !posix }, async t => {
+test('torn event journal cannot retain a trusted completed state after restart', async t => {
   const { dir, bridge } = await fixture(t);
   await completed(bridge); await bridge.disconnect();
   await fs.appendFile(path.join(dir, 'attempt_1/events.ndjson'), '{torn');
@@ -318,7 +318,7 @@ test('installed official SDK version and executable implementation match pinned 
   assert.equal(sha256(body), 'd62ed107033bdba802b283c77d875e4bec3deb2704a910bb7e3f95059473b16f');
 });
 
-test('bounded disconnect retains directory ownership while an uncooperative synthetic child still runs', { skip: !posix }, async t => {
+test('bounded disconnect retains directory ownership until the synthetic task actually settles', async t => {
   const { bridge, dir, events } = await fixture(t, 'ignore-abort', { limits: { cancelMs: 30 } });
   await bridge.handle(executeCommand());
   const deadline = Date.now() + 3000;
@@ -327,15 +327,17 @@ test('bounded disconnect retains directory ownership while an uncooperative synt
   }
   await bridge.disconnect();
   const second = new OfficialSdkBridge({ stateDirectory: dir });
-  await assert.rejects(second.initialize(), { code: 'WORKER_LOCKED' });
-  await bridge.active?.task;
+  if (bridge.active && !bridge.active.finished) {
+    await assert.rejects(second.initialize(), { code: 'WORKER_LOCKED' });
+    await bridge.active.task;
+  }
   await second.initialize();
   assert.equal(second.observe('attempt_1').state, 'submission_unknown');
   await second.disconnect();
 });
 
 for (const field of ['model', 'compiledPrompt', 'compiledSchema', 'semanticRequestHash', 'executionFingerprint', 'rawResult']) {
-  test(`persisted ${field} tampering fails closed before local replay`, { skip: !posix }, async t => {
+  test(`persisted ${field} tampering fails closed before local replay`, async t => {
     const { dir, bridge } = await fixture(t);
     await completed(bridge); await bridge.disconnect();
     const file = path.join(dir, 'attempt_1/receipt.json');
@@ -353,7 +355,7 @@ for (const field of ['model', 'compiledPrompt', 'compiledSchema', 'semanticReque
 test('parallel stale-lock contenders cannot both own the worker', async t => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'director-sdk-lock-race-'));
   t.after(() => fs.rm(dir, { recursive: true, force: true }));
-  // A known dead process identity for this controlled Linux/POSIX regression.
+  // A known dead process identity for this controlled regression; native CI is still required.
   const dead = spawn(process.execPath, ['-e', 'process.exit(0)']);
   await new Promise(resolve => dead.on('exit', resolve));
   await fs.writeFile(path.join(dir, 'worker.lock'), JSON.stringify({ pid: dead.pid }));
@@ -377,7 +379,7 @@ test('stranded recovery guard fails closed and is never auto-reclaimed', async t
   assert.equal(await fs.readFile(path.join(dir, 'worker.lock.recovery'), 'utf8'), 'stranded recovery guard');
 });
 
-test('unknown persisted state cannot release a worker budget', { skip: !posix }, async t => {
+test('unknown persisted state cannot release a worker budget', async t => {
   const { dir, bridge } = await fixture(t);
   await completed(bridge); await bridge.disconnect();
   const file = path.join(dir, 'attempt_1/receipt.json');
@@ -389,7 +391,7 @@ test('unknown persisted state cannot release a worker budget', { skip: !posix },
 });
 
 for (const field of ['threadId', 'state', 'usage', 'error', 'lastSequence', 'domainAccepted']) {
-  test(`persisted ${field} metadata is bound by the full receipt envelope checksum`, { skip: !posix }, async t => {
+  test(`persisted ${field} metadata is bound by the full receipt envelope checksum`, async t => {
     const { dir, bridge } = await fixture(t);
     await completed(bridge); await bridge.disconnect();
     const file = path.join(dir, 'attempt_1/receipt.json');

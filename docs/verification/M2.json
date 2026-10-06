@@ -1,0 +1,165 @@
+{
+  "schema": "director-next-offline-verification/v2",
+  "checkpoint": "M2",
+  "date": "2026-10-06",
+  "baseCommit": "d2ad2bd6a21de9293f51c5b8296f6ac800ce4d9a",
+  "sourceCommit": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+  "selectivelyReviewedUpstream": "8548e9f5917b8960f693a052e395f3b6e4048b1e",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "rustc": "1.99.0 (b940084d7 2026-09-28)",
+    "node": "v24.19.0"
+  },
+  "rust": {
+    "profile": "release",
+    "passed": 775,
+    "failed": 0,
+    "ignored": 24,
+    "suites": 24,
+    "library": {
+      "passed": 606,
+      "ignored": 20
+    },
+    "command": "cargo test --release --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features --no-fail-fast -- --test-threads=1"
+  },
+  "frontend": {
+    "passed": 84,
+    "failed": 0,
+    "skipped": 0,
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "sdk": {
+    "package": "@openai/codex-sdk",
+    "version": "0.160.1",
+    "rustCoreWiring": true,
+    "rustContractAndSupervisorPassed": 18,
+    "bridgePassed": 41,
+    "bridgeFailed": 0,
+    "bridgeSkipped": 0,
+    "cleanOfflineDependencyInstall": "passed",
+    "nativeNodeFixtureImplemented": true,
+    "productionLiveEnabled": false,
+    "modelCalls": 0,
+    "accountCalls": 0,
+    "officialRuntimeProcesses": 0
+  },
+  "reviewRegressions": {
+    "stage2IntegrationPassed": 4,
+    "nativeReservationPassed": 8,
+    "headlessAndBoundariesPassed": 5,
+    "sourceParserPassed": 35,
+    "sourceParserIgnored": 1,
+    "stage2SameParentRestart": "passed; frozen original snapshot and zero new workflow/text/media jobs",
+    "stage2PartialOutput": "held without asset/foundation version advancement",
+    "stage2Publication": "asset/foundation adoption, parent completion and audit atomic; injected parent failure rolls back",
+    "reservation": "exclusive lifetime SQLite owner; unique original binds; proven unstarted audited transaction; ambiguity holds",
+    "headless": "native async rejected before Engine or app-home creation",
+    "ci": "frontend and SDK dependencies installed before required tests; no Windows skip"
+  },
+  "sourceLock": {
+    "status": "passed",
+    "frozenCandidates": 22,
+    "pinnedSourceFiles": 144,
+    "candidateRuntimeActive": false,
+    "checks": [
+      "candidate bytes",
+      "pinned migration index",
+      "private fixture exclusion",
+      "new app identity",
+      "empty default asset scope"
+    ]
+  },
+  "coreSmoke": {
+    "status": "passed",
+    "separateProcessCalls": 11,
+    "sourceEpisodes": 2,
+    "sourcePreserved": true,
+    "restartPreserved": true,
+    "externalActionsBlocked": 6,
+    "generationJobs": 0
+  },
+  "m1Preservation": {
+    "files": 226,
+    "allBytesUnchanged": true,
+    "publicationManifestSha256": "56060f6bfa7e9ddfadced96ef6b586d855da1fb99405f5218fa0181c6e6b81dd"
+  },
+  "nativeMac": "NOT_RUN_FOR_M2",
+  "nativeWindows": "NOT_RUN_FOR_M2",
+  "browserLayout": "NOT_VERIFIED",
+  "creativeComparison": "NOT_RUN",
+  "stage3RuntimeActive": false,
+  "privateInputsIncluded": false,
+  "remainingGates": [
+    "Actual Stage3 runtime source transfer awaiting exact user approval; no alternate-route transfer",
+    "Faithful Stage3 adapters and original-flow tests before activation",
+    "Same-revision macOS and Windows native build/runtime/IPC/keyring/media/process/restart tests",
+    "Real CLI source-bound Stage1/2 and EP1/EP2 comparison only after native and creative runtime gates",
+    "SDK live disabled this round; real runtime isolation, packaging/licenses and process-tree stopping unverified",
+    "Image samples need separate verified-free case; videos excluded"
+  ],
+  "failureResolution": [
+    "Added Stage2 interruption regression failed before same-parent resume fix; red log retained",
+    "First full aggregate: 769 passed, 4 failed, 24 ignored; fresh synthetic CLI fixtures lacked inspected frozen runtime version. Two fixture files now perform actual synthetic preflight; production identity gate unchanged; historical two-field replay/raw/cache assertions retained",
+    "Stage2 partial publication version drift and adoption-to-parent-completion crash gap eliminated through held partial output and atomic completion; full final aggregate includes fault-injection regression"
+  ],
+  "review": {
+    "status": "GO_FOR_OFFLINE_M2_ONLY",
+    "independentReadOnly": true,
+    "fiveOriginalBlockersClosed": true,
+    "nativeOrCreativeAcceptance": false
+  },
+  "logs": [
+    {
+      "path": "docs/verification/m2/core-release-final.log",
+      "sha256": "5475e234af23d942fee9e4f5101150c166290d78537602203bb517ddf5116e4e",
+      "bytes": 97368
+    },
+    {
+      "path": "docs/verification/m2/frontend-final.log",
+      "sha256": "e5da69980fdb0e1d5a3be2a13fcdfc8612f9b8f6f05dcefb3438c3e3c0bfc9e3",
+      "bytes": 9509
+    },
+    {
+      "path": "docs/verification/m2/sdk-bridge-final.log",
+      "sha256": "b5f7491da20f87ce7c335a062360339b7b26fd4c8d342acfe1717d80115cfd01",
+      "bytes": 5261
+    },
+    {
+      "path": "docs/verification/m2/offline-smoke-final.json",
+      "sha256": "e16ac189debb22289913b4b69de151046912a0641dd195ae4e5e7543c2159b33",
+      "bytes": 171
+    },
+    {
+      "path": "docs/verification/m2/source-lock-final.log",
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52",
+      "bytes": 239
+    },
+    {
+      "path": "docs/verification/m2/cli-identity-integration-fix.log",
+      "sha256": "13b08ed97c329d4da7a33af710b068fbd08191629f0d8c5c524fc3471f021646",
+      "bytes": 3676
+    },
+    {
+      "path": "docs/verification/m2/stage2-resume-before.log",
+      "sha256": "1a155b71052dcd77b16e4a76e8ad05c6e79e20bbde7c805cdb48a5c80266a83b",
+      "bytes": 3092
+    },
+    {
+      "path": "docs/verification/m2/stage2-sdk-parent.log",
+      "sha256": "d77116a3bc2377b547f3816537c6e3c6163d7b910ceeb8d6955f8aab3a28e6c8",
+      "bytes": 1334
+    },
+    {
+      "path": "docs/verification/m2/sdk-clean-install.log",
+      "sha256": "23227e08001ade2d54b0c38f91ddca3d90aa786a4e8bade0f9de6e63833ac5b8",
+      "bytes": 126
+    },
+    {
+      "path": "docs/verification/m2/core-release-before-fixture-fix.log",
+      "sha256": "bd5c540e41813965b11c86567f09df693846309ee3828aa3b2ba932d5212e58d",
+      "bytes": 99453
+    }
+  ]
+}

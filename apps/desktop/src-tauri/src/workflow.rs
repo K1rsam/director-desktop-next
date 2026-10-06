@@ -713,6 +713,30 @@ impl Store {
         foundation_version: i64,
         output: &Value,
     ) -> Result<()> {
+        self.publish_asset_design_inner(source_version, foundation_version, output, None)
+    }
+    /// Stage2 text owns one parent. Hold partial domain output/checkpoints without
+    /// advancing asset/foundation versions; complete publication and terminal parent
+    /// state commit together so a crash cannot leave an adopted-but-runnable parent.
+    pub fn finish_asset_design_workflow(
+        &self, source_version:i64, foundation_version:i64, output:&Value, run:&str,
+    ) -> Result<Value> {
+        let mut result=output.clone();
+        let blocked=result["blocked"].as_array().ok_or("设计结果缺少阻塞列表")?;
+        if !blocked.is_empty() {
+            result["publication"]=json!({"version":"stage2-atomic-publication/v1","status":"held_partial","workflowId":run});
+            if !self.claim_job_fields(run,"running","partially_blocked",&json!({"result":result}))? {
+                return Err("原资产设计父流程不再运行，未改写其结果".into());
+            }
+        } else {
+            result["publication"]=json!({"version":"stage2-atomic-publication/v1","status":"completed","workflowId":run});
+            self.publish_asset_design_inner(source_version,foundation_version,&result,Some(run))?;
+        }
+        Ok(result)
+    }
+    fn publish_asset_design_inner(
+        &self, source_version:i64, foundation_version:i64, output:&Value, run:Option<&str>,
+    ) -> Result<()> {
         let mut c = self.conn()?;
         let tx = c
             .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)
@@ -730,8 +754,31 @@ impl Store {
         }
         let source: crate::pipeline::LockedSource =
             serde_json::from_str(&source_raw).map_err(|e| e.to_string())?;
+        // Validate against the complete prospective batch before any write. A
+        // direct source edited during generation must not be silently adopted.
+        let proposals = output["assets"].as_array().ok_or("设计结果缺少资产列表")?;
+        let mut statement = tx.prepare("SELECT data FROM assets").map_err(|e|e.to_string())?;
+        let rows = statement.query_map([],|r|r.get::<_,String>(0)).map_err(|e|e.to_string())?;
+        let mut effective = rows.map(|r|parse(r.map_err(|e|e.to_string())?)).collect::<Result<Vec<_>>>()?;
+        drop(statement);
+        for proposal in proposals {
+            let current = effective.iter_mut().find(|a|a["id"]==proposal["id"]).ok_or("设计资产已经不存在")?;
+            if current["version"] != proposal["version"] {return Err("资产在设计期间已经编辑，结果保留供核对".into());}
+            *current = proposal.clone();
+        }
+        for proposal in proposals {
+            let receipt = &proposal["design"]["designReceipt"];
+            if receipt.is_object() {
+                let basis = &receipt["basis"];
+                if receipt["sha256"] != crate::pipeline::digest(&basis.to_string())
+                    || basis["assetSemanticVersion"] != crate::pipeline::digest(&crate::pipeline::asset_design_contract::asset_semantics(proposal).to_string())
+                    || basis["sourceChain"] != json!(crate::pipeline::asset_design_contract::source_chain(&effective,proposal)?) {
+                    return Err("资产设计或指定来源语义版本已变化，未采用过期设计".into());
+                }
+            }
+        }
         let mut seen = HashSet::new();
-        for design in output["assets"].as_array().ok_or("设计结果缺少资产列表")? {
+        for design in proposals {
             let aid = s(design, "id");
             if aid.is_empty() || !seen.insert(aid) {
                 return Err("设计结果资产身份为空或重复".into());
@@ -792,6 +839,11 @@ impl Store {
             foundation["visualFactBatches"] = json!(all);
         }
         write_foundation(&tx, foundation, source_version)?;
+        if let Some(run)=run {
+            let n=tx.execute("UPDATE jobs SET state='completed',result=?1,error=NULL,updated_at=?2 WHERE id=?3 AND kind='workflow' AND state='running' AND json_extract(snapshot,'$.stage')='images.design' AND json_extract(snapshot,'$.sourceVersion')=?4",params![output.to_string(),now(),run,source_version]).map_err(|e|e.to_string())?;
+            if n!=1 {return Err("原资产设计父流程不再运行或源不符，整笔采用已回滚".into());}
+            tx.execute("INSERT INTO events(job_id,type,data,created_at) VALUES(?1,'asset_design_published',?2,?3)",params![run,json!({"version":"stage2-atomic-publication/v1","sourceVersion":source_version,"outputSha256":crate::pipeline::digest(&output.to_string())}).to_string(),now()]).map_err(|e|e.to_string())?;
+        }
         mark_changed(&tx)?;
         tx.commit().map_err(|e| e.to_string())
     }

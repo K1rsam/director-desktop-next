@@ -1667,3 +1667,68 @@ async fn planning_profile_generates_all_selected_episodes_with_exact_dialogue_an
     assert_eq!(filtered["units"][0]["episodeId"], second);
     assert_eq!(f.channels.calls.load(Ordering::SeqCst), 0);
 }
+
+#[test]
+fn stage2_restart_resume_uses_original_settings_and_final_submission_snapshot() {
+    let f = Fixture::new(Duration::ZERO);
+    f.store.save_asset(json!({"id":"manual","variantId":"base","kind":"CH","prompt":"六十岁深肤色人物，招牌写第十集","promptOrigin":"MANUAL","sourceRefs":[]})).unwrap();
+    f.store.save_settings(&json!({"projectVisualStyle":"原水墨画风","ratio":"3:2","imageResolution":"original-size","imagePresentation":"原明确构图","dreaminaPath":"frozen-original-cli"})).unwrap();
+    let settings=f.store.settings().unwrap();
+    let request=json!({"action":"images.produce","projectId":f.project_id,"provider":"offline","model":"original-model","assetIds":["manual"],"imageProductionPolicy":"automatic"});
+    let original_snapshot=json!({"stage":"images.produce","sourceVersion":f.store.source().unwrap()["version"],"settings":settings,"request":request,"imageProductionPolicy":"automatic"});
+    let old=f.store.add_job("workflow","images.produce:","local","local",&original_snapshot,"completed").unwrap();
+    f.store.update_job(&old,"completed",&json!({"result":{"status":"partially_blocked","blocked":[{"assetId":"manual","reason":"offline fixture"}]}})).unwrap();
+    let original=f.store.job(&old).unwrap();
+    f.store.save_settings(&json!({"projectVisualStyle":"新画风不得混入","ratio":"9:16","imageResolution":"new-size","imagePresentation":"新构图","dreaminaPath":"changed-cli"})).unwrap();
+    let reopened=Store::open(f.store.root.clone()).unwrap();
+    f.engine.dispatch(json!({"action":"workflows.resume","projectId":f.project_id,"workflowId":old})).unwrap();
+    assert!(f.engine.await_worker_shutdown(3));
+    let jobs=reopened.jobs().unwrap();
+    let image=jobs.iter().find(|j|j["kind"]=="image").expect("original workflow must queue one image");
+    let snapshot=&image["snapshot"];
+    assert_eq!(snapshot["model"],"original-model");
+    assert_eq!(snapshot["ratio"],"3:2");
+    assert_eq!(snapshot["resolution"],"original-size");
+    assert_eq!(snapshot["visualStyle"],"原水墨画风");
+    assert_eq!(snapshot["imagePresentation"]["composition"],"原明确构图");
+    assert_eq!(snapshot["frozenSettings"],settings);
+    let summary=reopened.pending_jobs().unwrap().into_iter().find(|j|j["id"]==image["id"]).unwrap();
+    assert!(summary["snapshot"].get("frozenSettings").is_none());
+    let (configuration,_)=f.engine.generation_config(&reopened,&summary).unwrap();
+    assert_eq!(configuration.cli_path.as_deref(),Some(Path::new("frozen-original-cli")));
+    let submitted=tasks::generation_request(snapshot).unwrap();
+    assert_eq!(submitted.model,"original-model");
+    assert_eq!(submitted.ratio,"3:2");
+    assert_eq!(submitted.prompt,s(snapshot,"prompt"));
+    assert!(s(snapshot,"prompt").contains("第十集"));
+    assert!(!s(snapshot,"prompt").contains("新画风"));
+    assert_eq!(reopened.job(&old).unwrap(),original);
+    assert_eq!(f.channels.calls.load(Ordering::SeqCst),0);
+    reopened.invalidate_unsubmitted_settings("new defaults").unwrap();
+    assert_eq!(reopened.job(s(image,"id")).unwrap()["status"],"queued");
+    assert_eq!(reopened.job(s(image,"id")).unwrap()["snapshot"],*snapshot);
+}
+
+#[test]
+fn stage2_direct_images_existing_prompt_cannot_bypass_unassigned_facts() {
+    let f = Fixture::new(Duration::ZERO);
+    let source=f.store.source().unwrap();
+    let row=source["rows"].as_array().unwrap()[0]["id"].clone();
+    f.store.save_asset(json!({"id":"a","baseAssetId":"person","kind":"CH","variantId":"base","promptOrigin":"MANUAL","prompt":"已有完整设计","sourceRefs":[row]})).unwrap();
+    f.store.save_foundation(json!({"facts":[{"id":"future","assetId":"person","variantId":null,"attribute":"hair","value":"未来短发","scope":"TRANSITION","claim":"SOURCE","sourceRefs":[row]}]})).unwrap();
+    let result=f.engine.queue_images(&f.store,&json!({"provider":"offline","model":"fake","assetIds":["a"]}));
+    assert!(result.unwrap_err().contains("适用形象尚未确定"));
+    assert!(f.store.jobs().unwrap().is_empty());
+    assert_eq!(f.channels.calls.load(Ordering::SeqCst),0);
+}
+
+#[test]
+fn stage2_direct_images_stale_not_applicable_receipt_cannot_bypass_gate() {
+    let f=Fixture::new(Duration::ZERO);
+    f.store.save_asset(json!({"id":"a","baseAssetId":"person","kind":"CH","variantId":"base","promptOrigin":"MANUAL","prompt":"已有完整设计","sourceRefs":[]})).unwrap();
+    f.store.save_foundation(json!({"facts":[],"visualFactBatches":[{"deferredFacts":[{"fact":{"assetId":"person"},"notApplicableAssetIds":["a"]}]}]})).unwrap();
+    let result=f.engine.queue_images(&f.store,&json!({"provider":"offline","model":"fake","assetIds":["a"]}));
+    assert!(result.unwrap_err().contains("本批不适用裁决已失效"));
+    assert!(f.store.jobs().unwrap().is_empty());
+    assert_eq!(f.channels.calls.load(Ordering::SeqCst),0);
+}

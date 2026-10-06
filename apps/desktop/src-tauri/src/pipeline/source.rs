@@ -162,11 +162,23 @@ fn system_message_segments(dialogue: &mut SourceDialogue) {
         || !["VO", "系统音"].contains(&dialogue.channel.as_str())
         || !dialogue.quote.starts_with('【')
         || !dialogue.quote.ends_with('】')
-        || dialogue.performance_segments.iter().filter(|part| part.range.start >= dialogue.range.start).count() != 1
+        || dialogue
+            .performance_segments
+            .iter()
+            .filter(|part| part.range.start >= dialogue.range.start)
+            .count()
+            != 1
         || !dialogue.spoken_segments.is_empty()
-    { return; }
-    dialogue.performance_segments.retain(|part| part.range.end <= dialogue.range.start);
-    dialogue.spoken_segments.push(SourceSegment { text:dialogue.quote.clone(), range:dialogue.range.clone() });
+    {
+        return;
+    }
+    dialogue
+        .performance_segments
+        .retain(|part| part.range.end <= dialogue.range.start);
+    dialogue.spoken_segments.push(SourceSegment {
+        text: dialogue.quote.clone(),
+        range: dialogue.range.clone(),
+    });
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -244,12 +256,97 @@ pub struct BoundaryDecision {
     pub episode_number: Option<u32>,
     pub scene_title: Option<String>,
     pub reason: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub decision_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub confirmation: Option<BoundaryConfirmation>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct BoundaryConfirmation {
+    pub source_version: i64,
+    pub source_sha256: String,
+    pub parser_version: String,
+    pub heading_row_id: String,
+    pub diagnostic_code: String,
 }
 
 const LEGACY_PARSER_VERSION: &str = "source-parser/v1";
 const CONTEXT_PARSER_VERSION: &str = "source-parser/v2";
 const CURRENT_PARSER_VERSION: &str = "source-parser/v3";
 const STRUCTURAL_PARSER_VERSION: &str = "source-parser/v4";
+const DISPLAY_PARSER_VERSION: &str = "source-parser/v5";
+const FIDELITY_PARSER_VERSION: &str = "source-parser/v6";
+
+fn display_block_header(text: &str) -> bool {
+    static HEADER: OnceLock<Regex> = OnceLock::new();
+    HEADER.get_or_init(|| Regex::new(r"^[△▲]?\s*(?:面板|屏幕|界面|投影|显示屏)(?:上的?|中)?(?:字幕|文字|内容|显示内容)\s*[：:]\s*$").unwrap()).is_match(text.trim())
+}
+
+/// Only an explicit display header grants the following numbered field labels
+/// a non-spoken role. Ordinary dialogue and voice labels outside it are intact.
+fn display_only_row_ids(source: &LockedSource) -> HashSet<String> {
+    if ![DISPLAY_PARSER_VERSION, FIDELITY_PARSER_VERSION].contains(&source.parser_version.as_str())
+    {
+        return HashSet::new();
+    }
+    static FIELD: OnceLock<Regex> = OnceLock::new();
+    let field = FIELD.get_or_init(|| {
+        Regex::new(
+            r"^(?:情报|任务|消息|提示|目标|奖励|内容|选项)[零〇一二三四五六七八九十百千\d]+$",
+        )
+        .unwrap()
+    });
+    static CAST: OnceLock<Regex> = OnceLock::new();
+    let cast = CAST.get_or_init(|| {
+        Regex::new(r"^\s*(?:人物|出场人物|出场角色|角色)\s*[：:]\s*(.*)$").unwrap()
+    });
+    let named: HashSet<_> = source
+        .rows
+        .iter()
+        .filter_map(|r| cast.captures(r.text.trim()))
+        .flat_map(|c| {
+            c[1].split(['、', '，', ',', '；', ';'])
+                .map(|name| {
+                    name.trim()
+                        .split(['（', '('])
+                        .next()
+                        .unwrap_or("")
+                        .trim()
+                        .to_string()
+                })
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    let mut scope = None;
+    let mut ids = HashSet::new();
+    for row in &source.rows {
+        if display_block_header(&row.text) && row.kind == "body" {
+            scope = Some((&row.episode_id, &row.scene_id));
+            continue;
+        }
+        if row.text.trim().is_empty() {
+            continue;
+        }
+        if scope
+            .is_some_and(|(episode, scene)| episode == &row.episode_id && scene == &row.scene_id)
+            && row.kind == "body"
+            && row
+                .text
+                .split(['：', ':'])
+                .next()
+                .is_some_and(|head| field.is_match(head.trim()))
+            && parse_dialogue(&row.text, row.range.start, &row.id, &source.parser_version)
+                .is_some_and(|q| q.channel == "现场" && !named.contains(&q.speaker))
+        {
+            ids.insert(row.id.clone());
+        } else {
+            scope = None;
+        }
+    }
+    ids
+}
 
 fn episode_heading_re() -> &'static Regex {
     static EPISODE_HEADING: OnceLock<Regex> = OnceLock::new();
@@ -269,7 +366,13 @@ fn tight_scene_heading_re() -> &'static Regex {
 
 // Only opt fresh parsing into the changed boundary contract when it is needed.
 // Existing v1-v3 sources always replay their original parsing and coordinates.
-fn fresh_parser_version(text: &str) -> &'static str {
+fn prior_fresh_parser_version(text: &str) -> &'static str {
+    if raw_lines(text)
+        .iter()
+        .any(|line| display_block_header(line))
+    {
+        return DISPLAY_PARSER_VERSION;
+    }
     let mut previous = None;
     for raw in raw_lines(text) {
         let line = raw.trim();
@@ -288,6 +391,109 @@ fn fresh_parser_version(text: &str) -> &'static str {
         previous = number;
     }
     CURRENT_PARSER_VERSION
+}
+
+// Compare complete deterministic projections so unaffected inputs retain their
+// established contract. Saved sources never pass through this opt-in selector.
+fn fresh_parser_version(text: &str) -> &'static str {
+    let prior = prior_fresh_parser_version(text);
+    if let (Ok(old), Ok(new)) = (
+        parse_source(text, prior),
+        parse_source(text, FIDELITY_PARSER_VERSION),
+    ) {
+        let mut old = serde_json::to_value(old).unwrap();
+        let mut new = serde_json::to_value(new).unwrap();
+        old.as_object_mut().unwrap().remove("parserVersion");
+        new.as_object_mut().unwrap().remove("parserVersion");
+        if old != new {
+            return FIDELITY_PARSER_VERSION;
+        }
+    }
+    prior
+}
+
+fn scene_separator(ch: char) -> bool {
+    ch.is_whitespace() || [',', '，', '、', '/', '／', '|', '｜'].contains(&ch)
+}
+
+fn fidelity_pair_re() -> &'static Regex {
+    static PAIR: OnceLock<Regex> = OnceLock::new();
+    PAIR.get_or_init(|| {
+        Regex::new(r"^(?:#{1,6}\s*)?(?:场\s*)?(\d+)\s*[-－.．]\s*(\d+)[\s,，、]*(.+)$").unwrap()
+    })
+}
+
+fn metadata_token(value: &str) -> bool {
+    [
+        "日", "夜", "昼", "晨", "黄昏", "清晨", "凌晨", "傍晚", "白天", "夜晚", "内", "外", "内景",
+        "外景", "INT", "EXT", "INT.", "EXT.",
+    ]
+    .contains(&value)
+}
+
+fn fidelity_pair_valid(captures: &regex::Captures<'_>) -> bool {
+    let payload = captures.get(3).unwrap();
+    // Preserve established location-first dashed headings. Decimal-looking
+    // prefixes require metadata first so a duration cannot become a scene.
+    !captures.get(0).unwrap().as_str()[..payload.start()].contains(['.', '．'])
+        || fidelity_scene_payload(payload.as_str())
+}
+
+fn fidelity_scene_payload(payload: &str) -> bool {
+    // A numeric pair must be followed immediately by a standalone scene token.
+    // Finding 日/内 later in a sentence does not turn 1.2 秒后 into a scene.
+    payload
+        .split(scene_separator)
+        .find(|part| !part.is_empty())
+        .is_some_and(metadata_token)
+}
+
+// Byte positions only select slices of the ORIGINAL line. Every returned source
+// coordinate is computed from the exact prefix's UTF-16 length, never byte math.
+fn inline_scene_dialogue(text: &str, start: usize, row_id: &str) -> Option<SourceDialogue> {
+    let line = text.trim_end_matches(['\r', '\n']);
+    let leading = line.len() - line.trim_start().len();
+    let captures = fidelity_pair_re().captures(&line[leading..])?;
+    let payload = captures.get(3)?;
+    if !fidelity_scene_payload(payload.as_str()) {
+        return None;
+    }
+    let payload_start = leading + payload.start();
+    for (index, ch) in line[payload_start..].char_indices() {
+        if !scene_separator(ch) {
+            continue;
+        }
+        let next = payload_start + index + ch.len_utf8();
+        let prefix = &line[payload_start..next];
+        if prefix.contains([':', '：']) {
+            return None;
+        }
+        // There must be a separate place label before the speaker. Without it
+        // the scene/location and speaker boundary is not uniquely established.
+        if !prefix
+            .split(scene_separator)
+            .any(|token| !token.is_empty() && !metadata_token(token))
+        {
+            continue;
+        }
+        if let Some(dialogue) = parse_dialogue(
+            &line[next..],
+            start + line[..next].encode_utf16().count(),
+            row_id,
+            FIDELITY_PARSER_VERSION,
+        ) {
+            return Some(dialogue);
+        }
+    }
+    None
+}
+
+fn row_dialogue(text: &str, start: usize, row_id: &str, version: &str) -> Option<SourceDialogue> {
+    parse_dialogue(text, start, row_id, version).or_else(|| {
+        (version == FIDELITY_PARSER_VERSION)
+            .then(|| inline_scene_dialogue(text, start, row_id))
+            .flatten()
+    })
 }
 
 fn legacy_parser_version() -> String {
@@ -455,6 +661,12 @@ fn parse_dialogue(
     let head = line[..colon].trim();
     static HEAD: OnceLock<Regex> = OnceLock::new();
     let re = HEAD.get_or_init(|| Regex::new(r"^([\p{L}\p{N}·・_]{1,24})(.*)$").unwrap());
+    static FIDELITY_HEAD: OnceLock<Regex> = OnceLock::new();
+    let re = if parser_version == FIDELITY_PARSER_VERSION {
+        FIDELITY_HEAD.get_or_init(|| Regex::new(r"^([\p{L}\p{M}\p{N}·・_]{1,24})(.*)$").unwrap())
+    } else {
+        re
+    };
     let captures = re.captures(head)?;
     let label = captures.get(1)?.as_str();
     if !label.chars().any(char::is_alphabetic) {
@@ -495,8 +707,13 @@ fn parse_dialogue(
     // original runtime did; source text and the speaker's own case stay intact.
     let normalized_channel;
     let normalized_label;
-    let current_voice_rules =
-        [CURRENT_PARSER_VERSION, STRUCTURAL_PARSER_VERSION].contains(&parser_version);
+    let current_voice_rules = [
+        CURRENT_PARSER_VERSION,
+        STRUCTURAL_PARSER_VERSION,
+        DISPLAY_PARSER_VERSION,
+        FIDELITY_PARSER_VERSION,
+    ]
+    .contains(&parser_version);
     let (channel_text, channel_label) = if current_voice_rules {
         normalized_channel = channel_text.to_ascii_uppercase();
         normalized_label = label.to_ascii_uppercase();
@@ -521,23 +738,30 @@ fn parse_dialogue(
         return None;
     }
     let suffix = channel_text;
-    let (speaker, channel) = if channel_label.ends_with("OS") && label.chars().count() > 2 {
-        (&label[..label.len() - 2], "OS")
-    } else if channel_label.ends_with("VO") && label.chars().count() > 2 {
-        (&label[..label.len() - 2], "VO")
-    } else if label == "旁白" {
-        (label, "VO")
-    } else if ["系统", "系统音"].contains(&label) {
-        (label, "系统音")
-    } else if suffix.contains('O') && !suffix.starts_with('V') || hint_os {
-        (label, "OS")
-    } else if suffix.starts_with('V') || hint_vo {
-        (label, "VO")
-    } else if hint.contains("画外") {
-        (label, "画外")
-    } else {
-        (label, "现场")
-    };
+    static HAN: OnceLock<Regex> = OnceLock::new();
+    let attached_cue = parser_version != FIDELITY_PARSER_VERSION
+        || label.char_indices().rev().nth(2).is_some_and(|(_, ch)| {
+            HAN.get_or_init(|| Regex::new(r"^\p{Han}$").unwrap())
+                .is_match(&ch.to_string())
+        });
+    let (speaker, channel) =
+        if attached_cue && channel_label.ends_with("OS") && label.chars().count() > 2 {
+            (&label[..label.len() - 2], "OS")
+        } else if attached_cue && channel_label.ends_with("VO") && label.chars().count() > 2 {
+            (&label[..label.len() - 2], "VO")
+        } else if label == "旁白" {
+            (label, "VO")
+        } else if ["系统", "系统音"].contains(&label) {
+            (label, "系统音")
+        } else if suffix.contains('O') && !suffix.starts_with('V') || hint_os {
+            (label, "OS")
+        } else if suffix.starts_with('V') || hint_vo {
+            (label, "VO")
+        } else if hint.contains("画外") {
+            (label, "画外")
+        } else {
+            (label, "现场")
+        };
     let after_colon = colon + line[colon..].chars().next()?.len_utf8();
     let quote_start =
         after_colon + line[after_colon..].len() - line[after_colon..].trim_start().len();
@@ -580,11 +804,20 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
         CONTEXT_PARSER_VERSION,
         CURRENT_PARSER_VERSION,
         STRUCTURAL_PARSER_VERSION,
+        DISPLAY_PARSER_VERSION,
+        FIDELITY_PARSER_VERSION,
     ]
     .contains(&parser_version)
     {
         return Err("原文解析规则版本不受支持，请升级客户端".into());
     }
+    let structural = [
+        STRUCTURAL_PARSER_VERSION,
+        DISPLAY_PARSER_VERSION,
+        FIDELITY_PARSER_VERSION,
+    ]
+    .contains(&parser_version);
+    let fidelity = parser_version == FIDELITY_PARSER_VERSION;
     let sha256 = digest(text);
     let episode_re = episode_heading_re();
     let context_re = Regex::new(r"^(?:#{1,6}\s*)?(?:【)?(?:作者资料|故事大纲|人物小传|人物设定|世界观设定|背景资料|附录)(?:】)?(?:\s|[:：｜|]|$)").unwrap();
@@ -607,6 +840,22 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
     .unwrap();
     let location_re =
         Regex::new(r"(?:^|[\s/／|｜])(?:内|外|内景|外景|INT\.?|EXT\.?)(?:$|[\s/／|｜])").unwrap();
+    let metadata_re = if fidelity {
+        Regex::new(r"(?:^|[\s/／|｜,，、])(?:日|夜|昼|晨|黄昏|清晨|凌晨|傍晚|白天|夜晚|内|外|内景|外景|INT\.?|EXT\.?)(?:$|[\s/／|｜,，、])").unwrap()
+    } else {
+        metadata_re
+    };
+    let time_re = if fidelity {
+        Regex::new(r"(?:^|[\s/／|｜,，、])(?:日|夜|昼|晨|黄昏|清晨|凌晨|傍晚|白天|夜晚)(?:$|[\s/／|｜,，、])").unwrap()
+    } else {
+        time_re
+    };
+    let location_re = if fidelity {
+        Regex::new(r"(?:^|[\s/／|｜,，、])(?:内|外|内景|外景|INT\.?|EXT\.?)(?:$|[\s/／|｜,，、])")
+            .unwrap()
+    } else {
+        location_re
+    };
     let mut source = LockedSource {
         schema_version: "locked-source/v1".into(),
         parser_version: parser_version.into(),
@@ -651,7 +900,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                 .find(|s| !s.trim().is_empty())
                 .map(|next| {
                     is_context(next.trim(), true)
-                        || parser_version == STRUCTURAL_PARSER_VERSION
+                        || structural
                             && episode_re
                                 .captures(next.trim())
                                 .and_then(|c| number_value(c.get(1)?.as_str()))
@@ -671,7 +920,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                     && c.get(3).unwrap().as_str().parse::<u32>().unwrap_or(0) > 0
                     && metadata_re.is_match(c.get(4).unwrap().as_str())
             });
-            let supplemental_heading = parser_version == STRUCTURAL_PARSER_VERSION
+            let supplemental_heading = structural
                 && previous_heading_number == Some(number)
                 && episode_id.is_some()
                 && scene_id.is_none()
@@ -687,7 +936,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                 // The original production framework supplies all episode-0
                 // material to the full-script foundation, never to a single
                 // production episode. Retain even its scene/dialogue text here.
-                || parser_version == STRUCTURAL_PARSER_VERSION && number == 0;
+                || structural && number == 0;
             scene_id = None;
             source_number = Some(number);
             if context {
@@ -793,11 +1042,15 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                         && !s.contains(['：', ':', '△', '▲', '。', '！', '？', '“', '”'])
                 })
                 .unwrap_or(true);
-            let pair = pair_re.captures(line).or_else(|| {
-                (parser_version == STRUCTURAL_PARSER_VERSION)
-                    .then(|| tight_scene_heading_re().captures(line))
-                    .flatten()
-            });
+            let pair = if fidelity {
+                fidelity_pair_re().captures(line)
+            } else {
+                pair_re.captures(line).or_else(|| {
+                    structural
+                        .then(|| tight_scene_heading_re().captures(line))
+                        .flatten()
+                })
+            };
             let bare = bare_pair_re.captures(line);
             let following = if bare.is_some() {
                 lines
@@ -836,6 +1089,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                 .map(|c| {
                     c.get(2).unwrap().as_str().parse::<u32>().unwrap_or(0) > 0
                         && metadata_re.is_match(c.get(3).unwrap().as_str())
+                        && (!fidelity || fidelity_pair_valid(c))
                 })
                 .unwrap_or(false);
             let mismatch = pair
@@ -874,7 +1128,8 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                         continued_metadata.insert(following.unwrap().0);
                     }
                     // Inline source action remains body; otherwise scene metadata is format only.
-                    kind = if line.contains(['△', '▲'])
+                    kind = if fidelity && inline_scene_dialogue(raw, offset, &id).is_some()
+                        || line.contains(['△', '▲'])
                         || parse_dialogue(
                             line.split_once(['△', '▲']).map(|(_, t)| t).unwrap_or(""),
                             0,
@@ -888,6 +1143,19 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
                         "format"
                     };
                 }
+            }
+            if fidelity
+                && has_metadata
+                && line.contains([':', '：'])
+                && inline_scene_dialogue(raw, offset, &id).is_none()
+            {
+                kind = "body";
+                source.diagnostics.push(SourceDiagnostic {
+                    code: "SCENE_PAYLOAD_UNCONFIRMED".into(),
+                    row_ids: vec![id.clone()],
+                    message: "同行场景与正文边界无法唯一确定，请按原坐标确认；原行完整保留".into(),
+                    blocking: true,
+                });
             }
         }
         if continued_metadata.contains(&index) && !context {
@@ -914,7 +1182,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
             }
         }
         let dialogue = if kind == "body" {
-            parse_dialogue(raw, offset, &id, parser_version)
+            row_dialogue(raw, offset, &id, parser_version)
         } else {
             None
         };
@@ -940,6 +1208,12 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
         });
         offset = end;
     }
+    let display_ids = display_only_row_ids(&source);
+    for row in &mut source.rows {
+        if display_ids.contains(&row.id) {
+            row.dialogue = None;
+        }
+    }
     let speaker_names: HashSet<_> = source
         .rows
         .iter()
@@ -953,7 +1227,7 @@ fn parse_source(text: &str, parser_version: &str) -> Result<LockedSource, String
         if let Some(q) = &row.dialogue {
             if inline_re
                 .captures_iter(&q.quote)
-                .any(|c| speaker_names.contains(c.get(1).unwrap().as_str()))
+                .any(|c| fidelity || speaker_names.contains(c.get(1).unwrap().as_str()))
             {
                 source.diagnostics.push(SourceDiagnostic{code:"DIALOGUE_MULTI_SPEAKER_UNCONFIRMED".into(),row_ids:vec![row.id.clone()],message:"同一原行含多个明确说者，保留原行；需按原坐标明确对白分段，不能把后段读给首位说者".into(),blocking:true});
             }
@@ -1028,12 +1302,143 @@ pub fn reparse_source(source: &LockedSource) -> Result<LockedSource, String> {
     } else {
         apply_decisions_inner(&canonical, &source.boundary_decisions)?
     };
-    let out = super::scene_edits::replay_scene_edits(out, &source.scene_edits)?;
+    prove_boundary_reparse(source, &out)?;
+    let out = migrate_scene_edits(source, out)?;
     validate_source(&out)?;
     Ok(out)
 }
 
+// Episode headings may coalesce on recognition. Only those format rows may
+// differ: every substantive row must still belong to the same unique episode.
+fn episode_evidence(source: &LockedSource, episode_id: &str) -> Vec<String> {
+    source
+        .rows
+        .iter()
+        .filter(|row| {
+            row.episode_id.as_deref() == Some(episode_id)
+                && !row.text.trim().is_empty()
+                && !(row.kind == "format"
+                    && row.scene_id.is_none()
+                    && episode_heading_re().is_match(row.text.trim()))
+        })
+        .map(|row| row.id.clone())
+        .collect()
+}
+
+fn prove_boundary_reparse(previous: &LockedSource, next: &LockedSource) -> Result<(), String> {
+    if previous.boundary_decisions.is_empty() {
+        return Ok(());
+    }
+    let old = source_before_scene_edits(previous)?;
+    for decision in &previous.boundary_decisions {
+        let select = |source: &LockedSource| {
+            source
+                .rows
+                .iter()
+                .filter(|row| row.range.start >= decision.start && row.range.end <= decision.end)
+                .map(|row| {
+                    (
+                        row.id.clone(),
+                        row.kind.clone(),
+                        row.episode_id.clone(),
+                        row.scene_id.clone(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        };
+        let before = select(&old);
+        let after = select(next);
+        if before.len() != after.len()
+            || before
+                .iter()
+                .zip(&after)
+                .any(|(a, b)| a.0 != b.0 || a.1 != b.1)
+        {
+            return Err("重新识别无法证明原范围决定的完整行与分类，保留旧决定".into());
+        }
+        for (before, after) in before.iter().zip(&after) {
+            match (&before.2, &after.2) {
+                (Some(a), Some(b)) if episode_evidence(&old, a) == episode_evidence(next, b) => {}
+                (None, None) => {}
+                _ => {
+                    return Err(
+                        "重新识别改变了已确认范围的集成员，须重新确认，旧决定保持不变".into(),
+                    )
+                }
+            }
+            match (&before.3, &after.3) {
+                (Some(a), Some(b)) => {
+                    let a = old
+                        .scenes
+                        .iter()
+                        .find(|scene| &scene.id == a)
+                        .ok_or("旧范围场身份失效")?;
+                    let b = next
+                        .scenes
+                        .iter()
+                        .find(|scene| &scene.id == b)
+                        .ok_or("新范围场身份失效")?;
+                    if a.row_ids != b.row_ids {
+                        return Err("重新识别改变了已确认范围的场成员，旧决定保持不变".into());
+                    }
+                }
+                (None, None) => {}
+                _ => return Err("重新识别改变了已确认范围的场归属，旧决定保持不变".into()),
+            }
+        }
+    }
+    Ok(())
+}
+
+fn migrate_scene_edits(
+    previous: &LockedSource,
+    mut next: LockedSource,
+) -> Result<LockedSource, String> {
+    if previous.scene_edits.is_empty() {
+        return Ok(next);
+    }
+    let mut old = source_before_scene_edits(previous)?;
+    let mut migrated = Vec::new();
+    for edit in &previous.scene_edits {
+        let plan = &edit["plan"];
+        let sid = plan["sceneId"].as_str().ok_or("旧场次修订缺少场身份")?;
+        let eid = plan["episodeId"].as_str().ok_or("旧场次修订缺少集身份")?;
+        let scene = old
+            .scenes
+            .iter()
+            .find(|scene| scene.id == sid && scene.episode_id == eid)
+            .ok_or("旧场次修订身份无效")?;
+        let evidence = episode_evidence(&old, eid);
+        let candidates: Vec<_> = next
+            .scenes
+            .iter()
+            .filter(|candidate| {
+                candidate.row_ids == scene.row_ids
+                    && candidate.metadata == scene.metadata
+                    && !evidence.is_empty()
+                    && episode_evidence(&next, &candidate.episode_id) == evidence
+            })
+            .collect();
+        if candidates.len() != 1 {
+            return Err(
+                "重新识别后无法唯一证明旧场次修订的原范围及集场成员，已保留旧原文与编辑".into(),
+            );
+        }
+        let mut mapped = edit.clone();
+        mapped["plan"]["sceneId"] = candidates[0].id.clone().into();
+        mapped["plan"]["episodeId"] = candidates[0].episode_id.clone().into();
+        // Replay both histories one step at a time. Later metadata can refer to
+        // a split-derived ID only after the same exact cut was proven on both.
+        old = super::scene_edits::replay_scene_edits(old, std::slice::from_ref(edit))?;
+        next = super::scene_edits::replay_scene_edits(next, std::slice::from_ref(&mapped))?;
+        migrated.push(mapped);
+    }
+    next.scene_edits = migrated;
+    Ok(next)
+}
+
 fn validate_integrity(source: &LockedSource) -> Result<(), String> {
+    let display_ids = display_only_row_ids(source);
     if source.schema_version != "locked-source/v1"
         || source.coordinate_system != "utf16"
         || source.sha256 != digest(&source.text)
@@ -1052,8 +1457,8 @@ fn validate_integrity(source: &LockedSource) -> Result<(), String> {
         {
             return Err("来源行存在遗漏、重叠、错序或回读不一致".into());
         }
-        let expected_dialogue = if row.kind == "body" {
-            parse_dialogue(&row.text, row.range.start, &row.id, &source.parser_version)
+        let expected_dialogue = if row.kind == "body" && !display_ids.contains(&row.id) {
+            row_dialogue(&row.text, row.range.start, &row.id, &source.parser_version)
         } else {
             None
         };
@@ -1068,8 +1473,15 @@ fn validate_integrity(source: &LockedSource) -> Result<(), String> {
             // from the locked source, never accept arbitrary changed segments.
             if actual != expected {
                 let colon_end = expected.range.start - row.range.start;
-                let prefix = slice_utf16(&row.text, &SourceRange { start:0, end:colon_end })?;
-                let legacy = dialogue_segments(&row.text, row.range.start, prefix.len(), &expected.range);
+                let prefix = slice_utf16(
+                    &row.text,
+                    &SourceRange {
+                        start: 0,
+                        end: colon_end,
+                    },
+                )?;
+                let legacy =
+                    dialogue_segments(&row.text, row.range.start, prefix.len(), &expected.range);
                 if actual.spoken_segments == legacy.0 && actual.performance_segments == legacy.1 {
                     system_message_segments(actual);
                 }
@@ -1120,9 +1532,59 @@ pub fn apply_boundary_decisions(
     validate_source(source)?;
     let mut all = source.boundary_decisions.clone();
     for decision in decisions {
+        if decision.kind == "independent_episode" {
+            let proof = decision
+                .confirmation
+                .as_ref()
+                .ok_or("独立同号集确认缺少当前原文证明")?;
+            if proof.parser_version != source.parser_version || proof.source_sha256 != source.sha256
+            {
+                return Err("独立同号集确认已过期，请刷新当前原文".into());
+            }
+            if proof.source_version <= 0
+                || proof.diagnostic_code != "DUPLICATE_EPISODE_NUMBER"
+                || decision.reason.trim().is_empty()
+                || decision.scene_title.is_some()
+            {
+                return Err("独立同号集确认来源证明无效".into());
+            }
+            // A repeated current-version acknowledgement keeps the first proof,
+            // rather than manufacturing another source revision or new identity.
+            if all.iter().any(|old| {
+                old.kind == decision.kind
+                    && old.start == decision.start
+                    && old.end == decision.end
+                    && old.episode_number == decision.episode_number
+                    && old.confirmation.as_ref().is_some_and(|old_proof| {
+                        old_proof.source_sha256 == proof.source_sha256
+                            && old_proof.heading_row_id == proof.heading_row_id
+                            && old_proof.diagnostic_code == proof.diagnostic_code
+                    })
+            }) {
+                continue;
+            }
+        }
+        if decision.kind != "independent_episode"
+            && source.diagnostics.iter().any(|issue| {
+                issue.code == "DUPLICATE_EPISODE_NUMBER"
+                    && issue.row_ids.iter().any(|id| {
+                        source.rows.iter().any(|row| {
+                            &row.id == id
+                                && row.range.start < decision.end
+                                && decision.start < row.range.end
+                        })
+                    })
+            })
+        {
+            return Err(
+                "同号集须使用保留为独立制作段的明确确认，不能通过正文或资料决定清除".into(),
+            );
+        }
         // Replacing a previous whole decision is explicit and stored as a new source version by Store.
         all.retain(|old| !(old.start == decision.start && old.end == decision.end));
-        all.push(decision.clone());
+        let mut decision = decision.clone();
+        decision.decision_version = Some("boundary-decision/v2".into());
+        all.push(decision);
     }
     let mut out =
         apply_decisions_inner(&parse_source(&source.text, &source.parser_version)?, &all)?;
@@ -1146,7 +1608,11 @@ fn apply_decisions_inner(
             || !boundaries.contains(&d.end)
             || d.start >= d.end
             || d.reason.trim().is_empty()
-            || !["body", "context"].contains(&d.kind.as_str())
+            || !["body", "context", "independent_episode"].contains(&d.kind.as_str())
+            || d.decision_version
+                .as_deref()
+                .is_some_and(|v| v != "boundary-decision/v2")
+            || d.kind != "independent_episode" && d.confirmation.is_some()
             || decisions[..i]
                 .iter()
                 .any(|p| p.start < d.end && d.start < p.end)
@@ -1165,12 +1631,70 @@ fn apply_decisions_inner(
     }
     let mut out = source.clone();
     for d in decisions {
+        if d.kind == "independent_episode" {
+            let proof = d
+                .confirmation
+                .as_ref()
+                .ok_or("独立同号集确认缺少精确标题证明")?;
+            if proof.source_version <= 0
+                || proof.source_sha256 != source.sha256
+                || proof.diagnostic_code != "DUPLICATE_EPISODE_NUMBER"
+                || d.decision_version.as_deref() != Some("boundary-decision/v2")
+                || d.scene_title.is_some()
+            {
+                return Err("独立同号集确认来源证明无效".into());
+            }
+            let original = parse_source(&source.text, &proof.parser_version)?;
+            let heading = original
+                .rows
+                .iter()
+                .find(|row| {
+                    row.id == proof.heading_row_id
+                        && row.range.start == d.start
+                        && row.range.end == d.end
+                })
+                .ok_or("独立同号集确认必须精确绑定一个原标题行")?;
+            let number = episode_heading_re()
+                .captures(heading.text.trim())
+                .and_then(|c| number_value(c.get(1)?.as_str()))
+                .ok_or("独立同号集确认必须指向集标题")?;
+            if d.episode_number != Some(number)
+                || !original.diagnostics.iter().any(|issue| {
+                    issue.blocking
+                        && issue.code == proof.diagnostic_code
+                        && issue.row_ids == [heading.id.clone()]
+                })
+                || !out.diagnostics.iter().any(|issue| {
+                    issue.blocking
+                        && issue.code == proof.diagnostic_code
+                        && issue.row_ids == [heading.id.clone()]
+                })
+                || !out
+                    .rows
+                    .iter()
+                    .any(|row| row.id == heading.id && row.episode_id.is_some())
+            {
+                return Err("独立同号集确认不对应当前重复标题疑点".into());
+            }
+            out.diagnostics.retain(|issue| {
+                !(issue.code == proof.diagnostic_code && issue.row_ids == [heading.id.clone()])
+            });
+            continue;
+        }
         let selected: Vec<_> = out
             .rows
             .iter()
             .filter(|r| r.range.start >= d.start && r.range.end <= d.end)
             .map(|r| r.id.clone())
             .collect();
+        if d.decision_version.as_deref() == Some("boundary-decision/v2")
+            && out.diagnostics.iter().any(|issue| {
+                issue.code == "DUPLICATE_EPISODE_NUMBER"
+                    && issue.row_ids.iter().any(|id| selected.contains(id))
+            })
+        {
+            return Err("同号集需独立确认，范围决定不能清除此疑点".into());
+        }
         let eid = if d.kind == "body" {
             let candidates: Vec<_> = out
                 .episodes
@@ -1182,6 +1706,10 @@ fn apply_decisions_inner(
                         })
                 })
                 .collect();
+            if d.decision_version.as_deref() == Some("boundary-decision/v2") && candidates.len() > 1
+            {
+                return Err("范围跨越多个制作段，不能仅凭同号集自动合并".into());
+            }
             Some(if candidates.len() == 1 {
                 candidates[0].id.clone()
             } else {
@@ -1202,7 +1730,7 @@ fn apply_decisions_inner(
             row.episode_id = eid.clone();
             row.scene_id = sid.clone();
             row.dialogue = if d.kind == "body" {
-                parse_dialogue(&row.text, row.range.start, &row.id, &out.parser_version)
+                row_dialogue(&row.text, row.range.start, &row.id, &out.parser_version)
             } else {
                 None
             };
@@ -1271,6 +1799,49 @@ fn apply_decisions_inner(
     }
     out.episodes.retain(|e| !e.row_ids.is_empty());
     out.scenes.retain(|s| !s.row_ids.is_empty());
+    if out.parser_version == FIDELITY_PARSER_VERSION
+        || decisions
+            .iter()
+            .any(|d| d.decision_version.as_deref() == Some("boundary-decision/v2"))
+    {
+        let positions: BTreeMap<_, _> = out
+            .rows
+            .iter()
+            .enumerate()
+            .map(|(index, row)| (row.id.clone(), index))
+            .collect();
+        out.episodes.sort_by_key(|episode| {
+            episode
+                .row_ids
+                .first()
+                .and_then(|id| positions.get(id))
+                .copied()
+                .unwrap_or(usize::MAX)
+        });
+        out.scenes.sort_by_key(|scene| {
+            scene
+                .row_ids
+                .first()
+                .and_then(|id| positions.get(id))
+                .copied()
+                .unwrap_or(usize::MAX)
+        });
+        for (index, episode) in out.episodes.iter_mut().enumerate() {
+            episode.number = index as u32 + 1;
+            episode.scene_ids = out
+                .scenes
+                .iter()
+                .filter(|scene| scene.episode_id == episode.id)
+                .map(|scene| scene.id.clone())
+                .collect();
+        }
+    }
+    let display_ids = display_only_row_ids(&out);
+    for row in &mut out.rows {
+        if display_ids.contains(&row.id) {
+            row.dialogue = None;
+        }
+    }
     out.boundary_decisions = decisions.to_vec();
     validate_integrity(&out)?;
     Ok(out)
@@ -1281,28 +1852,171 @@ mod tests {
     use super::*;
 
     #[test]
+    fn numbered_display_fields_remain_picture_text_and_keep_explicit_voices() {
+        let text="第一集\n场景：房间\n甲：查看今日情报。\n△面板字幕：\n情报1：原样显示😀。\n情报2：第二条消息。\n系统VO：【请查收！】\n情报3：没有字幕前置时仍按原对白规则。\n△甲抬头。\n甲：走吧。\n第二集\n场景：房间\n情报1：另一场的角色台词。\n";
+        let fresh = prepare_source(text).unwrap();
+        assert_eq!(fresh.parser_version, DISPLAY_PARSER_VERSION);
+        for label in ["情报1：原样显示", "情报2：第二条"] {
+            assert!(fresh
+                .rows
+                .iter()
+                .find(|r| r.text.starts_with(label))
+                .unwrap()
+                .dialogue
+                .is_none());
+        }
+        for label in [
+            "甲：查看",
+            "系统VO：",
+            "情报3：",
+            "甲：走吧",
+            "情报1：另一场",
+        ] {
+            assert!(
+                fresh
+                    .rows
+                    .iter()
+                    .find(|r| r.text.starts_with(label))
+                    .unwrap()
+                    .dialogue
+                    .is_some(),
+                "{label}"
+            );
+        }
+        validate_source(&fresh).unwrap();
+        let old = parse_source(text, STRUCTURAL_PARSER_VERSION).unwrap();
+        assert!(old
+            .rows
+            .iter()
+            .find(|r| r.text.starts_with("情报1：原样显示"))
+            .unwrap()
+            .dialogue
+            .is_some());
+        assert_eq!(
+            json_value(&upgrade_source_dialogues(&old).unwrap()),
+            json_value(&old),
+            "saved parsing is never silently reclassified"
+        );
+        let reparsed = reparse_source(&old).unwrap();
+        assert_eq!(reparsed.sha256, old.sha256);
+        assert_eq!(reparsed.text, old.text);
+        assert_eq!(reparsed.length, old.length);
+        assert_eq!(
+            reparsed
+                .rows
+                .iter()
+                .map(|r| (&r.id, &r.range, &r.text))
+                .collect::<Vec<_>>(),
+            old.rows
+                .iter()
+                .map(|r| (&r.id, &r.range, &r.text))
+                .collect::<Vec<_>>()
+        );
+        let mut polluted = fresh.clone();
+        polluted
+            .rows
+            .iter_mut()
+            .find(|r| r.text.starts_with("甲：查看"))
+            .unwrap()
+            .dialogue = None;
+        assert!(
+            validate_source(&polluted).is_err(),
+            "a real spoken line cannot be deleted under a display exemption"
+        );
+    }
+
+    #[test]
+    fn numbered_character_with_delivery_cue_is_not_silenced_by_a_display_header() {
+        let source = prepare_source(
+            "第一集\n场景：房间\n△屏幕文字：\n情报1（大喊）：快走！\n情报2：我是继续说话的角色。\n",
+        )
+        .unwrap();
+        assert!(source
+            .rows
+            .iter()
+            .find(|r| r.text.starts_with("情报1（"))
+            .unwrap()
+            .dialogue
+            .is_some());
+        assert!(source
+            .rows
+            .iter()
+            .find(|r| r.text.starts_with("情报2："))
+            .unwrap()
+            .dialogue
+            .is_some());
+        let cast = prepare_source(
+            "第一集\n场景：房间\n人物：情报1（男）、甲\n△面板字幕：\n情报1：这是登记角色的原话。\n",
+        )
+        .unwrap();
+        assert!(cast
+            .rows
+            .iter()
+            .find(|r| r.text.starts_with("情报1："))
+            .unwrap()
+            .dialogue
+            .is_some());
+    }
+
+    fn json_value(source: &LockedSource) -> serde_json::Value {
+        serde_json::to_value(source).unwrap()
+    }
+
+    #[test]
     fn system_message_wrapper_is_spoken_and_legacy_metadata_upgrades_without_source_changes() {
         let source=prepare_source("第一集\r\n场景：海边\r\n系统VO：【叮！今日有青蟹😀，请查看位置。】\r\n甲（低声）：别动（抬手），回来。\r\n").unwrap();
-        let system=source.rows[2].dialogue.as_ref().unwrap();
-        assert_eq!(system.speaker,"系统");assert_eq!(system.channel,"VO");
-        assert_eq!(spoken_text(system),"【叮！今日有青蟹😀，请查看位置。】");
+        let system = source.rows[2].dialogue.as_ref().unwrap();
+        assert_eq!(system.speaker, "系统");
+        assert_eq!(system.channel, "VO");
+        assert_eq!(spoken_text(system), "【叮！今日有青蟹😀，请查看位置。】");
         assert!(system.performance_segments.is_empty());
-        let mut legacy=source.clone();
-        let row=&mut legacy.rows[2];let dialogue=row.dialogue.as_mut().unwrap();
-        let prefix=slice_utf16(&row.text,&SourceRange{start:0,end:dialogue.range.start-row.range.start}).unwrap();
-        let segments=dialogue_segments(&row.text,row.range.start,prefix.len(),&dialogue.range);
-        dialogue.spoken_segments=segments.0;dialogue.performance_segments=segments.1;
+        let mut legacy = source.clone();
+        let row = &mut legacy.rows[2];
+        let dialogue = row.dialogue.as_mut().unwrap();
+        let prefix = slice_utf16(
+            &row.text,
+            &SourceRange {
+                start: 0,
+                end: dialogue.range.start - row.range.start,
+            },
+        )
+        .unwrap();
+        let segments = dialogue_segments(&row.text, row.range.start, prefix.len(), &dialogue.range);
+        dialogue.spoken_segments = segments.0;
+        dialogue.performance_segments = segments.1;
         assert!(dialogue.spoken_segments.is_empty());
         validate_source(&legacy).unwrap();
-        let upgraded=upgrade_source_dialogues(&legacy).unwrap();
-        assert_eq!(serde_json::to_value(&upgraded).unwrap(),serde_json::to_value(&source).unwrap());
-        assert_eq!(upgraded.sha256,legacy.sha256);assert_eq!(upgraded.text,legacy.text);
-        assert_eq!(spoken_text(upgraded.rows[3].dialogue.as_ref().unwrap()),"别动，回来。");
-        legacy.rows[2].dialogue.as_mut().unwrap().performance_segments[0].range.start+=1;
+        let upgraded = upgrade_source_dialogues(&legacy).unwrap();
+        assert_eq!(
+            serde_json::to_value(&upgraded).unwrap(),
+            serde_json::to_value(&source).unwrap()
+        );
+        assert_eq!(upgraded.sha256, legacy.sha256);
+        assert_eq!(upgraded.text, legacy.text);
+        assert_eq!(
+            spoken_text(upgraded.rows[3].dialogue.as_ref().unwrap()),
+            "别动，回来。"
+        );
+        legacy.rows[2]
+            .dialogue
+            .as_mut()
+            .unwrap()
+            .performance_segments[0]
+            .range
+            .start += 1;
         assert!(validate_source(&legacy).is_err());
-        let ordinary=prepare_source("第一集\n甲VO：【压低声音】\n系统VO：请看（抬手）位置。\n").unwrap();
-        assert!(ordinary.rows[1].dialogue.as_ref().unwrap().spoken_segments.is_empty());
-        assert_eq!(spoken_text(ordinary.rows[2].dialogue.as_ref().unwrap()),"请看位置。");
+        let ordinary =
+            prepare_source("第一集\n甲VO：【压低声音】\n系统VO：请看（抬手）位置。\n").unwrap();
+        assert!(ordinary.rows[1]
+            .dialogue
+            .as_ref()
+            .unwrap()
+            .spoken_segments
+            .is_empty());
+        assert_eq!(
+            spoken_text(ordinary.rows[2].dialogue.as_ref().unwrap()),
+            "请看位置。"
+        );
     }
 
     #[test]
@@ -1811,6 +2525,8 @@ mod tests {
                 episode_number: Some(1),
                 scene_title: Some("已确认门口".into()),
                 reason: "用户明确这一句属于门口场".into(),
+                decision_version: None,
+                confirmation: None,
             }],
         )
         .unwrap();
@@ -1859,6 +2575,8 @@ mod tests {
                 episode_number: Some(1),
                 scene_title: Some("门口".into()),
                 reason: "用户明确此范围为第一集门口场".into(),
+                decision_version: None,
+                confirmation: None,
             }],
         )
         .unwrap();
@@ -1890,6 +2608,8 @@ mod tests {
                 episode_number: Some(1),
                 scene_title: Some("门口".into()),
                 reason: "用户明确整集一场".into(),
+                decision_version: None,
+                confirmation: None,
             }],
         )
         .unwrap();
@@ -1928,3 +2648,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "source_m2_tests.rs"]
+mod m2_tests;

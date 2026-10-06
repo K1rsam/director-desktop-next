@@ -9,7 +9,21 @@ fs.writeFileSync(process.env.DIRECTOR_FIXTURE_CAPTURE, JSON.stringify({ args, pr
 const event = value => process.stdout.write(JSON.stringify(value) + '\n');
 const thread = { type: 'thread.started', thread_id: 'synthetic-thread-1' };
 const start = { type: 'turn.started' };
-const text = { type: 'item.completed', item: { id: 'synthetic-item-1', type: 'agent_message', text: scenario === 'invalid-text-json' ? '{not repaired' : '{"ok":true,"text":"合成测试"}' } };
+let fixtureText = '{"ok":true,"text":"合成测试"}';
+if (scenario === 'rust-domain') {
+  const request = JSON.parse(prompt);
+  const input = request.input;
+  if (request.stage === 'assetVisualFacts') {
+    fixtureText = JSON.stringify(input.visualFactRepair ? {
+      schemaVersion: 'asset-visual-fact-repair/v1', originalRawSha256: input.visualFactRepair.originalRawSha256,
+      corrections: [{ factIndex: 0, action: 'UNRESOLVED', variantId: null, reason: '合成原文证据不足，保留待确认' }],
+    } : {
+      schemaVersion: 'asset-visual-facts-wire/v1', coveredPacketRef: input.coveredPacketRef,
+      facts: [{ assetId: 'subject', variantId: null, attribute: 'hair.style', value: '局部变化', scope: 'TRANSITION', claim: 'SOURCE', sourceRefs: ['r1'] }], issues: [],
+    });
+  } else fixtureText = JSON.stringify(input.sdkFixtureResponse ?? { ok: true, text: '合成测试' });
+}
+const text = { type: 'item.completed', item: { id: 'synthetic-item-1', type: 'agent_message', text: scenario === 'invalid-text-json' ? '{not repaired' : fixtureText } };
 const complete = { type: 'turn.completed', usage: { input_tokens: 3, cached_input_tokens: 0, output_tokens: 5, reasoning_output_tokens: 1 } };
 if (scenario === 'out-of-order') { event(start); event(thread); event(text); event(complete); }
 else if (scenario === 'malformed-json') { event(thread); event(start); process.stdout.write('{this is not runtime JSON}\n'); }

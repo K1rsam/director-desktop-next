@@ -23,6 +23,18 @@ The new core can create an independent project, import synthetic two-episode sou
 - A versioned frozen text attempt separates semantic request identity from backend/model/runtime identity and preserves unknown submission/thread identity across restart
 - The first SDK transport seam explicitly reports unavailable rather than pretending to run. Actual official SDK bridge work is tracked separately in `SDK_BRIDGE.md`
 
+## M2 — Shared Stage2 contracts, source fixes and official SDK integration
+
+M2 is based on the published offline M1 commit `d2ad2bd6a21de9293f51c5b8296f6ac800ce4d9a`. M1 evidence below remains a historical checkpoint; it is not a claim about the current test run.
+
+- Stage2 uses the actual art rule, explicit beauty/factual constraints, default character portrait plus front/side/back layout, bounded comparison context, versioned design/cache receipts and frozen image-generation settings. See [Stage2 implementation](STAGE2_IMPLEMENTATION.md)
+- Source v6 preserves prior parser replays and adds explicit source-bound duplicate-episode confirmation, caption/scene boundary corrections and unproduced-episode selection. Selectively reviewed upstream `8548e9f`; this does not repin the whole source baseline. See [parser contracts](SOURCE_PARSER_M2.md)
+- `SavedTextExecutor` now invokes the pinned genuine official SDK bridge through the shared Rust prompt/schema, job, checkpoint, domain-validation and recovery paths. Synthetic subprocess tests exercise the actual SDK. Production SDK remains closed; backend changes cannot release unresolved ownership. See [SDK integration](SDK_CORE_INTEGRATION.md)
+- An explicit, source-hash/model/scope-bound native CLI mode is separate from default offline startup. Original-workflow ownership survives reservation/creation/binding interruptions; Stage2 resumes the original workflow with frozen inputs. The one-shot core rejects native asynchronous generation before allocating state. See [native acceptance](NATIVE_ACCEPTANCE.md)
+- CI installs both pinned frontend and SDK dependencies before required tests. Its synthetic SDK launcher uses native Node on Windows/macOS rather than a POSIX-only script. This implementation change is not proof of a Windows run
+
+M2 native/creative acceptance remains pending. [Final M2 cloud evidence](verification/M2.json): **775 Rust tests passed, zero failed, 24 deliberately ignored** across 24 suites; **84 frontend tests and build passed**; **41 official SDK bridge tests passed without skips**; 11-process core smoke created zero generation jobs. Independent read-only review gave GO for the offline checkpoint only after all five integration blockers and the Stage2 atomic-publication edge were resolved. The first aggregate had four stale synthetic CLI preflight fixtures; those were corrected without weakening the production identity boundary, and the complete aggregate was rerun.
+
 ## Verification commands
 
 From repository root:
@@ -32,6 +44,8 @@ python scripts/verify_source_lock.py
 npm --prefix apps/desktop ci
 npm --prefix apps/desktop run test:frontend
 npm --prefix apps/desktop run build
+npm --prefix sdk-bridge ci --ignore-scripts --omit=optional --no-audit --no-fund
+npm --prefix sdk-bridge run verify
 cargo test --release --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features -- --test-threads=1
 cargo build --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features --bin director-next-core
 python scripts/verify_offline_smoke.py --core apps/desktop/src-tauri/target/debug/director-next-core
@@ -43,7 +57,7 @@ The root manual CI workflow repeats shared tests and compiles the native shell o
 
 ## Recorded M1 result
 
-[Machine-readable evidence](verification/M1.json) records the current Linux run: **716 Rust tests passed, zero failed, 24 deliberately ignored** across 22 suites; **81 frontend tests passed**, typecheck/build passed; 22 inactive creative candidates matched their hashes. The real release Rust CLI passed an 11-process synthetic create/import/reopen/blocked-execution smoke with zero generation jobs. The official SDK bridge passed 41 offline tests using the real SDK with synthetic subprocesses; see `SDK_BRIDGE.md`. It is not yet connected to the Rust product execution path and has not made a live SDK call.
+[Machine-readable evidence](verification/M1.json) records the historical M1 Linux run: **716 Rust tests passed, zero failed, 24 deliberately ignored** across 22 suites; **81 frontend tests passed**, typecheck/build passed; 22 inactive creative candidates matched their hashes. The real release Rust CLI passed an 11-process synthetic create/import/reopen/blocked-execution smoke with zero generation jobs. The official SDK bridge passed 41 offline tests using the real SDK with synthetic subprocesses; see `SDK_BRIDGE.md`. At the M1 checkpoint it was not connected to the Rust product execution path. M2 adds that wiring; live SDK calls remain unperformed.
 
 The first debug library run reported 550 passed, 6 failed, 20 ignored. Five failures were Unix fake-executable fixture permissions; one was the Linux keyring mock's non-persistence across Entry instances. They were diagnosed and fixed without removing assertions or running real credentials/models. The final release aggregate above includes those regressions. Native and creative acceptance remain open.
 
@@ -51,8 +65,8 @@ The first debug library run reported 550 passed, 6 failed, 20 ignored. Five fail
 
 1. Actual Mac inspection has established that all 22 original rule files match the adopted tasks and current working tree. Runtime adapter integration still requires the separately permissioned transfer of 29 runtime/source files; private source/adopted drafts remain outside the repository. Candidate export hashes alone do not establish implementation equivalence
 2. Faithful Stage3 adapter integration, precise stage/scene/state facts and asset supply, refinement/adoption flow, with frozen creative files untouched
-3. Complete official SDK bridge-to-SavedTextExecutor wiring, backend-specific recovery/cancellation and packaging; SDK live calls remain off for this round
-4. A separately bounded native CLI acceptance path tied to the approved input hash, full-script Stage1/2 text scope and Stage3 EP1/EP2 only, fixed `gpt-6.1-sol` / `medium`, no silent fallback
+3. Native validation and packaging of the implemented official SDK bridge-to-SavedTextExecutor path; verify runtime/config/credential isolation and process-tree cancellation before any later live SDK permission
+4. Native exercise of the implemented bounded CLI acceptance path tied to the approved input hash, full-script Stage1/2 text scope and Stage3 EP1/EP2 only, fixed `gpt-6.1-sol` / `medium`, no silent fallback; Stage3 dispatch waits for faithful adapter integration
 5. Native Mac and Windows builds, startup/IPC/media/keyring/process-tree and restart checks on the same final revision; Linux tests cannot prove these
 6. Actual CLI EP1/EP2 creative comparison against the verified adopted draft. Any image sample additionally needs local proof of exact official Jimeng model and free eligibility; real video remains outside this round
 

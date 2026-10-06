@@ -1,0 +1,1001 @@
+   Compiling director-desktop-next v0.1.0 (/workspace/shared/director-desktop-next-m2/apps/desktop/src-tauri)
+warning: unused imports: `CompiledStoryboardTransport` and `STORYBOARD_LOSSLESS_INPUT_RULE`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 |     STORYBOARD_LOSSLESS_INPUT_RULE, STORYBOARD_TRANSPORT_LIMIT,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `CompiledStoryboardTransport`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `finish_transport_characters` is never used
+   --> src/pipeline/storyboard.rs:110:4
+    |
+110 | fn finish_transport_characters(request: &TextRequest) -> Result<usize, String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `expand_storyboard_schema` is never used
+   --> src/pipeline/storyboard_transport.rs:767:15
+    |
+767 | pub(super) fn expand_storyboard_schema(schema: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `expand_storyboard_input` is never used
+   --> src/pipeline/storyboard_transport.rs:771:15
+    |
+771 | pub(super) fn expand_storyboard_input(input: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `safe_launch_fingerprint_for` is never used
+   --> src/providers/dreamina.rs:675:4
+    |
+675 | fn safe_launch_fingerprint_for(proxy: &ProxyEnvironment) -> String {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `director-desktop-next` (lib) generated 6 warnings (run `cargo fix --lib -p director-desktop-next` to apply 2 suggestions)
+warning: `director-desktop-next` (lib test) generated 2 warnings (1 duplicate) (run `cargo fix --lib -p director-desktop-next --tests` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 1m 35s
+     Running unittests src/lib.rs (/workspace/shared/director-next-m2-target/release/deps/director_core-87fd1ea5236247d3)
+
+running 626 tests
+test binding::duration_tests::binding_normalizes_wire_only_and_never_rewrites_the_saved_unit ... ok
+test binding::duration_tests::whole_second_carrier_accepts_only_small_binary_error_not_real_fractional_timing ... ok
+test binding::image_semantic_tests::cyclic_missing_audio_and_unresolved_material_paths_fail_before_submission ... ok
+test binding::image_semantic_tests::every_inline_identity_and_intermediate_version_is_frozen_beside_the_real_parent_image ... ok
+test binding::image_semantic_tests::inline_manual_image_is_the_material_and_its_unused_parent_is_not_inferred ... ok
+test binding::image_semantic_tests::intermediate_manual_image_stops_the_semantic_path_at_the_exact_adopted_identity ... ok
+test binding::image_semantic_tests::legacy_direct_reference_remains_valid_and_actual_image_replacement_never_does ... ok
+test binding::image_semantic_tests::semantic_chain_cannot_omit_intermediate_identity_or_hide_a_bad_variant ... ok
+test dreamina_session::tests::account_cache_is_scoped_to_cli_and_device_secrets_are_never_projected ... ok
+test dreamina_session::tests::authorization_links_require_official_https_and_never_expose_internal_codes ... ok
+test dreamina_session::tests::fresh_identity_keeps_real_authentication_failures_and_requires_verified_identity ... ok
+test dreamina_session::tests::fresh_identity_keeps_transient_provider_errors_typed_without_claiming_logout ... ok
+test dreamina_session::tests::oauth_server_timing_is_respected_and_secret_urls_are_rejected ... ok
+test engine::account_tests::auth_preflight_failure_preserves_unknown_submit_until_explicit_reconciliation ... ok
+test engine::account_tests::closing_identity_inspection_preserves_known_id_and_downloaded_media_results ... ok
+test engine::account_tests::genuine_identity_authentication_failure_pauses_without_changing_cloud_materials ... ok
+test engine::account_tests::identity_errors_never_release_unknown_submissions_or_auto_retry_generation ... ok
+test engine::account_tests::images_queue_changed_account_binds_new_jobs_but_preserves_known_and_unknown_identity ... ok
+test engine::account_tests::images_queue_fresh_identity_succeeds_without_a_ready_cached_projection ... ok
+test engine::account_tests::images_queue_network_identity_failure_keeps_its_type_and_does_not_claim_logout ... ok
+test engine::account_tests::images_queue_real_authentication_failure_keeps_the_authentication_flag ... ok
+test engine::account_tests::images_queue_rejects_cli_configuration_changes_during_identity_inspection ... ok
+test engine::account_tests::model_refresh_checks_stale_unverified_or_different_config_accounts ... ok
+test engine::account_tests::model_refresh_preserves_the_existing_authorization_poll_path ... ok
+test engine::account_tests::model_refresh_reuses_a_fresh_verified_account_without_rechecking_credits ... ok
+test engine::account_tests::transient_identity_checks_retry_only_the_known_id_with_a_five_attempt_bound ... ok
+test engine::local_video_prepare_tests::cached_local_entry_requires_every_official_identity_and_capability_proof ... ok
+test engine::local_video_prepare_tests::expired_capability_waits_same_click_then_refreshes_once_and_excludes_duplicate_click ... ok
+test engine::local_video_prepare_tests::failed_readonly_refresh_preserves_original_known_and_unknown_jobs_without_submission ... ok
+test engine::local_video_prepare_tests::held_channel_rejects_configuration_unit_reference_and_archive_drift_without_jobs ... ok
+test engine::local_video_prepare_tests::held_channel_timeout_and_shutdown_create_no_jobs_or_preflight_calls ... ok
+test engine::local_video_prepare_tests::verified_cache_prepares_57_while_image_channel_is_held_reusing_37_without_submission ... ok
+test engine::production_input_transport_tests::fresh_storyboard_whole_and_partial_runs_opt_in_without_rewriting_legacy_inputs ... ok
+test engine::project_lifecycle_tests::absent_or_mismatched_roots_are_not_recreated_or_opened_by_list_and_restart ... ok
+test engine::project_lifecycle_tests::archived_scheduler_makes_zero_calls_and_restore_queries_original_id_without_submitting ... ok
+test engine::project_lifecycle_tests::concurrent_old_version_archive_and_restore_each_have_one_winner ... ok
+test engine::project_lifecycle_tests::deletion_retains_external_files_and_receipts_and_restart_does_not_reregister ... ok
+test engine::project_lifecycle_tests::legacy_registry_defaults_to_active_and_archive_is_required_before_deletion ... ok
+test engine::project_lifecycle_tests::project_owned_worker_blocks_archive_while_shared_channel_does_not_block_another_project ... ok
+test engine::project_lifecycle_tests::project_summary_counts_only_active_units_and_preserves_retired_history ... ok
+test engine::project_lifecycle_tests::shared_authentication_callback_does_not_mutate_archived_project_jobs ... ok
+test engine::project_lifecycle_tests::slow_catalog_check_rejects_same_project_archive_without_blocking_other_project_or_list ... ok
+test engine::repair_tests::a_revision_adoption_inherits_the_exact_original_planner_and_rebinds_current_unit_hashes ... ok
+test engine::repair_tests::auto_author_public_foundation_run_uses_q1_only_and_publishes_source_bound_receipt ... ok
+test engine::repair_tests::explicit_video_model_requires_real_cached_adaptation_and_prior_boundary_is_ordered ... ok
+test engine::repair_tests::image_batch_partial_queue_reports_active_unknown_and_missing_branches ... ok
+test engine::repair_tests::image_partial_completion_and_resume_are_limited_to_the_frozen_original_production ... ok
+test engine::repair_tests::local_revision_freezes_unique_adopted_plan_and_actual_fantasy_chain_without_changing_whole_runs ... ok
+test engine::repair_tests::local_revision_refuses_missing_ambiguous_changed_or_forged_adoption_before_creating_work ... ok
+test engine::repair_tests::missing_source_blocks_text_design_but_manual_image_prompt_can_queue_without_text_cli ... ok
+test engine::repair_tests::native_resume_of_legacy_completed_but_blocked_image_production_preserves_record_and_never_submits ... ok
+test engine::repair_tests::new_bound_source_prompt_is_frozen_and_submit_validation_refuses_forged_or_edited_text ... ok
+test engine::repair_tests::offline_startup_text_cli_status_never_reads_a_real_account_or_logs_in ... ok
+test engine::repair_tests::planning_profile_generates_all_selected_episodes_with_exact_dialogue_and_no_video_model ... ok
+test engine::repair_tests::prepared_prompt_provenance_proves_old_and_new_human_inline_donor_packages_without_media_reads ... ok
+test engine::repair_tests::prepared_prompt_provenance_refuses_text_identity_history_and_carrier_drift ... ok
+test engine::repair_tests::public_known_task_query_keeps_cli_setup_failure_distinct_from_auth_and_never_submits ... ok
+test engine::repair_tests::stage2_direct_images_existing_prompt_cannot_bypass_unassigned_facts ... ok
+test engine::repair_tests::stage2_direct_images_stale_not_applicable_receipt_cannot_bypass_gate ... ok
+test engine::repair_tests::stage2_restart_resume_uses_original_settings_and_final_submission_snapshot ... ok
+test engine::repair_tests::startup_channel_contention_defers_catalog_without_marking_a_refresh_attempt ... ok
+test engine::repair_tests::unknown_closure_is_local_atomic_preserves_evidence_and_unlocks_new_explicit_work ... ok
+test engine::repair_tests::worker_drain_returns_after_receipt_commit_and_shutdown_rejects_new_guards ... ok
+test engine::repair_tests::workspace_job_summary_preserves_explicit_manual_video_submission_without_altering_snapshot ... ok
+test engine::repair_tests::zero_unit_storyboard_selects_source_episodes_and_versioned_planning_profile ... ok
+test media_probe::tests::installed_ffprobe_reads_real_wav_and_rejects_bad_media ... ignored, Requires the separately installed ffprobe binary; performs local probing only
+test media_probe::tests::keeps_audio_dimensions_null_and_exact_stream_timebase ... ok
+test media_probe::tests::local_representative_video_has_actual_metadata ... ignored, Explicit local representative video supplied by DIRECTOR_PROBE_VIDEO
+test media_probe::tests::prefers_real_video_over_audio_cover ... ok
+test media_probe::tests::rejects_unknown_duration_and_cover_art_only ... ok
+test media_probe::tests::timeout_fixture ... ignored, Native child fixture used only by the timeout test
+test media_probe::tests::timeout_stops_the_native_child_process ... ok
+test native_acceptance::tests::copied_grant_identifier_cannot_change_source_or_model ... ok
+test native_acceptance::tests::durable_job_can_finish_its_original_reservation_after_crash ... ok
+test native_acceptance::tests::exact_source_model_and_two_episode_scope_are_required ... ok
+test native_acceptance::tests::live_owner_blocks_takeover_and_orphan_without_any_job_is_audited_and_retryable ... ok
+test native_acceptance::tests::orphan_with_one_workflow_binds_it_but_ambiguous_or_text_evidence_stays_held ... ok
+test native_acceptance::tests::reconciliation_audit_failure_rolls_back_release_and_keeps_claim ... ok
+test native_acceptance::tests::reservation_survives_restart_and_new_project_cannot_reset_it ... ok
+test native_acceptance::tests::source_validation_never_rewrites_the_caller ... ok
+test pipeline::asset_design_contract::tests::comparison_identity_exclusions_and_bounds_are_stable_and_not_dependencies ... ok
+test pipeline::asset_design_contract::tests::compiler_preserves_visible_words_and_adds_components_once_without_rewriting_body ... ok
+test pipeline::asset_design_contract::tests::design_cache_tracks_rule_style_presentation_asset_source_but_not_other_designs_or_fact_rule ... ok
+test pipeline::asset_design_contract::tests::direct_source_design_semantics_invalidate_descendant_but_counters_do_not ... ok
+test pipeline::asset_design_contract::tests::presentation_defaults_only_characters_and_preserves_explicit_ratio_and_layout ... ok
+test pipeline::asset_design_contract::tests::resume_preserves_published_facts_but_rejects_relevant_later_edits_and_rule_change ... ok
+test pipeline::asset_visual_facts::tests::accepted_precompact_cache_uses_unchanged_packet_and_rule_hash_without_a_call ... ok
+test pipeline::asset_visual_facts::tests::accepted_superset_survives_fact_coverage_shrinking_episode_scope_without_a_model_call ... ok
+test pipeline::asset_visual_facts::tests::adopted_current_production_choice_defers_future_fact_without_rebinding_or_losing_source ... ok
+test pipeline::asset_visual_facts::tests::an_exact_accepted_packet_is_preferred_to_an_equally_valid_superset ... ok
+test pipeline::asset_visual_facts::tests::author_and_episode_domains_keep_two_requests_and_exact_disjoint_materialized_coverage ... ok
+test pipeline::asset_visual_facts::tests::capacity_packs_keep_successful_results_and_only_block_affected_subjects ... ok
+test pipeline::asset_visual_facts::tests::checkpoint_replay_does_not_change_program_fact_ids_or_keep_model_quotes ... ok
+test pipeline::asset_visual_facts::tests::compact_transport_preserves_source_text_order_and_authority_without_identity_leak ... ok
+test pipeline::asset_visual_facts::tests::current_scope_decision_covers_only_the_named_shape_and_keeps_a_future_sibling_blocked ... ok
+test pipeline::asset_visual_facts::tests::invalid_owner_version_or_source_is_rejected_without_success_cache ... ok
+test pipeline::asset_visual_facts::tests::legacy_raw_is_still_source_bound_and_produces_the_same_fact_identity ... ok
+test pipeline::asset_visual_facts::tests::legacy_unresolved_accepted_first_delta_uses_only_one_context_bound_second_a15_attempt ... ok
+test pipeline::asset_visual_facts::tests::one_packet_reads_source_once_for_all_subjects_and_program_attaches_fact_identity ... ok
+test pipeline::asset_visual_facts::tests::only_real_partial_progress_allows_a_second_a15_delta_and_cached_resume_calls_none ... ok
+test pipeline::asset_visual_facts::tests::packet_receipt_and_sparse_references_are_strict_and_restore_is_atomic ... ok
+test pipeline::asset_visual_facts::tests::production_choice_cannot_authorize_other_identity_or_polluted_source_or_constraint_hash ... ok
+test pipeline::asset_visual_facts::tests::successful_empty_packet_is_reused_without_another_extraction ... ok
+test pipeline::asset_visual_facts::tests::superset_packet_rebuild_rejects_wrong_source_rule_identity_order_hash_or_fact_binding ... ok
+test pipeline::asset_visual_facts::tests::tampered_cached_fact_blocks_locally_without_automatic_reextraction ... ok
+test pipeline::asset_visual_facts::tests::three_hundred_sixty_six_rows_have_one_receipt_and_one_short_reference_schema ... ok
+test pipeline::asset_visual_facts::tests::unassigned_transition_uses_only_original_a15_and_preserves_other_facts_and_cached_calls ... ok
+test pipeline::asset_visual_facts::tests::unbound_state_cannot_hide_an_invalid_source_or_repair_an_unknown_identity ... ok
+test pipeline::asset_visual_facts::tests::unresolved_visual_transition_blocks_only_its_identity_and_keeps_the_original_record ... ok
+test pipeline::asset_visual_facts::tests::valid_existing_current_facts_are_preserved_without_reading_source_again ... ok
+test pipeline::assets::tests::ai_with_missing_receipt_requires_design_without_relabeling_unknown_or_manual_prose ... ok
+test pipeline::assets::tests::automatic_derived_design_uses_the_manual_inline_donor_without_designing_its_parent ... ok
+test pipeline::assets::tests::automatic_design_does_not_rewrite_an_active_stale_image_source ... ok
+test pipeline::assets::tests::automatic_design_repairs_stale_ai_and_only_its_ai_descendants_keeps_valid_and_manual ... ok
+test pipeline::assets::tests::cyclic_or_missing_dependency_blocks_locally_without_model_call ... ok
+test pipeline::assets::tests::derived_child_through_inline_reuses_a_valid_parent_without_changing_direct_reference_id ... ok
+test pipeline::assets::tests::derived_input_inherits_only_its_ancestors_and_replaces_explicit_attributes ... ok
+test pipeline::assets::tests::designing_only_a_missing_child_reuses_the_valid_parent_without_returning_a_parent_update ... ok
+test pipeline::assets::tests::existing_prompt_cannot_bypass_cached_unassigned_state_or_redesign_unrelated_assets ... ok
+test pipeline::assets::tests::explicit_sources_take_priority_over_the_reference_baseline_and_never_silently_fallback ... ok
+test pipeline::assets::tests::fifty_four_independent_designs_use_four_slots_and_one_shared_a15_without_inline_targets ... ok
+test pipeline::assets::tests::implicit_and_explicit_source_cycles_are_rejected_before_dispatch ... ok
+test pipeline::assets::tests::inline_only_plans_keep_manual_media_and_prompts_without_any_model_call ... ok
+test pipeline::assets::tests::legacy_exact_reference_cards_keep_their_existing_wire_shape ... ok
+test pipeline::assets::tests::manual_parent_without_ai_design_or_source_facts_stays_a_direct_reference ... ok
+test pipeline::assets::tests::multiple_legacy_or_base_variants_are_designed_as_distinct_assets ... ok
+test pipeline::assets::tests::only_explicit_trial_review_setting_keeps_the_manual_gate ... ok
+test pipeline::assets::tests::output_is_accepted_only_after_identity_source_and_dependency_validation ... ok
+test pipeline::assets::tests::program_scope_is_labeled_in_base_and_derived_inputs_without_becoming_facts ... ok
+test pipeline::assets::tests::ready_children_start_after_accepted_parent_while_failed_branches_stay_local ... ok
+test pipeline::assets::tests::reference_children_inherit_the_unique_identity_base_without_name_or_row_id_guessing ... ok
+test pipeline::assets::tests::reference_clothes_and_scene_designs_use_old_derived_contract_and_parent_bound_hashes ... ok
+test pipeline::assets::tests::reference_fallback_preserves_legacy_and_non_reference_assets_and_rejects_bad_bases ... ok
+test pipeline::assets::tests::repeated_base_variant_resolves_by_subject_or_explicit_identity ... ok
+test pipeline::assets::tests::stale_implicit_ai_parent_is_preserved_and_only_its_dependents_block ... ok
+test pipeline::assets::tests::unresolved_state_and_invalid_fact_rows_do_not_call_the_model ... ok
+test pipeline::foundation_delivery::tests::author_apply_uses_only_original_q1_and_preserves_source_and_f2_catalogue ... ok
+test pipeline::foundation_delivery::tests::author_contracts_dedupe_legacy_explanations_without_inheriting_permissions ... ok
+test pipeline::foundation_delivery::tests::author_receipts_and_permissions_fail_closed_without_source_edits ... ok
+test pipeline::foundation_delivery::tests::auto_author_applied_receipt_reuses_only_exact_source_evidence ... ok
+test pipeline::foundation_delivery::tests::auto_author_capacity_batches_keep_answer_subject_and_complete_coverage ... ok
+test pipeline::foundation_delivery::tests::auto_author_completed_foundation_uses_one_q1_without_confirm_or_f2 ... ok
+test pipeline::foundation_delivery::tests::auto_author_edit_keeps_original_catalogue_editor_authority ... ok
+test pipeline::foundation_delivery::tests::auto_author_edit_resolves_production_basis_in_same_q1_not_receipt_only ... ok
+test pipeline::foundation_delivery::tests::auto_author_exact_adoption_closes_only_matching_author_and_q1_todos ... ok
+test pipeline::foundation_delivery::tests::auto_author_explicit_user_stop_keeps_original_evidence ... ok
+test pipeline::foundation_delivery::tests::auto_author_fresh_f2_and_new_q1_choice_adopt_within_same_original_q1 ... ok
+test pipeline::foundation_delivery::tests::auto_author_rejects_scope_identity_receipt_and_source_mutation ... ok
+test pipeline::foundation_delivery::tests::auto_author_requires_only_explicit_user_requirement_not_model_label ... ok
+test pipeline::foundation_delivery::tests::auto_author_support_evidence_does_not_expand_application_scope_or_mutate_source ... ok
+test pipeline::foundation_delivery::tests::capacity_projection_preserves_small_request_bytes_and_rejects_indivisible_overflow ... ok
+test pipeline::foundation_delivery::tests::compact_catalogue_preserves_real_evidence_and_unlocated_scope_and_existing_sources ... ok
+test pipeline::foundation_delivery::tests::compact_eighty_episode_mock_preserves_original_dependency_and_source_boundaries ... ok
+test pipeline::foundation_delivery::tests::compact_profile_fits_synthetic_ten_episode_catalogue_in_one_editor_request ... ok
+test pipeline::foundation_delivery::tests::compact_ten_episode_live_timing_and_stage2_handoff ... ignored, explicit fresh Temp project: two real Codex text requests for the saved 10-episode script, no production writes or media
+test pipeline::foundation_delivery::tests::compact_unlocated_catalogue_stays_unlocated_and_real_evidence_is_exactly_enumerated ... ok
+test pipeline::foundation_delivery::tests::complete_choice_is_preserved_but_production_note_never_blocks ... ok
+test pipeline::foundation_delivery::tests::editor_parent_cycle_and_prior_source_borrowing_are_rejected ... ok
+test pipeline::foundation_delivery::tests::eighty_episode_mock_execution_keeps_capacity_tails_packed_and_exactly_once ... ok
+test pipeline::foundation_delivery::tests::empty_editor_changes_preserve_every_canonical_value ... ok
+test pipeline::foundation_delivery::tests::exact_accepted_requests_replay_without_another_generation ... ok
+test pipeline::foundation_delivery::tests::explicit_global_catalogue_requires_actually_supplied_author_rule_and_reason ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_does_not_hide_invalid_graph_identity_or_required_fields ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_new_legal_variant_and_equivalent_parent_are_not_conflicts ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_q1_can_keep_or_explicitly_change_the_registered_basis ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_resolution_exception_does_not_close_real_or_program_issues ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_retains_reference_and_every_external_use_for_both_profiles ... ok
+test pipeline::foundation_delivery::tests::f2_preparation_conflict_swap_parent_and_mode_only_changes_are_q1_suggestions ... ok
+test pipeline::foundation_delivery::tests::final_compact_contract_replays_real_speed_results_without_generation ... ignored, explicit retained speed fixture: read saved F2/Q1 only, zero model calls or production writes
+test pipeline::foundation_delivery::tests::historical_dictionary_roundtrips_every_claim_neighbor_and_distinct_source_row ... ok
+test pipeline::foundation_delivery::tests::historical_neighbours_and_character_claims_are_evidence_only ... ok
+test pipeline::foundation_delivery::tests::inline_uses_strong_baseline_and_editor_keeps_external_appearance_scope ... ok
+test pipeline::foundation_delivery::tests::light_catalogue_changes_bind_current_scope_without_model_reference_inventories ... ok
+test pipeline::foundation_delivery::tests::light_transport_is_versioned_and_does_not_alias_the_old_evidence_inventory_request ... ok
+test pipeline::foundation_delivery::tests::long_utf16_fragments_cover_crlf_surrogates_and_every_locked_row ... ok
+test pipeline::foundation_delivery::tests::malformed_coverage_and_unprovided_evidence_are_rejected ... ok
+test pipeline::foundation_delivery::tests::new_scope_bound_identities_are_distinct_even_when_names_and_scope_match ... ok
+test pipeline::foundation_delivery::tests::q1_character_base_display_edit_must_be_explicit_not_top_name_side_effect ... ok
+test pipeline::foundation_delivery::tests::q1_explicit_display_names_keep_keys_sources_and_aliases ... ok
+test pipeline::foundation_delivery::tests::real_script_copy_reuses_original_f2_and_completes_live_q1_handoff ... ignored, requires explicit isolated copy and DIRECTOR_TEST_REAL_FOUNDATION_WORKFLOW_ID/F2_JOB_ID/Q1_JOB_ID; bounded live Q1 continuation only on the isolated copy
+test pipeline::foundation_delivery::tests::same_names_do_not_merge_new_source_anchored_identities ... ok
+test pipeline::foundation_delivery::tests::saved_actual_auto_q1_cross_scope_reply_revalidates_without_generation ... ignored, requires DIRECTOR_AUTO_Q1_REAL_DB, DIRECTOR_AUTO_Q1_WORKFLOW_ID and DIRECTOR_AUTO_Q1_TEXT_JOB_ID; readonly frozen reply, zero CLI or production writes
+test pipeline::foundation_delivery::tests::saved_actual_q1_explicit_base_display_edit_revalidates_without_generation ... ignored, requires DIRECTOR_FOUNDATION_EDIT_REAL_DB, DIRECTOR_FOUNDATION_EDIT_WORKFLOW_ID and DIRECTOR_FOUNDATION_EDIT_TEXT_JOB_ID; readonly frozen F2/Q1 replies, zero live calls or production writes
+test pipeline::foundation_delivery::tests::scoped_program_split_cannot_be_marked_as_already_published ... ok
+test pipeline::foundation_delivery::tests::synthetic_editor_patches_base_and_exact_split_scenes_without_a_new_model_call ... ok
+test pipeline::foundation_delivery::tests::synthetic_ten_episode_catalogue_recovers_all_47_assets_without_guessing_source ... ok
+test pipeline::foundation_delivery::tests::ten_short_episodes_are_one_catalogue_and_one_editor_call ... ok
+test pipeline::foundation_wire::tests::alias_like_canonical_ids_do_not_collide_and_profile_is_closed ... ok
+test pipeline::foundation_wire::tests::applied_decision_subject_assets_roundtrip_with_exact_order_and_duplicates ... ok
+test pipeline::foundation_wire::tests::applied_decision_unknown_subject_aliases_fail_atomically ... ok
+test pipeline::foundation_wire::tests::dictionary_history_preserves_rows_claim_and_links ... ok
+test pipeline::foundation_wire::tests::exact_source_coordinates_and_closure_coordinates_do_not_leak_task_aliases ... ok
+test pipeline::foundation_wire::tests::material_candidates_and_batch_external_identities_are_typed ... ok
+test pipeline::foundation_wire::tests::synthetic_f2_q1_replies_and_inputs_roundtrip_without_text_changes ... ok
+test pipeline::foundation_wire::tests::typed_references_same_names_and_literals_stay_distinct ... ok
+test pipeline::foundation_wire::tests::unknown_short_references_and_type_confusion_fail_atomically ... ok
+test pipeline::scene_edits::tests::actual_evidence_can_reproject_but_unknown_scene_references_still_fail ... ok
+test pipeline::scene_edits::tests::execution_preserves_exact_declared_scope_and_accepts_previewed_child_references ... ok
+test pipeline::scene_edits::tests::future_scene_name_requires_the_exact_same_response_cut_number ... ok
+test pipeline::scene_edits::tests::preview_rejects_scope_sha_source_anchor_and_unauthorized_field_changes ... ok
+test pipeline::scene_edits::tests::preview_reuses_existing_edits_and_does_not_repeat_a_saved_split ... ok
+test pipeline::scene_edits::tests::same_response_split_then_child_metadata_are_previewed_without_changing_source ... ok
+test pipeline::scene_edits::tests::synthetic_q1_plans_prove_only_the_six_exact_cut_line_children ... ok
+test pipeline::source::m2_tests::ambiguous_inline_scene_and_multiple_speakers_stay_blocking ... ok
+test pipeline::source::m2_tests::decisions_later_then_earlier_rebuild_episode_scene_and_member_order ... ok
+test pipeline::source::m2_tests::duplicate_episode_confirmation_is_exact_persistent_and_cannot_be_borrowed ... ok
+test pipeline::source::m2_tests::exact_inline_scene_dialogue_retains_scene_speaker_quote_and_utf16 ... ok
+test pipeline::source::m2_tests::latin_suffix_names_and_combining_marks_keep_exact_identity_and_explicit_cues ... ok
+test pipeline::source::m2_tests::old_unsorted_decision_dialect_stays_valid_without_silent_reordering ... ok
+test pipeline::source::m2_tests::old_v1_through_v5_replay_frozen_and_reject_new_metadata_without_reparse ... ok
+test pipeline::source::m2_tests::punctuation_scene_headers_and_numeric_narrative_are_distinct ... ok
+test pipeline::source::m2_tests::reparse_refuses_same_hash_when_scene_members_changed_and_preserves_old_edits ... ok
+test pipeline::source::m2_tests::reparse_rejects_boundary_decision_when_episode_membership_cannot_be_proven ... ok
+test pipeline::source::m2_tests::reparse_remaps_split_and_metadata_only_with_exact_scene_and_episode_evidence ... ok
+test pipeline::source::m2_tests::unrelated_location_first_dashed_scene_keeps_old_contract ... ok
+test pipeline::source::tests::altered_or_reordered_source_rejected ... ok
+test pipeline::source::tests::background_titles_are_explicit_not_nearby_body_wording ... ok
+test pipeline::source::tests::case_insensitive_explicit_voice_labels_preserve_locked_text_and_speaker_case ... ok
+test pipeline::source::tests::explicit_bare_and_combined_scene_headers_without_rewriting ... ok
+test pipeline::source::tests::explicit_front_matter_is_context_and_existing_episode_scene_ids_stay_stable ... ok
+test pipeline::source::tests::numbered_character_with_delivery_cue_is_not_silenced_by_a_display_header ... ok
+test pipeline::source::tests::numbered_display_fields_remain_picture_text_and_keep_explicit_voices ... ok
+test pipeline::source::tests::numbered_labels_post_channel_hints_and_parenthetical_colons ... ok
+test pipeline::source::tests::old_voice_metadata_cannot_be_silently_relabelled_under_either_parser_contract ... ok
+test pipeline::source::tests::reparse_keeps_all_confirmed_boundary_decisions_and_exact_source_coordinates ... ok
+test pipeline::source::tests::scene_mentions_scores_and_utc_colon_are_body ... ok
+test pipeline::source::tests::source_classification_cannot_be_tampered_and_decision_keeps_existing_episode ... ok
+test pipeline::source::tests::source_structuring_adjacent_equal_headings_share_one_exact_boundary ... ok
+test pipeline::source::tests::source_structuring_body_and_scene_separate_real_duplicate_numbers ... ok
+test pipeline::source::tests::source_structuring_frozen_v1_v2_v3_replay_without_boundary_migration ... ok
+test pipeline::source::tests::source_structuring_private_first10_docx_prefix_has_exact_ten_production_episodes ... ignored, requires private DIRECTOR_SOURCE_STRUCTURING_FIXTURE; reads only, no model or database
+test pipeline::source::tests::source_structuring_tight_scene_metadata_is_versioned_and_rejects_numeric_prose ... ok
+test pipeline::source::tests::source_structuring_zero_is_complete_auxiliary_not_an_extra_production_episode ... ok
+test pipeline::source::tests::system_message_wrapper_is_spoken_and_legacy_metadata_upgrades_without_source_changes ... ok
+test pipeline::source::tests::unknown_boundaries_require_decision_without_changing_text ... ok
+test pipeline::source::tests::unknown_prefix_stays_a_local_issue_without_inventing_an_episode ... ok
+test pipeline::source::tests::unversioned_legacy_sources_keep_their_original_contract_until_explicit_reparse ... ok
+test pipeline::source::tests::utf16_crlf_exact_coverage_and_quotes ... ok
+test pipeline::source::tests::voice_label_upgrade_requires_explicit_reparse_and_keeps_all_source_identities ... ok
+test pipeline::storyboard::asset_cards::tests::aliases_require_formal_identity_not_same_display_name_and_only_new_profile_inherits ... ok
+test pipeline::storyboard::asset_cards::tests::card_preserves_canonical_scope_facts_and_dependencies_without_runtime_payloads ... ok
+test pipeline::storyboard::asset_cards::tests::only_explicit_current_adopted_brief_is_production_design_not_source ... ok
+test pipeline::storyboard::asset_cards::tests::scoped_card_keeps_registered_identity_facts_and_material_parent_without_global_scope_repetition ... ok
+test pipeline::storyboard::asset_cards::tests::scoped_card_keeps_unknown_or_nonequivalent_scope_and_source_binding_literal ... ok
+test pipeline::storyboard::asset_cards::tests::unknown_transport_profile_fails_before_a_model_can_be_called ... ok
+test pipeline::storyboard::asset_cards::tests::unmarked_and_null_historical_inputs_keep_the_exact_asset_json ... ok
+test pipeline::storyboard::asset_cards::tests::v1_and_unmarked_requests_keep_exact_cards_and_have_no_new_scope_packet ... ok
+test pipeline::storyboard::creative::tests::fantasy_schema_restores_real_subjective_boundary_in_delta_replacements ... ok
+test pipeline::storyboard::creative::tests::finish_drops_only_program_export_copies_and_keeps_opaque_full_base_hash ... ok
+test pipeline::storyboard::creative::tests::finish_plan_scope_carries_only_related_emotion_facts_and_selected_suggestions ... ok
+test pipeline::storyboard::creative::tests::finish_scope_and_second_scene_coordinate_repairs_do_not_authorize_source_or_identity_rewrites ... ok
+test pipeline::storyboard::creative::tests::human_reference_labels_do_not_replace_canonical_material_binding ... ok
+test pipeline::storyboard::creative::tests::manual_prompt_and_rebound_names_are_not_replaced_by_a_saved_channel_template ... ok
+test pipeline::storyboard::creative::tests::old_v3_complete_six_column_body_is_preserved_before_the_explicit_exit_extension ... ok
+test pipeline::storyboard::creative::tests::original_creative_runtime_rules_are_trusted_not_source_instructions ... ok
+test pipeline::storyboard::creative::tests::preset_contains_the_complete_old_physical_visual_voice_basis ... ok
+test pipeline::storyboard::creative::tests::rejected_author_scope_repair_is_original_finisher_with_exact_provenance_and_hard_scope_feedback_only ... ok
+test pipeline::storyboard::creative::tests::revision_requirements_are_statically_authorized_without_promoting_source_or_old_snapshots ... ok
+test pipeline::storyboard::creative::tests::selected_fantasy_preserves_the_old_suggestion_not_a_user_lock ... ok
+test pipeline::storyboard::creative::tests::serialized_voice_windows_and_derived_legacy_brief_recover_the_exact_same_f64 ... ok
+test pipeline::storyboard::creative::tests::unmarked_requests_keep_their_exact_settings_schema_rules_and_instructions ... ok
+test pipeline::storyboard::creative::tests::v3_export_keeps_long_dialogue_identity_shared_timeline_and_multiple_shots ... ok
+test pipeline::storyboard::creative::tests::v3_header_replaces_adjacent_ids_without_consuming_boundaries_or_cleaning_body ... ok
+test pipeline::storyboard::original::tests::a_real_time_space_boundary_and_unknown_method_are_not_merged ... ok
+test pipeline::storyboard::original::tests::continuous_beats_share_one_author_and_keep_their_source_contracts ... ok
+test pipeline::storyboard::original::tests::indivisible_fantasy_is_not_cut_to_satisfy_transport_targets ... ok
+test pipeline::storyboard::original::tests::legal_event_merge_preserves_raw_shots_voice_and_fantasy ... ok
+test pipeline::storyboard::original::tests::overlapping_voice_windows_are_counted_once_and_never_a_hard_minimum ... ok
+test pipeline::storyboard::original::tests::pack_preserves_cross_scene_explicit_boundary_and_over_capacity ... ok
+test pipeline::storyboard::original::tests::short_tail_group_is_transport_only_and_requires_real_dependency ... ok
+test pipeline::storyboard::production_contract_tests::accepted_fractional_finish_uses_only_one_new_delta_editor_then_replays_every_cache ... ok
+test pipeline::storyboard::production_contract_tests::accepted_plan_revision_preserves_original_emotion_cards_fantasy_group_and_two_role_scope ... ok
+test pipeline::storyboard::production_contract_tests::accepted_plan_revision_rejects_stale_or_fabricated_provenance_without_model_calls ... ok
+test pipeline::storyboard::production_contract_tests::applied_interpretation_keeps_each_local_scope_and_never_inferrs_global_or_subject ... ok
+test pipeline::storyboard::production_contract_tests::applied_interpretation_reaches_three_roles_with_exact_context_and_cached_replay ... ok
+test pipeline::storyboard::production_contract_tests::author_scope_issue_does_not_hide_hard_quote_or_identity_errors_or_allow_foreign_revision ... ok
+test pipeline::storyboard::production_contract_tests::author_scope_no_progress_ignores_cosmetic_unit_names_orders_and_reference_order ... ok
+test pipeline::storyboard::production_contract_tests::author_scope_probe_defers_only_applicability_not_source_event_fantasy_or_quotation ... ok
+test pipeline::storyboard::production_contract_tests::author_scope_repair_adopts_only_the_finisher_and_carries_its_real_tail_to_next_author ... ok
+test pipeline::storyboard::production_contract_tests::author_scope_repair_has_two_persistent_attempts_and_same_problem_stops_after_one ... ok
+test pipeline::storyboard::production_contract_tests::carrier_over_maximum_uses_finisher_delta_not_clipping_and_keeps_the_accepted_origin ... ok
+test pipeline::storyboard::production_contract_tests::carrier_repairs_stop_on_no_progress_or_two_attempts_and_never_publish_invalid_source ... ok
+test pipeline::storyboard::production_contract_tests::changed_carrier_tail_transparently_recomputes_the_affected_chain_and_reuses_it_on_resume ... ok
+test pipeline::storyboard::production_contract_tests::complete_episode_publishes_before_the_next_plan_and_never_publishes_partial_authors ... ok
+test pipeline::storyboard::production_contract_tests::continuous_action_evidence_across_units_keeps_creative_body_and_once_only_source_coverage ... ok
+test pipeline::storyboard::production_contract_tests::continuous_action_evidence_does_not_relax_dialogue_scope_window_or_order_checks ... ok
+test pipeline::storyboard::production_contract_tests::current_editor_checkpoint_and_plan_only_history_reuse_accepted_requests ... ok
+test pipeline::storyboard::production_contract_tests::default_fantasy_recommendation_completes_author_and_editor_without_review ... ok
+test pipeline::storyboard::production_contract_tests::delta_fantasy_requires_one_complete_group_and_cannot_be_silently_dropped ... ok
+test pipeline::storyboard::production_contract_tests::delta_retains_exact_units_and_rejects_stale_missing_duplicate_or_noncontiguous_groups ... ok
+test pipeline::storyboard::production_contract_tests::dependency_exit_profile_preserves_full_continuity_source_and_exact_legacy_replay ... ok
+test pipeline::storyboard::production_contract_tests::editor_batches_follow_actual_transport_budget_and_cover_source_once ... ok
+test pipeline::storyboard::production_contract_tests::editor_coordinate_candidate_does_not_weaken_unknown_cross_scene_quotation_or_adoption_gates ... ok
+test pipeline::storyboard::production_contract_tests::failed_editor_resumes_from_accepted_authors_without_another_author_call ... ok
+test pipeline::storyboard::production_contract_tests::failed_predecessor_blocks_dependent_episode_without_resetting_continuity ... ok
+test pipeline::storyboard::production_contract_tests::history_keeps_relevant_different_claims_and_original_neighbors ... ok
+test pipeline::storyboard::production_contract_tests::incompatible_history_is_scoped_and_transport_identity_cannot_be_overridden ... ok
+test pipeline::storyboard::production_contract_tests::invalid_spoken_range_is_rejected_and_never_accepted ... ok
+test pipeline::storyboard::production_contract_tests::legacy_finish_grouping_cannot_expand_when_new_row_transport_repairs_capacity ... ok
+test pipeline::storyboard::production_contract_tests::local_revision_runs_only_create_and_finish_and_preserves_other_units ... ok
+test pipeline::storyboard::production_contract_tests::long_owner_finishes_related_authored_range_once_and_passes_accepted_author_tail ... ok
+test pipeline::storyboard::production_contract_tests::method_cards_are_loaded_by_scope_and_source_expression_does_not_grant_fantasy ... ok
+test pipeline::storyboard::production_contract_tests::new_carrier_profile_frontloads_all_three_roles_without_altering_old_requests ... ok
+test pipeline::storyboard::production_contract_tests::old_batch_editor_checkpoint_blocks_before_any_executor_call_and_preserves_cache ... ok
+test pipeline::storyboard::production_contract_tests::ordinary_finisher_scope_repair_has_two_attempts_and_never_adopts_hard_or_unchanged_errors ... ok
+test pipeline::storyboard::production_contract_tests::ordinary_finisher_scope_repair_preserves_its_rejected_raw_and_reuses_all_paid_steps ... ok
+test pipeline::storyboard::production_contract_tests::original_editor_repair_history_is_not_an_old_author_batch_finish ... ok
+test pipeline::storyboard::production_contract_tests::original_editor_repairs_source_coordinates_without_reauthoring_or_adopting_rejected_raw ... ok
+test pipeline::storyboard::production_contract_tests::original_production_profile_restores_three_role_contracts_and_v3_without_touching_legacy_cache ... ok
+test pipeline::storyboard::production_contract_tests::owner_context_keeps_declared_evidence_and_background_without_broadcasting_eighty_episodes ... ok
+test pipeline::storyboard::production_contract_tests::prefixed_packed_segments_keep_shot_headers_and_source_dialogue_consistent ... ok
+test pipeline::storyboard::production_contract_tests::previous_source_boundary_retains_complete_scene_or_whole_oversized_tail_node ... ok
+test pipeline::storyboard::production_contract_tests::production_cards_reach_three_roles_without_prompt_history_and_replay_exactly ... ok
+test pipeline::storyboard::production_contract_tests::readonly_indivisible_author_finish_measures_actual_cli_after_lossless_projection ... ignored, explicit read-only accepted author evidence; zero model calls or database writes
+test pipeline::storyboard::production_contract_tests::readonly_rejected_finisher_fixture_checks_scope_and_known_scene_coordinates_without_adoption ... ignored, explicit private read-only rejected Finish fixtures; no model or production writes
+test pipeline::storyboard::production_contract_tests::readonly_source_evidence_revalidates_original_body_and_delta_without_writing ... ignored, explicit private read-only rejected source evidence; zero model/provider calls
+test pipeline::storyboard::production_contract_tests::rejected_delta_is_not_accepted_or_automatically_retried ... ok
+test pipeline::storyboard::production_contract_tests::rejected_editor_same_episode_coordinate_uses_only_the_remaining_attempt_and_final_strict_gate ... ok
+test pipeline::storyboard::production_contract_tests::related_editor_keeps_voice_reference_and_does_not_change_source_windows ... ok
+test pipeline::storyboard::production_contract_tests::related_finish_unions_local_interpretations_and_revision_retains_the_same_package ... ok
+test pipeline::storyboard::production_contract_tests::repaired_author_dependency_branch_reaches_related_finisher_and_reuses_its_cache ... ok
+test pipeline::storyboard::production_contract_tests::repeated_evidence_materializes_locked_source_once_without_replaying_speech ... ok
+test pipeline::storyboard::production_contract_tests::review_waits_then_reuses_the_frozen_plan_with_an_empty_choice ... ok
+test pipeline::storyboard::production_contract_tests::saved_rejected_author_scope_raw_passes_only_the_hard_gate_without_adoption ... ignored, explicit ENV-bound original rejected author; read-only, no model or writes
+test pipeline::storyboard::production_contract_tests::saved_stage3_finish_capacity_replays_exact_accepted_authors_without_model_calls ... ignored, explicit read-only saved production evidence; no CLI, channel or database writes
+test pipeline::storyboard::production_contract_tests::scoped_catalog_handoff_preserves_direction_episode_context_and_cached_facts_across_three_roles ... ok
+test pipeline::storyboard::production_contract_tests::source_intervals_are_materialized_without_speaking_cues_or_copying_settings ... ok
+test pipeline::storyboard::production_contract_tests::unchanged_source_coordinate_repair_stops_once_and_resume_does_not_reset_budget ... ok
+test pipeline::storyboard::production_contract_tests::unconfirmed_stale_or_invalid_interpretation_never_becomes_source_authority ... ok
+test pipeline::storyboard::production_contract_tests::unmarked_legacy_review_auto_recommends_with_the_identical_cached_plan ... ok
+test pipeline::storyboard::production_contract_tests::unsupported_asset_input_profile_sends_no_plan_author_or_editor ... ok
+test pipeline::storyboard::production_contract_tests::unsupported_dependency_input_profile_sends_no_plan_author_or_editor ... ok
+test pipeline::storyboard::production_contract_tests::utf16_selection_rejects_surrogate_splits_and_duplicate_source_intervals ... ok
+test pipeline::storyboard::tests::audio_source_is_evidence_and_never_an_image_or_fabricated_audio_import ... ok
+test pipeline::storyboard::tests::cross_unit_quote_fragments_have_program_owned_nonoverlapping_coverage ... ok
+test pipeline::storyboard::tests::delivery_canonicalizes_numeric_error_and_retains_real_shot_and_voice_times ... ok
+test pipeline::storyboard::tests::exact_source_dialogue_passes_and_rephrasing_fails ... ok
+test pipeline::storyboard::tests::inline_variant_uses_exact_parent_image_without_losing_semantic_state ... ok
+test pipeline::storyboard::tests::splitting_preserves_exact_quote_once ... ok
+test pipeline::storyboard::tests::three_roles_emit_bound_independently_usable_units ... ok
+test pipeline::storyboard::tests::voice_windows_assets_and_capacity_cannot_be_clamped ... ok
+test pipeline::storyboard_dependencies::tests::exact_package_identity_multiple_dependencies_and_internal_exclusion ... ok
+test pipeline::storyboard_dependencies::tests::exact_six_fields_preserve_state_identity_and_leave_canonical_inputs_untouched ... ok
+test pipeline::storyboard_dependencies::tests::exit_uses_owned_source_order_across_execution_batches_not_completion_or_foreign_refs ... ok
+test pipeline::storyboard_dependencies::tests::fragments_of_one_source_row_keep_stable_adopted_unit_order ... ok
+test pipeline::storyboard_dependencies::tests::joint_group_exit_excludes_later_units_owned_only_by_another_package ... ok
+test pipeline::storyboard_dependencies::tests::malformed_or_unknown_frozen_identity_fails_closed ... ok
+test pipeline::storyboard_dependencies::tests::missing_or_unowned_exit_never_falls_back_to_name_tail_or_top_level_refs ... ok
+test pipeline::storyboard_dependencies::tests::new_marker_is_explicit_and_historical_marker_absence_remains_legacy ... ok
+test pipeline::storyboard_transport::schema_projection::tests::complete_repeated_objects_share_every_constraint_without_chained_definitions ... ok
+test pipeline::storyboard_transport::schema_projection::tests::existing_definitions_references_small_or_single_enums_remain_exact ... ok
+test pipeline::storyboard_transport::schema_projection::tests::only_exact_repeated_string_enums_share_with_order_and_extra_constraints_preserved ... ok
+test pipeline::storyboard_transport::tests::decoder_rejects_unknown_target_chaining_and_extra_fields ... ok
+test pipeline::storyboard_transport::tests::differing_scopes_and_claims_are_never_coalesced_and_existing_markers_stay_data ... ok
+test pipeline::storyboard_transport::tests::dispatch_selector_compacts_short_three_roles_without_changing_capacity_or_canonical ... ok
+test pipeline::storyboard_transport::tests::dispatch_selector_keeps_unknown_rows_literal_and_rejects_tampered_authority ... ok
+test pipeline::storyboard_transport::tests::dispatch_selector_rejects_source_notation_and_preserves_old_wire_without_net_gain ... ok
+test pipeline::storyboard_transport::tests::dispatch_selector_requires_2048_utf16_net_gain_in_complete_envelopes ... ok
+test pipeline::storyboard_transport::tests::exact_author_duplicates_keep_full_targets_scope_and_continuity ... ok
+test pipeline::storyboard_transport::tests::future_plan_refs_and_exact_asset_prompt_copies_remain_single_hop_full_values ... ok
+test pipeline::storyboard_transport::tests::invalid_row_spans_and_literal_row_notation_cannot_acquire_authority ... ok
+test pipeline::storyboard_transport::tests::large_locked_row_tables_roundtrip_for_all_roles_without_losing_quotes_or_metadata ... ok
+test pipeline::storyboard_transport::tests::legacy_grouping_keeps_frozen_v1_aliases_and_rule_without_new_author_aliases ... ok
+test pipeline::storyboard_transport::tests::mixed_fingerprints_retain_unseen_values_and_require_every_visible_identity_and_hash ... ok
+test pipeline::storyboard_transport::tests::only_actual_alias_targets_stay_full_while_other_packages_compact_exactly ... ok
+test pipeline::storyboard_transport::tests::oversized_finish_roundtrips_every_value_and_keeps_draft_source_and_rules_direct ... ok
+test pipeline::storyboard_transport::tests::program_fingerprints_only_project_after_every_visible_id_and_utf8_hash_matches ... ok
+test pipeline::storyboard_transport::tests::row_span_and_hash_recipes_read_exact_decoded_catalogs_without_scope_expansion ... ok
+test pipeline::storyboard_transport::tests::row_spans_preserve_catalog_order_repeated_ids_unknown_refs_and_complete_targets ... ok
+test pipeline::storyboard_transport::tests::row_table_invalid_columns_ranges_and_unknown_fields_never_get_guessed ... ok
+test pipeline::storyboard_transport::tests::saved_latest_three_role_dispatch_selector_measures_actual_rust_envelope_gain ... ignored, explicit saved latest three-role requests; read-only, no channels or production writes
+test pipeline::storyboard_transport::tests::saved_three_role_requests_prove_exact_transport_and_actual_envelope_budget ... ignored, explicit env-bound saved requests; read-only, no model or production writes
+test pipeline::storyboard_transport::tests::shared_source_columns_roundtrip_full_ids_speech_and_unicode_with_no_canonical_changes ... ok
+test pipeline::storyboard_transport::tests::short_requests_and_non_delta_editor_inputs_keep_original_transport ... ok
+test pipeline::tests::cross_scene_appearance_and_derived_cycle_are_rejected ... ok
+test pipeline::tests::original_production_rules_and_selected_cards_have_versioned_bound_hashes ... ok
+test pipeline::tests::program_scope_metadata_survives_asset_handoff_without_locating_candidates_or_creating_facts ... ok
+test pipeline::transport_recovery_runner_tests::transport_recovery_is_bounded_and_domain_rejection_never_reexecutes ... ok
+test providers::bh::tests::duplicate_models_fail_closed ... ok
+test providers::bh::tests::grouped_catalog_and_unknown_models_are_explicit ... ok
+test providers::chrome::tests::native_file_identity_is_bound_to_chatgpt ... ok
+test providers::chrome::tests::proven_artifact_preserves_case_and_hash ... ok
+test providers::chrome::tests::unrelated_image_is_rejected ... ok
+test providers::dreamina::bounded_process_tests::close_during_execution_is_bounded_and_before_spawn_is_not_unknown ... ok
+test providers::dreamina::bounded_process_tests::inherited_pipe_has_a_bound_including_runtime_drop ... ok
+test providers::dreamina::bounded_process_tests::missing_executable_is_proven_unsubmitted ... ok
+test providers::dreamina::bounded_process_tests::output_retention_limit_still_drains_both_pipes_until_cli_exit ... ok
+test providers::dreamina::bounded_process_tests::quiet_cli_finishes_once_without_false_hang_or_reexecution ... ok
+test providers::dreamina::bounded_process_tests::reference_directory_survives_complete_process_collection ... ok
+test providers::dreamina::bounded_process_tests::submitting_timeout_is_unknown_and_never_starts_second_exec ... ok
+test providers::dreamina::bounded_process_tests::synchronous_adapter_is_safe_inside_existing_runtime ... ok
+test providers::dreamina::bounded_process_tests::timeout_kills_reaps_and_preserves_readonly_error_type ... ok
+test providers::dreamina::tests::accepted_is_not_finished ... ok
+test providers::dreamina::tests::account_identity_hash_and_credit_allowlist_are_stable ... ok
+test providers::dreamina::tests::bypass_conversion_keeps_only_equivalent_ips_and_explicit_domain_suffixes ... ok
+test providers::dreamina::tests::capability_cache_changed_binary_during_inspection_is_not_saved ... ok
+test providers::dreamina::tests::capability_cache_different_paths_do_not_share_same_content_capabilities ... ok
+test providers::dreamina::tests::capability_cache_does_not_grant_unknown_models_or_relax_per_item_capacity ... ok
+test providers::dreamina::tests::capability_cache_failures_keep_typed_probe_error_and_never_prepare_or_submit ... ok
+test providers::dreamina::tests::capability_cache_file_metadata_change_also_invalidates_same_bytes ... ok
+test providers::dreamina::tests::capability_cache_one_help_round_serves_startup_and_fifty_four_preflights ... ok
+test providers::dreamina::tests::capability_cache_same_length_content_replacement_invalidates_and_blocks_old_submit ... ok
+test providers::dreamina::tests::capability_cache_single_flight_reuses_the_exact_binary_for_concurrent_reads ... ok
+test providers::dreamina::tests::capability_cache_ttl_is_short_and_hits_do_not_extend_the_actual_read_time ... ok
+test providers::dreamina::tests::capability_inspection_respects_a_shorter_user_timeout ... ok
+test providers::dreamina::tests::capability_inspection_shares_a_total_deadline_and_does_not_change_generation_config ... ok
+test providers::dreamina::tests::changed_cli_or_frozen_wire_is_rejected_before_generation ... ok
+test providers::dreamina::tests::child_command_receives_effective_proxy_without_mutating_parent_environment ... ok
+test providers::dreamina::tests::conflicting_submit_aliases_remain_unknown_and_queries_never_submit ... ok
+test providers::dreamina::tests::credit_without_identity_does_not_enable_submission ... ok
+test providers::dreamina::tests::custom_1080_image_wire_has_dimensions_and_no_ratio_or_1080_enum ... ok
+test providers::dreamina::tests::disabled_pac_only_and_invalid_static_proxy_never_inject_guessed_routes ... ok
+test providers::dreamina::tests::exact_model_tokens ... ok
+test providers::dreamina::tests::exhausted_capability_budget_stops_before_the_remaining_image_probes ... ok
+test providers::dreamina::tests::expired_capability_budget_does_not_start_a_command ... ok
+test providers::dreamina::tests::explicit_all_proxy_wins_and_is_mapped_only_to_missing_cli_schemes ... ok
+test providers::dreamina::tests::explicit_authentication_failure_pauses_but_generic_login_advice_does_not ... ok
+test providers::dreamina::tests::explicit_empty_scheme_never_falls_back_to_system_proxy ... ok
+test providers::dreamina::tests::frozen_submit_runs_only_the_generation_command_once ... ok
+test providers::dreamina::tests::image_and_video_submit_receipts_use_the_same_strict_result_contract ... ok
+test providers::dreamina::tests::image_native_sizes_are_model_specific ... ok
+test providers::dreamina::tests::launch_fingerprint_tracks_effective_child_proxy_and_cwd_without_leaking_values ... ok
+test providers::dreamina::tests::local_media_transport_changed_source_or_unknown_profile_never_starts_generation ... ok
+test providers::dreamina::tests::local_media_transport_child_command_keeps_verified_absolute_cli_and_rejects_relative_config ... ok
+test providers::dreamina::tests::local_media_transport_copy_rechecks_bytes_even_after_original_preflight ... ok
+test providers::dreamina::tests::local_media_transport_image_uses_ordered_relative_bytes_and_keeps_canonical_snapshot ... ok
+test providers::dreamina::tests::local_media_transport_legacy_preparation_stays_exact_and_original_id_query_needs_no_file ... ok
+test providers::dreamina::tests::local_media_transport_simultaneous_invocations_have_private_directories ... ok
+test providers::dreamina::tests::local_media_transport_unknown_submit_is_once_only_and_cleans_owned_files ... ok
+test providers::dreamina::tests::local_media_transport_video_preserves_mixed_order_and_each_frozen_file ... ok
+test providers::dreamina::tests::local_submit_keeps_options_and_media_constraints ... ok
+test providers::dreamina::tests::malformed_explicit_query_identity_never_falls_back_to_expected_id ... ok
+test providers::dreamina::tests::malformed_insecure_or_credential_urls_are_not_results ... ok
+test providers::dreamina::tests::network_login_diagnostics_are_not_auth_failures_and_never_leak_raw_streams ... ok
+test providers::dreamina::tests::oauth_material_is_strictly_allowlisted ... ok
+test providers::dreamina::tests::oauth_pending_refusal_and_expiry_are_distinct ... ok
+test providers::dreamina::tests::official_image_result_json_keeps_original_urls_order_and_dimensions ... ok
+test providers::dreamina::tests::official_plain_label_oauth_output_is_supported_and_allowlisted ... ok
+test providers::dreamina::tests::official_result_client_uses_the_selected_http_proxy_on_loopback_fixture ... ok
+test providers::dreamina::tests::official_result_proxy_configuration_errors_are_sanitized ... ok
+test providers::dreamina::tests::other_task_fails ... ok
+test providers::dreamina::tests::pending_failed_and_unknown_tasks_never_collect_temporary_output ... ok
+test providers::dreamina::tests::prefixed_ansi_oauth_json_is_read_without_returning_prefix ... ok
+test providers::dreamina::tests::prepared_query_and_submit_apply_the_frozen_media_kind ... ok
+test providers::dreamina::tests::present_credit_components_preserve_zero_and_missing_stay_unknown ... ok
+test providers::dreamina::tests::proxy_environment_precedence_is_scheme_specific_and_preserves_explicit_bypass ... ok
+test providers::dreamina::tests::proxy_parser_accepts_static_default_per_protocol_and_ipv6 ... ok
+test providers::dreamina::tests::proxy_parser_rejects_ambiguous_servers_credentials_urls_and_invalid_ports ... ok
+test providers::dreamina::tests::result_string_arrays_are_allowed_only_in_output_containers ... ok
+test providers::dreamina::tests::safe_cli_failure_hides_complete_private_paths_without_leaking_root_suffixes ... ok
+test providers::dreamina::tests::safe_cli_failure_keeps_flag_and_model_semantics_and_original_submit_policy ... ok
+test providers::dreamina::tests::safe_cli_failure_never_copies_stdout_or_untrusted_binary_control_lines ... ok
+test providers::dreamina::tests::safe_cli_failure_redacts_full_configured_secrets_and_prompt_before_truncation ... ok
+test providers::dreamina::tests::safe_cli_failure_removes_urls_jwts_headers_and_escaped_private_values ... ok
+test providers::dreamina::tests::safe_cli_invocation_redactions_include_configured_values_and_original_arguments ... ok
+test providers::dreamina::tests::success_extracts_only_result_fields ... ok
+test providers::dreamina::tests::success_without_output_is_not_inferred_expired_and_preview_fields_are_ignored ... ok
+test providers::dreamina::tests::task_identity_aliases_must_match_each_other_and_the_original_task ... ok
+test providers::dreamina::tests::typed_results_filter_mixed_containers_without_guessing_url_extensions ... ok
+test providers::dreamina::tests::video_model_sizes_are_specific_and_fixed_choices_are_not_empty ... ok
+test providers::dreamina::tests::video_result_json_uses_video_url_then_record_url_without_covers ... ok
+test providers::dreamina::tests::video_sizes_do_not_leak_from_other_models_or_flags ... ok
+test providers::wire::result_diagnostics_tests::actual_loopback_timeout_diagnostic_has_no_signed_url_or_secret ... ok
+test providers::wire::result_diagnostics_tests::actual_unreachable_loopback_error_keeps_its_type_without_copying_error_url ... ok
+test providers::wire::result_diagnostics_tests::download_categories_use_fixed_labels_and_preserve_transport_types ... ok
+test providers::wire::result_diagnostics_tests::http_rejection_exposes_only_status_and_is_never_auth_or_expiry_proof ... ok
+test providers::wire_tests::bh_upload_submit_and_resume_queries_only_original_id ... ok
+test providers::wire_tests::malformed_submit_is_unknown_without_automatic_resubmit ... ok
+test providers::wire_tests::media_change_prevents_any_submit ... ok
+test providers::wire_tests::no_unknown_submission_recovery_generates ... ok
+test store::tests::atomic_json_replaces_the_existing_registry_with_a_complete_document ... ok
+test store::tests::author_apply_reservation_guards_confirmed_set_and_retains_f2_checkpoint ... ok
+test store::tests::author_confirmation_cas_preserves_source_and_rejects_stale_or_repeated_answer ... ok
+test store::tests::author_confirmation_is_atomic_under_concurrent_submissions ... ok
+test store::tests::author_confirmation_waits_for_active_local_text_pipeline ... ok
+test store::tests::auto_author_preserves_old_answer_as_reference_and_honors_user_requirement_cas ... ok
+test store::tests::auto_author_reservation_is_atomic_without_manual_confirmation ... ok
+test store::tests::cas_prepared_receipt_is_atomic_and_cannot_resurrect_stale_work ... ok
+test store::tests::channel_reparse_cannot_carry_foundation_over_changed_source_or_forged_metadata ... ok
+test store::tests::downloaded_media_projection_survives_future_query_results ... ok
+test store::tests::explicit_channel_reparse_rebinds_foundation_without_reauthoring_or_changing_assets ... ok
+test store::tests::invalid_av_metadata_preserves_original_and_records_the_real_failure ... ok
+test store::tests::legacy_desktop_schema_one_migrates_retry_fields_without_losing_tasks ... ok
+test store::tests::query_and_download_backoff_are_independent_and_capped ... ok
+test store::tests::recovery_cli_closing_known_media_tasks_is_query_only_and_exact ... ok
+test store::tests::relocation_rebuilds_thumbnail_and_preserves_submitted_and_unknown_snapshot_bytes ... ok
+test store::tests::replacing_adoption_expires_only_frozen_unsubmitted_references ... ok
+test store::tests::schema_gate_refuses_unknown_versions_and_reopening_v2_does_not_rewrite_the_db ... ok
+test store::tests::summaries_are_compact_but_old_pending_identities_are_not_capped_by_history ... ok
+test store::tests::unresolved_active_states_prevent_a_second_generation_identity ... ok
+test text_cli::tests::invalid_explicit_path_does_not_silently_fallback_to_a_different_cli ... ok
+test text_cli::tests::local_status_is_read_only_and_bounded ... ignored, reads native local CLI version/login/catalog/limits; sends no model generation
+test text_cli::tests::managed_installation_rejects_reparse_root_and_binary ... ok
+test text_cli::tests::managed_installation_relocation_only_uses_complete_native_versions ... ok
+test text_cli::tests::model_capabilities_preserve_each_models_efforts_and_hide_internal_entries ... ok
+test text_cli::tests::owned_login_continues_after_dispatch_returns_and_cancel_is_final ... ok
+test text_cli::tests::quota_summary_contains_display_fields_but_no_account_identity_or_unknown_secrets ... ok
+test text_cli::tests::untrusted_login_url_is_rejected_before_starting_browser ... ok
+test text_executor::carrier_continuity_key_tests::author_scope_repair_received_and_interrupted_raw_require_domain_validation_and_cas ... ok
+test text_executor::carrier_continuity_key_tests::author_scope_repair_unresolved_attempt_never_resets_its_persistent_budget ... ok
+test text_executor::carrier_continuity_key_tests::carrier_received_and_recovered_raw_require_full_validation_without_new_jobs ... ok
+test text_executor::carrier_continuity_key_tests::carrier_received_binding_or_receipt_pollution_fails_closed_without_new_jobs ... ok
+test text_executor::carrier_continuity_key_tests::carrier_received_cas_checks_latest_evidence_and_rolls_back_both_rows ... ok
+test text_executor::carrier_continuity_key_tests::carrier_unresolved_attempts_never_resubmit_after_reopen_or_interrupted_recovery ... ok
+test text_executor::carrier_continuity_key_tests::changed_tail_uses_new_versioned_node_keys_without_touching_old_snapshots ... ok
+test text_executor::carrier_continuity_key_tests::finish_scope_repair_persists_unresolved_budget_and_received_raw_requires_domain_cas ... ok
+test text_executor::carrier_continuity_key_tests::ordinary_planner_author_and_finisher_failures_do_not_enter_carrier_recovery ... ok
+test text_executor::carrier_continuity_key_tests::original_scope_rejected_author_binding_pollution_cannot_create_a_new_job ... ok
+test text_executor::carrier_continuity_key_tests::original_scope_rejected_author_replays_exact_raw_but_can_never_be_accepted ... ok
+test text_executor::carrier_continuity_key_tests::original_source_rejected_author_replays_its_sealed_raw_without_dispatch_or_adoption ... ok
+test text_executor::carrier_continuity_key_tests::rejected_carrier_attempt_replays_without_new_job_or_acceptance_and_binding_drift_fails_closed ... ok
+test text_executor::carrier_continuity_key_tests::rejected_ordinary_scope_finisher_pollution_cannot_reopen_or_submit ... ok
+test text_executor::carrier_continuity_key_tests::rejected_ordinary_scope_finisher_replays_raw_without_acceptance_or_new_jobs ... ok
+test text_executor::sdk_core_tests::legacy_nonmanaged_cli_two_field_cache_is_audited_without_version_forgery_or_new_job ... ok
+test text_executor::sdk_core_tests::nonmanaged_cli_actual_request_constructs_three_field_identity_without_forging_legacy_version ... ok
+test text_executor::sdk_core_tests::sdk_core_author_chain_revision_uses_sdk_accepted_predecessor_without_cli_identity ... ok
+test text_executor::sdk_core_tests::sdk_core_disconnect_unknown_blocks_restart_new_workflow_and_cli_without_more_executions ... ok
+test text_executor::sdk_core_tests::sdk_core_domain_rejection_keeps_raw_and_cannot_regenerate_or_promote_after_restart ... ok
+test text_executor::sdk_core_tests::sdk_core_malformed_model_text_is_kept_verbatim_and_never_accepted_or_reexecuted ... ok
+test text_executor::sdk_core_tests::sdk_core_modified_raw_compiled_request_or_domain_seal_fails_closed_without_execute ... ok
+test text_executor::sdk_core_tests::sdk_core_new_workflow_exact_accepted_cache_keeps_original_raw_and_creates_bound_checkpoint ... ok
+test text_executor::sdk_core_tests::sdk_core_official_package_raw_domain_accept_restart_exact_cache_zero_extra_execute ... ok
+test text_executor::sdk_core_tests::sdk_core_production_selection_does_not_create_jobs_or_start_runtime ... ok
+test text_executor::sdk_core_tests::sdk_core_reconcile_completed_receipt_after_crash_recovers_raw_with_zero_new_execute ... ok
+test text_executor::sdk_core_tests::sdk_core_revision_budget_survives_new_workflow_and_backend_change ... ok
+test text_executor::sdk_core_tests::sdk_core_stage2_parent_keeps_distinct_asset_steps_and_replays_both_after_restart ... ok
+test text_executor::sdk_core_tests::sdk_core_visual_fact_repair_context_uses_actual_sdk_raw_and_accepted_materialization ... ok
+test text_executor::stage2_checkpoint_identity_tests::stage2_parent_checkpoints_separate_assets_packets_and_bounded_repairs ... ok
+test text_executor::standalone_asset_callback_tests::callbacks_without_a_bound_result_are_errors_instead_of_silent_success ... ok
+test text_executor::standalone_asset_callback_tests::mixed_native_path_received_then_normalized_accepted_replays_with_zero_execution ... ok
+test text_executor::standalone_asset_callback_tests::received_design_wrong_domain_version_executable_or_raw_is_held_without_reexecution ... ok
+test text_executor::standalone_asset_callback_tests::restart_only_the_exact_received_interruption_revalidates_the_same_job_and_preserves_raw ... ok
+test text_executor::tests::absent_profile_keeps_previous_cli_api_and_result_bytes ... ok
+test text_executor::tests::actual_cli_input_budget_does_not_reserve_an_unused_api_json_envelope ... ok
+test text_executor::tests::actual_compact_envelope_overflow_stops_before_job_and_request ... ok
+test text_executor::tests::auto_evidence_q1_replays_same_frozen_result_with_zero_cli_and_keeps_raw ... ok
+test text_executor::tests::auto_evidence_q1_requires_exact_auto_policy_profile_and_same_binding ... ok
+test text_executor::tests::auto_evidence_q1_still_invalid_stops_and_preserves_original_output ... ok
+test text_executor::tests::bounded_source_replay_receipt_binds_every_original_received_field ... ok
+test text_executor::tests::closing_permanently_rejects_spawn_and_empty_children_drain ... ok
+test text_executor::tests::compact_cli_and_api_wire_inputs_restore_without_mutating_frozen_request ... ok
+test text_executor::tests::exact_q1_commit_failure_and_rejection_never_replace_raw_or_resubmit ... ok
+test text_executor::tests::exact_q1_drift_or_broken_binding_blocks_only_the_same_known_node ... ok
+test text_executor::tests::exact_q1_final_scope_error_with_ineligible_binding_never_resubmits ... ok
+test text_executor::tests::exact_q1_final_scope_response_preserves_original_error_and_replays_atomically ... ok
+test text_executor::tests::exact_q1_synthetic_response_replays_without_cli_and_preserves_raw_and_binding ... ok
+test text_executor::tests::execution_directory_has_a_unique_root_and_does_not_remove_unowned_files ... ok
+test text_executor::tests::invalid_model_input_profile_stops_before_job_or_upstream_request ... ok
+test text_executor::tests::light_catalogue_commit_rechecks_the_original_checkpoint_before_any_write ... ok
+test text_executor::tests::light_catalogue_incompatible_resume_stops_before_cli_and_names_the_changed_field ... ok
+test text_executor::tests::light_catalogue_interrupted_commit_rolls_back_job_checkpoint_and_audit_together ... ok
+test text_executor::tests::light_catalogue_known_scope_regression_preserves_its_actual_error_and_raw ... ok
+test text_executor::tests::light_catalogue_rejection_preserves_raw_and_does_not_promote_or_retry ... ok
+test text_executor::tests::light_catalogue_replay_cannot_use_other_workflow_node_error_or_provider ... ok
+test text_executor::tests::light_catalogue_replay_never_executes_and_preserves_original_evidence_and_accepted_cache ... ok
+test text_executor::tests::light_catalogue_replay_rejects_scope_rules_identity_and_schema_drift ... ok
+test text_executor::tests::light_catalogue_schema_allows_only_supplied_row_enum_strengthening ... ok
+test text_executor::tests::live_stderr_diagnostics_cross_pipe_reads_without_copying_signed_urls_or_keys ... ok
+test text_executor::tests::local_native_cli_accepts_isolation_flags_without_starting_a_model ... ignored, local native CLI help only; never sends a model request
+test text_executor::tests::native_kill_helper_itself_is_bounded_and_registry_lock_is_released ... ok
+test text_executor::tests::optional_array_objects_restore_recursively_and_old_required_null_is_preserved ... ok
+test text_executor::tests::preparation_conflict_reuses_exact_reply_atomically_without_cli_and_is_idempotent ... ok
+test text_executor::tests::preparation_replay_drift_stops_before_cli_or_another_job ... ok
+test text_executor::tests::q1_base_identity_rejection_never_uses_scope_migration_or_changed_snapshot ... ok
+test text_executor::tests::q1_base_identity_rejection_requires_call_validated_before_accepting_the_original_raw ... ok
+test text_executor::tests::q1_base_identity_rejection_requires_exact_current_error_and_full_binding ... ok
+test text_executor::tests::q1_outside_batch_scope_exception_is_not_available_for_other_errors ... ok
+test text_executor::tests::q1_outside_batch_scope_label_refuses_material_or_target_operations ... ok
+test text_executor::tests::q1_outside_batch_scope_label_reuses_only_the_untouched_synthetic_result ... ok
+test text_executor::tests::rejected_bounded_editor_evidence_coverage_revalidates_original_node_without_retry_reset ... ok
+test text_executor::tests::rejected_preparation_replay_preserves_raw_and_never_becomes_an_accepted_cache ... ok
+test text_executor::tests::saved_actual_auto_evidence_q1_replays_with_zero_generation ... ignored, requires DIRECTOR_AUTO_Q1_REAL_DB, DIRECTOR_AUTO_Q1_WORKFLOW_ID and DIRECTOR_AUTO_Q1_TEXT_JOB_ID; readonly frozen replay, isolated temporary store and zero CLI
+test text_executor::tests::saved_actual_preparation_conflict_replays_f2_and_reaches_q1_without_generation ... ignored, explicit saved source-conflict fixture; isolated Store and non-executable CLI, zero generation
+test text_executor::tests::saved_replay_guard_requires_actual_sql_binding_and_valid_raw_refs ... ok
+test text_executor::tests::shutdown_during_spawn_waits_for_registration_then_stops_that_child ... ok
+test text_executor::tests::source_coverage_validator_replay_does_not_adopt_a_genuine_asset_scope_rejection ... ok
+test text_executor::tests::storyboard_finish_cli_and_api_preserve_canonical_snapshot_and_direct_draft ... ok
+test text_executor::tests::storyboard_finish_original_coverage_replay_runs_validation_and_preserves_raw_after_accept ... ok
+test text_executor::tests::storyboard_finish_replay_rejects_pollution_races_and_second_rejection_without_generation ... ok
+test text_executor::tests::storyboard_owner_batches_resume_exact_saved_results_without_checkpoint_collision ... ok
+test text_executor::tests::strict_transport_keeps_differential_omission_and_explicit_clear_distinct ... ok
+test text_executor::tests::structured_cli_execution_has_no_host_config_or_tool_enable_escape_hatch ... ok
+test text_executor::tests::structured_failure_message_survives_empty_or_warning_only_stderr ... ok
+test text_executor::tests::supervised_closing_cancels_owned_io_and_rejects_any_new_spawn ... ok
+test text_executor::tests::supervised_exited_parent_has_a_bounded_inherited_pipe_drain ... ok
+test text_executor::tests::supervised_quiet_inference_reports_diagnosis_without_killing_or_restarting ... ok
+test text_executor::tests::supervised_startup_flood_drains_both_pipes_before_large_stdin_completes ... ok
+test text_executor::tests::supervised_stderr_keeps_one_mib_but_drains_every_byte_and_invalid_utf8 ... ok
+test text_executor::tests::supervised_stdin_write_deadline_kills_and_reaps_without_second_exec ... ok
+test text_executor::tests::supervised_total_deadline_includes_quiet_execution_and_cleans_up ... ok
+test text_executor::tests::wire_artifact_keeps_actual_short_input_and_never_overwrites_raw_result ... ok
+test text_executor::visual_fact_recovery_tests::a15_received_and_interrupted_delta_require_validation_and_preserve_raw_and_budget ... ok
+test text_executor::visual_fact_recovery_tests::a15_unknown_failed_or_polluted_attempt_cannot_reset_on_a_new_enclosing_workflow ... ok
+test text_executor::visual_fact_recovery_tests::legacy_a15_context_is_read_only_and_existing_second_attempt_cannot_be_resubmitted ... ok
+test text_executor::visual_fact_recovery_tests::legacy_a15_context_rejects_event_receipt_materialized_or_origin_pollution ... ok
+test text_executor::visual_fact_recovery_tests::original_a15_rejection_replays_exact_raw_without_adopting_or_creating_a_job ... ok
+test text_sdk::tests::sdk_cancel_interrupts_active_pipe_owner_and_never_claims_stopped ... ok
+test text_sdk::tests::sdk_frames_reassemble_split_utf8_and_reject_partial_invalid_and_large_frames ... ok
+test text_sdk::tests::sdk_identity_rejects_cli_shape_unknown_fields_and_package_or_policy_drift ... ok
+test text_sdk::tests::sdk_stderr_flood_retains_bounded_exact_prefix_and_fails_closed ... ok
+test workflow_tests::accepted_steps_survive_reopen_and_workflow_publication_guard_survives_partial_publish ... ok
+test workflow_tests::adding_asset_during_creation_does_not_overwrite_the_new_catalog_entry ... ok
+test workflow_tests::audit_only_foundation_update_keeps_frozen_storyboard_inputs_and_all_other_guards ... ok
+test workflow_tests::changing_source_or_design_during_run_rejects_publication ... ok
+test workflow_tests::completed_episode_can_publish_while_the_failed_episode_keeps_old_units ... ok
+test workflow_tests::creative_source_and_catalogue_changes_cannot_use_audit_only_guard_refresh ... ok
+test workflow_tests::deleting_asset_during_creation_rejects_late_publication_without_changing_snapshot ... ok
+test workflow_tests::explicit_direction_is_versioned_and_rejects_stale_editor ... ok
+test workflow_tests::foundation_publication_counts_active_assets_and_does_not_restore_deleted_rows ... ok
+test workflow_tests::foundation_publication_preserves_design_and_media_and_is_atomic ... ok
+test workflow_tests::foundation_rebuild_retains_confirmed_direction ... ok
+test workflow_tests::incomplete_or_changed_source_cannot_publish_an_episode_or_advance_its_guard ... ok
+test workflow_tests::incomplete_text_recovers_separately_from_unknown_media_submission ... ok
+test workflow_tests::partial_episode_drafts_do_not_retire_or_replace_the_existing_complete_episode ... ok
+test workflow_tests::partial_unit_revision_does_not_retire_unselected_siblings ... ok
+test workflow_tests::per_episode_publication_is_visible_running_atomic_and_idempotent_after_reopen ... ok
+test workflow_tests::revision_expands_required_scope_and_versions_only_affected_continuity ... ok
+test workflow_tests::selected_episode_replacement_retires_old_units_but_keeps_history ... ok
+test workflow_tests::user_changes_to_selected_units_prevent_late_publication_and_unchanged_saves_do_not_bump ... ok
+test workflow_tests::workflow_progress_continuity_supersession_requires_the_real_event_and_exact_previous_tail_pair ... ok
+test workflow_tests::workflow_progress_counts_a_migrated_cached_request_once_without_removing_history ... ok
+test workflow_tests::workflow_progress_reads_only_attached_active_cli_safe_heartbeat_fields ... ok
+test workflow_tests::workflow_progress_resolves_rejected_first_scope_editor_only_with_the_second_verified_lineage ... ok
+test workflow_tests::workflow_progress_resolves_scope_author_by_domain_hash_and_keeps_all_original_rows ... ok
+test workflow_tests::workflow_progress_scope_resolution_is_fail_closed_when_two_accepted_resolvers_claim_the_same_author ... ok
+test workflow_tests::workflow_progress_scope_resolution_rejects_unbound_snapshot_source_raw_receipt_and_cross_workflow ... ok
+
+test result: ok. 606 passed; 0 failed; 20 ignored; 0 measured; 0 filtered out; finished in 72.12s
+
+     Running unittests src/bin/core.rs (/workspace/shared/director-next-m2-target/release/deps/director_next_core-9fce46e8f102d3c5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/acceptance.rs (/workspace/shared/director-next-m2-target/release/deps/acceptance-34fea02d1aa5e47e)
+
+running 10 tests
+test automatic_queue_keeps_unknown_submission_and_explicit_trial_review_blocks_large_batch ... ok
+test local_workspace_metadata_benchmark_eighty_locked_episodes ... ignored, Local 80-episode metadata benchmark; report the 1s target, do not impose this machine-specific threshold on CI
+test oneclick_inline_dependency_reuses_real_parent_material_and_freezes_every_semantic_version ... ok
+test oneclick_retains_a_manually_imported_inline_material_without_designing_its_parent ... ok
+test public_images_produce_expands_dependencies_and_uses_completed_parent_images ... ok
+test public_images_produce_keeps_a_good_dependency_branch_when_another_is_invalid ... ok
+test public_oneclick_defaults_to_automatic_for_more_than_three_assets_and_reuses_existing_jobs ... ok
+test querying_a_downloaded_video_keeps_media_identity_adoption_and_preview_paths ... ok
+test queued_child_waits_for_the_specific_new_parent_task_instead_of_an_old_current_image ... ok
+test two_threads_claim_the_same_video_prepare_and_submit_only_once ... ok
+
+test result: ok. 9 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.19s
+
+     Running tests/asset_design_publication.rs (/workspace/shared/director-next-m2-target/release/deps/asset_design_publication-daa45c6e160309e2)
+
+running 2 tests
+test accepted_design_and_facts_publish_with_program_copied_quotes ... ok
+test invalid_cache_or_concurrent_edit_cannot_partially_replace_design ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/asset_lifecycle.rs (/workspace/shared/director-next-m2-target/release/deps/asset_lifecycle-d5c8dac243b68e14)
+
+running 7 tests
+test a_late_generated_image_remains_history_without_reviving_a_deleted_asset ... ok
+test deleted_bindings_stay_visible_and_can_be_replaced_without_changing_submitted_material ... ok
+test deleting_a_test_asset_is_reversible_and_does_not_remove_files_or_rewrite_identity ... ok
+test deletion_targets_only_related_unsubmitted_work_and_preserves_cloud_and_unknown_submissions ... ok
+test public_asset_commands_expose_deleted_history_and_enforce_user_identity_and_cas ... ok
+test user_scope_must_match_current_source_and_applicability_without_changing_legacy_imports ... ok
+test user_source_changes_reject_cycles_and_drop_old_design_references_atomically ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/core.rs (/workspace/shared/director-next-m2-target/release/deps/core-8d46641d27e71245)
+
+running 9 tests
+test auth_expiry_pauses_and_same_account_query_recovers ... ok
+test backup_retention_is_bounded_without_touching_originals ... ok
+test eighty_episode_queue_prepare_submit_resume_are_separate ... ok
+test frozen_reference_order_and_precise_staleness ... ok
+test independent_engine_and_read_projections ... ok
+test media_hash_and_portable_export_relocation ... ok
+test submitted_snapshot_survives_adoption_change_and_restart_without_resubmit ... ok
+test unknown_submit_and_exit_intent_never_resubmit ... ok
+test upload_interruption_requeues_without_generation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.74s
+
+     Running tests/dreamina_auth_recovery.rs (/workspace/shared/director-next-m2-target/release/deps/dreamina_auth_recovery-b02163eaec0541d0)
+
+running 4 tests
+test another_verified_account_cannot_release_the_original_cloud_task ... ok
+test readiness_identity_and_provider_all_gate_recovery ... ok
+test unknown_submit_and_unsubmitted_auth_failure_never_reenter_generation ... ok
+test verified_same_account_recovers_saved_id_by_query_only ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/foundation_batch_planning.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_batch_planning-80de17e7fea075e6)
+
+running 1 test
+test eighty_episodes_are_capacity_packed_in_order_instead_of_eighty_complete_calls ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.38s
+
+     Running tests/foundation_contracts.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_contracts-28650ecee4d0b2e6)
+
+running 21 tests
+test actual_failed_source_snapshot_reaches_all_foundation_batches ... ignored, requires an external read-only snapshot; mock executor only, no live generation
+test actual_saved_foundation_result_accepts_locked_public_background ... ignored, requires an external read-only response snapshot; validation only, no generation
+test deleted_manual_rows_do_not_reenter_the_source_registry ... ok
+test first_run_reads_author_rows_once_materializes_quotes_and_accepts_only_valid_batches ... ok
+test foundation_accepts_provided_public_background_without_reassigning_it_to_an_episode ... ok
+test invalid_scope_reference_identity_and_selection_never_receive_acceptance ... ok
+test literal_quoted_parentheses_are_spoken_and_nested_direction_stays_complete ... ok
+test local_rerun_keeps_other_episode_stable_identity_asset_row_and_confirmed_direction ... ok
+test manual_assets_with_same_display_name_keep_distinct_registered_ids ... ok
+test old_sources_are_reparsed_but_existing_forged_new_fields_are_rejected ... ok
+test public_background_does_not_allow_foreign_episode_unknown_or_duplicate_evidence ... ok
+test rebuilding_saved_foundation_after_asset_deletion_keeps_deleted_projection_inactive ... ok
+test rerun_does_not_unlock_resolved_labels_or_borrow_old_scene_evidence ... ok
+test same_base_variant_label_in_different_identities_is_not_an_identity_collision ... ok
+test source_bound_manual_evidence_stays_strict_and_errors_identify_the_asset ... ok
+test source_bound_manual_types_are_normalized_without_changing_identity ... ok
+test spoken_and_performance_parts_keep_absolute_utf16_and_exact_original ... ok
+test standalone_test_image_does_not_block_or_seed_source_foundation ... ok
+test unassigned_body_and_format_rows_are_not_treated_as_public_background ... ok
+test unlocated_appearance_can_gain_a_concrete_label_without_creating_a_new_identity ... ok
+test unresolved_shape_is_preserved_and_unbound_state_is_local_issue_not_broadcast_fact ... ok
+
+test result: ok. 19 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.59s
+
+     Running tests/foundation_rejection_replay.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_rejection_replay-25a1d41acba32af5)
+
+running 6 tests
+test known_context_rejection_revalidates_same_job_without_any_cli_and_keeps_audit ... ok
+test private_saved_first_batch_is_accepted_and_next_batch_stops_without_generation ... ignored, requires DIRECTOR_FOUNDATION_REPLAY_FIXTURE pointing to a private saved request; no generation is permitted
+test replay_requires_exact_workflow_step_snapshot_identity_and_known_error ... ok
+test true_cross_episode_result_remains_rejected_without_cli_or_a_new_text_job ... ok
+test unsupported_reasoning_rejects_before_a_new_job_or_generation_and_holds_original_raw ... ok
+test variant_label_regression_replays_only_the_original_job_and_rechecks_parent_changes ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.04s
+
+     Running tests/foundation_scene_publication.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_scene_publication-40c063bdcc2491f4)
+
+running 3 tests
+test bad_anchor_and_outside_scope_are_rejected_before_publication ... ok
+test q1_split_preserves_original_coordinates_and_reprojects_variant_scope ... ok
+test source_and_foundation_publish_together_and_failure_rolls_back_both ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests/foundation_transport_resume.rs (/workspace/shared/director-next-m2-target/release/deps/foundation_transport_resume-30fda7c82060552e)
+
+running 9 tests
+test absent_embedded_or_ambiguous_transport_heading_is_rejected ... ok
+test actual_resume_appends_audit_without_rewriting_frozen_source_data_or_accepted_steps ... ok
+test actual_resume_rejects_a_method_change_before_audit_or_worker_launch ... ok
+test changed_original_method_whitespace_and_line_endings_are_not_transport_changes ... ok
+test exact_rule_set_keeps_the_existing_resume_path_without_migration ... ok
+test identities_versions_order_and_other_metadata_are_immutable ... ok
+test only_f2_q1_appendices_can_change_with_ordered_old_and_current_hash_evidence ... ok
+test other_workflows_runner_or_methods_cannot_use_the_transport_exception ... ok
+test unchanged_fidelity_and_content_sha_consistency_are_required ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/m2_execution_boundaries.rs (/workspace/shared/director-next-m2-target/release/deps/m2_execution_boundaries-14839cabdeedfe21)
+
+running 5 tests
+test headless_native_async_command_rejects_before_home_or_worker_creation ... ok
+test linux_cannot_enable_native_acceptance_or_fake_persistent_keyring ... ok
+test safe_sdk_status_is_readable_without_runtime_account_or_job ... ok
+test sdk_unknown_job_cannot_be_closed_to_release_ownership ... ok
+test stale_independent_episode_confirmation_changes_nothing ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/migration.rs (/workspace/shared/director-next-m2-target/release/deps/migration-4ba3684617606475)
+
+running 5 tests
+test known_v1_database_is_checked_then_migrated_to_current_schema ... ok
+test legacy_import_preserves_current_groups_and_manual_adopted_images ... ok
+test portable_relocation_invalidates_unsent_work_and_preserves_receipts_byte_for_byte ... ok
+test project_package_rejects_unknown_or_inconsistent_schema_before_migration ... ok
+test standalone_legacy_json_does_not_promote_unadopted_results ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running tests/next_isolation.rs (/workspace/shared/director-next-m2-target/release/deps/next_isolation-842d391b0bc9452e)
+
+running 10 tests
+test disk_envelope_rejects_state_rollback_even_when_all_receipt_fields_are_removed ... ok
+test frozen_transport_identity_blocks_cross_backend_retry_and_survives_restart ... ok
+test media_scope_excludes_database_and_rejects_escaped_symlink ... ok
+test nonsecret_settings_are_allowed_but_credentials_and_unknown_actions_are_denied ... ok
+test old_registry_is_not_adopted_or_mutated ... ok
+test previous_dispatch_cannot_be_reset_to_prepared_or_rebound_to_another_workflow ... ok
+test sdk_shared_backend_reports_honest_live_gate_without_fallback ... ok
+test source_import_roundtrips_in_new_app_and_external_actions_fail_closed ... ok
+test tampered_frozen_payload_cannot_load_dispatch_or_claim_compatible_identity ... ok
+test unsupported_selected_backend_never_falls_back_or_creates_a_job ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/scene_material_binding.rs (/workspace/shared/director-next-m2-target/release/deps/scene_material_binding-439f9fc7fe10d8df)
+
+running 13 tests
+test adopted_inline_prop_image_replaces_text_and_invalidates_only_unsubmitted_snapshot ... ok
+test audio_only_asset_does_not_request_or_consume_an_image_slot ... ok
+test catalogue_uppercase_inline_prop_prepares_as_text_without_cloud_submission ... ok
+test changing_inline_semantic_version_expires_unsubmitted_parent_image_snapshot ... ok
+test cyclic_inline_material_sources_block_locally_without_binding_a_random_image ... ok
+test inline_prop_with_explicit_missing_parent_remains_blocked ... ok
+test inline_state_binds_the_baseline_image_and_preserves_its_own_version ... ok
+test inline_text_prop_freezes_instructions_without_consuming_an_image_slot ... ok
+test missing_explicit_inline_parent_blocks_instead_of_falling_back_by_name ... ok
+test original_execution_export_keeps_readable_prose_and_uses_current_manual_text_for_submission ... ok
+test replacing_baseline_image_expires_unsubmitted_inline_material_snapshots ... ok
+test two_semantic_states_share_one_physical_image_order ... ok
+test uppercase_inline_prop_keeps_explicit_parent_and_manual_image_paths ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.85s
+
+     Running tests/scheduler.rs (/workspace/shared/director-next-m2-target/release/deps/scheduler-9ed0adfd9fb0e735)
+
+running 17 tests
+test a_derived_image_waits_for_every_adopted_parent_then_freezes_the_ordered_references ... ok
+test a_known_or_unknown_submission_discovered_during_preparation_keeps_its_identity_and_state ... ok
+test a_saved_id_in_legacy_queued_state_is_query_only_and_never_submitted_again ... ok
+test eighty_real_episode_jobs_keep_local_failures_independent_and_never_resubmit_on_restart ... ok
+test failed_local_ready_persistence_preserves_upload_receipts_and_other_preparations_continue ... ok
+test fifty_four_older_image_generations_cannot_starve_newer_original_id_download ... ok
+test future_due_query_backoff_and_unknown_submission_are_preserved_by_fair_selection ... ok
+test independent_prepare_failure_and_concurrent_edit_do_not_block_or_overwrite_other_units ... ok
+test malformed_prepared_and_sync_receipt_reach_typed_terminal_states_without_resubmission ... ok
+test perpetually_processing_original_id_and_generation_backlog_both_get_bounded_slots ... ok
+test preparation_checks_its_soft_time_budget_and_shutdown_between_items ... ok
+test prepare_only_has_no_submit_route_even_if_auto_submit_changes_during_the_provider_call ... ok
+test review_burst_excludes_future_unknown_and_saved_task_id_without_changing_original_receipts ... ok
+test review_burst_is_bounded_and_yields_the_next_slot_to_original_id_recovery ... ok
+test thirty_seven_review_only_videos_prepare_in_bounded_channel_bursts_without_any_submission ... ok
+test tick_and_manual_query_share_the_same_channel_and_task_exclusion ... ok
+test unable_to_persist_terminal_state_reports_the_storage_failure_without_fake_success ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.60s
+
+     Running tests/source_scope.rs (/workspace/shared/director-next-m2-target/release/deps/source_scope-71602f5f356413c4)
+
+running 2 tests
+test source_actions_preserve_text_reject_stale_versions_and_do_not_duplicate_versions ... ok
+test source_compare_and_save_is_atomic_against_competing_updates ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running tests/stage13_roundtrip.rs (/workspace/shared/director-next-m2-target/release/deps/stage13_roundtrip-9a96c2d2feb92965)
+
+running 1 test
+test locked_source_to_current_image_to_published_storyboard_binds_exact_identity ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running tests/stage2_contracts.rs (/workspace/shared/director-next-m2-target/release/deps/stage2_contracts-e636777a2ff09a8d)
+
+running 4 tests
+test interrupted_stage2_text_resumes_original_workflow_without_extra_calls ... ok
+test partial_stage2_output_holds_versions_and_success_commits_with_parent_atomically ... ok
+test stage2_publication_rejects_concurrent_direct_source_edit_atomically ... ok
+test stage2_receipts_survive_publication_restart_and_style_refresh_keeps_fact_cache ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tests/task_results.rs (/workspace/shared/director-next-m2-target/release/deps/task_results-9f1418ea268ede36)
+
+running 27 tests
+test complete_image_and_regeneration_select_first_output_and_keep_manual_history_choice ... ok
+test downloaded_and_current_selection_rollback_together_and_recover_once ... ok
+test downloaded_results_keep_identity_when_followup_id_or_preparation_is_invalid ... ok
+test failed_or_partial_image_download_preserves_current_and_cannot_backfill_partial_history ... ok
+test image_fifth_download_failure_pauses_with_independent_budget_and_query_only_regeneration_guard ... ok
+test image_fifth_query_failure_pauses_automatic_recovery_but_manual_resume_keeps_original_id ... ok
+test image_multi_result_media_links_survive_partial_download_and_restart ... ok
+test image_query_failure_and_stale_download_url_recover_independently ... ok
+test image_success_without_parsed_url_is_recoverable_after_restart ... ok
+test image_user_import_and_ordered_batch_select_last_success_without_running_channels ... ok
+test invalid_downloaded_image_is_download_failure_and_queries_fresh_address ... ok
+test mismatched_or_unreadable_preparation_never_queries_wrong_media_kind ... ok
+test mismatched_query_identity_never_imports_or_replaces_original_task ... ok
+test missing_current_backfill_rejects_wrong_or_missing_generated_version ... ok
+test missing_current_backfill_uses_complete_first_result_and_preserves_existing_choice_and_unknown ... ok
+test old_misclassified_expired_images_and_videos_query_the_original_id ... ok
+test old_or_mismatched_frozen_image_identity_is_history_only ... ok
+test partial_generated_image_has_no_backfill_window_between_file_import_and_job_attachment ... ok
+test prepared_and_unprepared_recovery_query_the_original_media_kind ... ok
+test processing_unknown_failed_and_explicit_expiry_are_distinct ... ok
+test switching_generated_current_image_invalidates_only_affected_unsubmitted_references ... ok
+test video_download_does_not_automatically_adopt_a_video_or_change_current_image ... ok
+test video_fifth_download_failure_pauses_with_independent_budget_and_query_only_regeneration_guard ... ok
+test video_fifth_query_failure_pauses_automatic_recovery_but_manual_resume_keeps_original_id ... ok
+test video_multi_result_media_links_survive_partial_download_and_restart ... ok
+test video_query_failure_and_stale_download_url_recover_independently ... ok
+test video_success_without_parsed_url_is_recoverable_after_restart ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.20s
+
+     Running tests/text_cache_contracts.rs (/workspace/shared/director-next-m2-target/release/deps/text_cache_contracts-23e04a7445c864ee)
+
+running 4 tests
+test accepted_materialized_result_survives_reopen_and_reuses_without_cli ... ok
+test changed_api_endpoint_cannot_reuse_accepted_workflow_or_global_cache ... ok
+test different_native_executor_identity_cannot_reuse_accepted_output ... ok
+test received_and_rejected_outputs_are_never_completed_cache_after_reopen ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/video_preflight.rs (/workspace/shared/director-next-m2-target/release/deps/video_preflight-985c39e0c3f7d1ad)
+
+running 13 tests
+test account_hint_or_frozen_account_mismatch_never_enables_submission ... ok
+test changed_parameters_require_new_frozen_package_and_preserve_original_cloud_tasks ... ok
+test configuration_changed_during_request_cannot_stamp_old_response_as_fresh ... ok
+test known_cloud_id_recovery_ignores_missing_catalog_and_unknown_is_not_resubmitted ... ok
+test manual_refresh_seeds_same_bound_cache ... ok
+test missing_binding_expiry_and_configuration_changes_force_refresh ... ok
+test partial_submit_only_enables_ready_units_and_never_creates_missing_packages ... ok
+test read_only_bootstrap_never_saves_video_parameters_or_prepares_jobs ... ok
+test refreshed_capability_version_stales_unsubmitted_package_and_keeps_snapshot ... ok
+test saving_parameters_and_staling_is_atomic_and_targets_images_only_for_shared_ratio ... ok
+test successful_current_cache_is_reused_without_extra_engine_capability_requests ... ok
+test unadapted_wrong_kind_unknown_models_and_illegal_dimensions_fail_before_saving ... ok
+test unavailable_refresh_rejects_generation_and_keeps_existing_frozen_materials ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+
+   Doc-tests director_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

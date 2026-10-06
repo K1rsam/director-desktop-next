@@ -18,3 +18,6 @@ pub mod dreamina_session;
 pub mod execution_policy;
 pub mod platform;
 pub mod text_transport;
+
+pub mod text_sdk;
+pub mod native_acceptance;

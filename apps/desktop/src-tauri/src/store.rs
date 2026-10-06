@@ -1417,6 +1417,13 @@ impl Store {
         self.dirty()?;
         Ok(())
     }
+    /// Settings affect new Stage2 requests. Existing frozen image submissions keep
+    /// their original parameters; moving a project still uses invalidate_unsubmitted.
+    pub fn invalidate_unsubmitted_settings(&self, reason: &str) -> Result<()> {
+        self.conn()?.execute("UPDATE jobs SET state='stale',prepared=NULL,error=?1,updated_at=?2,next_attempt_at=0 WHERE (task_id IS NULL OR task_id='') AND (receipt IS NULL OR receipt IN ('','null','{}')) AND (kind='video' OR (kind='image' AND json_type(snapshot,'$.frozenSettings') IS NULL)) AND state IN ('queued','preparing','ready','prepared','waiting_dependency')",params![reason,now()]).map_err(|e|e.to_string())?;
+        self.dirty()?;
+        Ok(())
+    }
     pub fn event(&self, key: &str, kind: &str, data: &Value) -> Result<()> {
         self.conn()?
             .execute(

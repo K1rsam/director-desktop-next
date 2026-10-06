@@ -105,6 +105,9 @@ impl FrozenAttempt {
         )
     }
     pub fn load(path: &Path) -> Result<Self> {
+        if std::fs::metadata(path).map_err(|e| e.to_string())?.len() > 4_194_304 {
+            return Err("冻结执行磁盘封套超出容量，不加载或重发".into());
+        }
         let record: Value =
             serde_json::from_slice(&std::fs::read(path).map_err(|e| e.to_string())?)
                 .map_err(|e| e.to_string())?;
@@ -250,26 +253,4 @@ pub trait TextTransport: Send + Sync {
     async fn execute(&self, attempt: &FrozenAttempt) -> Result<Observation>;
     async fn reconcile(&self, attempt: &FrozenAttempt) -> Result<Observation>;
     async fn cancel(&self, attempt: &FrozenAttempt) -> Result<Observation>;
-}
-
-/// Honest placeholder until an official SDK sidecar and its runtime are pinned.
-/// It is not presented as an implemented SDK execution backend.
-pub struct UnavailableSdkTransport;
-#[async_trait::async_trait]
-impl TextTransport for UnavailableSdkTransport {
-    async fn inspect(&self) -> Result<Value> {
-        Ok(
-            json!({"backend":"codex_sdk","available":false,"liveCallsAllowed":false,
-            "reason":"Official SDK sidecar/package/runtime verification is pending"}),
-        )
-    }
-    async fn execute(&self, _: &FrozenAttempt) -> Result<Observation> {
-        Err("SDK_NOT_IMPLEMENTED: 不回退 CLI".into())
-    }
-    async fn reconcile(&self, _: &FrozenAttempt) -> Result<Observation> {
-        Err("SDK_RECOVERY_UNVERIFIED: 保留原执行，不启动新 turn".into())
-    }
-    async fn cancel(&self, _: &FrozenAttempt) -> Result<Observation> {
-        Err("SDK_CANCEL_UNVERIFIED: 未确认底层进程停止".into())
-    }
 }
