@@ -1,0 +1,123 @@
+{
+  "schema": "director-next-signature-metadata-policy-verification/v1",
+  "checkpoint": "M6.1",
+  "date": "2026-10-07",
+  "baseCommit": "7865a6d95494168ada0b2acd7875f0127fd21b54",
+  "scope": "Bounded local development-artifact acceptance of matching new signature-node provenance; no runtime/provider changes",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "policy": {
+    "onlyExpectedTwoNewNodes": true,
+    "bothAbsentBefore": true,
+    "newMetadataExactlyOneProvenanceEach": true,
+    "bothPreSignDirectoryAnchorsRequired": [
+      ".",
+      "Contents"
+    ],
+    "matchingEvidence": "nonempty_byte_count_and_sha256",
+    "literalBooleanCompletenessRequired": true,
+    "existingAttributesStrict": true,
+    "quarantineException": false,
+    "genericComAppleException": false,
+    "userSpecificHashOrLengthConstants": false,
+    "originalAttributeFreeCaseRetained": true,
+    "inheritanceClaim": false,
+    "gatekeeperTrustClaim": false,
+    "overallAcceptanceRequiresSignatureResourcesFreshAttributesAndSameInventory": true
+  },
+  "tests": {
+    "independentAdversarialCases": 121,
+    "packagingProcessPipelineCases": 29,
+    "combinedNode": {
+      "passed": 150,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nativeCollector": {
+      "passed": 9,
+      "failed": 0,
+      "platform": "Linux"
+    },
+    "startupRunner": {
+      "passed": 17,
+      "failed": 0
+    },
+    "sourceLock": {
+      "passed": true,
+      "frozenCandidates": 22,
+      "pinnedSourceFiles": 144,
+      "candidateRuntimeActive": false
+    }
+  },
+  "reviewFixes": [
+    "Require explicit boolean opt-in",
+    "Require literal true for both snapshot completion flags"
+  ],
+  "nativeM6_1Verified": false,
+  "nativeStartupVerified": false,
+  "historicalM5FailureCauseEstablished": false,
+  "systemSecuritySettingsChanged": false,
+  "productionAttributeWrites": false,
+  "testFixtureAttributeWrites": "isolated synthetic user.* attributes only",
+  "modelCalls": 0,
+  "providerAccountCalls": 0,
+  "sdkLiveCalls": 0,
+  "rustFrontendRuntimeChanges": false,
+  "fullRustOrFrontendRerun": false,
+  "standaloneHistoricalArtifactEvaluatorAdded": false,
+  "reviewStatus": "code review completed; exact manifest binding required",
+  "evidence": [
+    {
+      "path": "scripts/build_macos_dev.mjs",
+      "bytes": 11240,
+      "sha256": "321385d76094b26deac29acf1441dd6305eeca0f781b8f19a35aa573323174e0"
+    },
+    {
+      "path": "scripts/macos_xattr_proof.mjs",
+      "bytes": 12176,
+      "sha256": "5303f9f56e592539ac0e103623069de74de888c455e6b67ad426a79291d2809c"
+    },
+    {
+      "path": "scripts/test_macos_dev_bundle.mjs",
+      "bytes": 24191,
+      "sha256": "8767f15c6202b011d2bb524157cb0d899aad3463e56b6358804eee034800ff2f"
+    },
+    {
+      "path": "scripts/test_macos_provenance_policy.mjs",
+      "bytes": 14239,
+      "sha256": "14e62ceb868cc37ee2d23239a3718a40816adc0f00be147b63037d2a833482f2"
+    },
+    {
+      "path": "scripts/macos_xattr_snapshot.c",
+      "bytes": 13397,
+      "sha256": "70e552315e80bc0a0fcafbe514454bf9f5c8f1ad9ae2dac08f76a3ffdc259425"
+    },
+    {
+      "path": "scripts/verify_macos_bundle.mjs",
+      "bytes": 9493,
+      "sha256": "4561495fe6b8b4a635f7caeeb5e20b65a0507ff8b2a9993a7db351dc6c3516cb"
+    },
+    {
+      "path": "docs/verification/m6-1/metadata-policy-tests.log",
+      "bytes": 14411,
+      "sha256": "369b3d9c573a72e2032c2b89814f626fec0fd65e5940357a41c69533ea808bb8"
+    },
+    {
+      "path": "docs/verification/m6-1/collector-tests.log",
+      "bytes": 1610,
+      "sha256": "fb628cfe7c95506e6cd1c5424c26efa62a753e2941b4371a29149dbbb071fd64"
+    },
+    {
+      "path": "docs/verification/m6-1/startup-runner-tests.log",
+      "bytes": 3121,
+      "sha256": "9c77d76f9294dc8640624b5100469adb3e69bd845fb1e082e15e4e77e36e3797"
+    },
+    {
+      "path": "docs/verification/m6-1/source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    }
+  ]
+}

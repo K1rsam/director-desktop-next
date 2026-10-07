@@ -43,7 +43,7 @@ jobs:
         run: node sdk-bridge/scripts/package-readiness.mjs
       - name: Test Mac development bundle tooling offline (synthetic native responses)
         if: runner.os == 'macOS'
-        run: node --test scripts/test_macos_dev_bundle.mjs
+        run: node --test scripts/test_macos_dev_bundle.mjs scripts/test_macos_provenance_policy.mjs
       - name: Test bounded native attribute collector
         if: runner.os == 'macOS'
         run: python3 -m unittest discover -s scripts -p 'test_macos_xattr_snapshot.py' -v

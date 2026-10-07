@@ -4,7 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { promises as fs } from 'node:fs';
-import { inspectMacosBundle, boundedNativeCommand, verifyMacosBundle } from './verify_macos_bundle.mjs';
+import { createHash } from 'node:crypto';
+import { inspectMacosBundle, inventoryBundle, boundedNativeCommand, verifyMacosBundle } from './verify_macos_bundle.mjs';
 import { compileAttributeCollector, captureAttributeSnapshot, compareAttributeSnapshots, writeProof } from './macos_xattr_proof.mjs';
 
 export const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -86,7 +87,9 @@ export async function signDevelopmentBundle(app, { platform = process.platform, 
   const beforeSha256 = await writeProof(proofRoot, 'xattrs-before.json', before);
   if (!before.complete) {
     await writeProof(proofRoot, 'xattrs-decision.json', { schema: 'macos-xattr-decision/v1', allowed: false,
-      error: before.error, signingAttempted: false, beforeSha256, afterSnapshotAvailable: false });
+      scope: 'attribute_comparison_only', error: before.error, signingAttempted: false, beforeSha256, afterSnapshotAvailable: false });
+    await writeProof(proofRoot, 'artifact-verdict.json', { schema: 'macos-development-artifact/v1', accepted: false,
+      error: before.error, signingAttempted: false, beforeSha256, appLaunched: false });
     throw new Error(before.error);
   }
   const targets = inspection.nativeFiles.filter(name => name !== 'Contents/MacOS/director-desktop-next')
@@ -99,15 +102,43 @@ export async function signDevelopmentBundle(app, { platform = process.platform, 
   }
   const after = await captureAttributeSnapshot(inspection.root, { collector, command });
   const afterSha256 = await writeProof(proofRoot, 'xattrs-after.json', after);
-  const decision = compareAttributeSnapshots(before, after);
+  const decision = compareAttributeSnapshots(before, after, { allowMatchingSignatureProvenance: true });
   await writeProof(proofRoot, 'xattrs-decision.json', { schema: 'macos-xattr-decision/v1', ...decision,
     signingAttempted: true, signingSucceeded: !signingFailed, beforeSha256, afterSha256 });
-  if (signingFailed) throw new Error('MAC_DEV_ADHOC_SIGNATURE_FAILED');
-  if (!decision.allowed) throw new Error(decision.error);
-  const report = await verifyMacosBundle(app, { platform, command });
-  report.extendedAttributesPreserved = true;
-  report.attributeProof = { beforeSha256, afterSha256, allowedNewSignatureNodes: decision.allowedNewSignatureNodes };
-  return report;
+  const verdict = { schema: 'macos-development-artifact/v1', scope: 'local_development_artifact_only', accepted: false,
+    beforeSha256, afterSha256, signingAttempted: true, signingSucceeded: !signingFailed,
+    attributeComparisonAllowed: decision.allowed, appLaunched: false, notarizationVerified: false, gatekeeperAssessmentPerformed: false };
+  try {
+    if (signingFailed) throw new Error('MAC_DEV_ADHOC_SIGNATURE_FAILED');
+    if (!decision.allowed) throw new Error(decision.error);
+    const report = await verifyMacosBundle(app, { platform, command });
+    const finalAttributes = await captureAttributeSnapshot(inspection.root, { collector, command });
+    const finalSha256 = await writeProof(proofRoot, 'xattrs-final.json', finalAttributes);
+    verdict.finalSha256 = finalSha256;
+    const finalDecision = compareAttributeSnapshots(after, finalAttributes);
+    await writeProof(proofRoot, 'xattrs-final-decision.json', { schema: 'macos-xattr-decision/v1', ...finalDecision,
+      afterSha256, finalSha256, scope: 'post_verification_attribute_comparison_only' });
+    if (!finalDecision.allowed) throw new Error(finalDecision.error);
+    const finalFiles = await inventoryBundle(inspection.root);
+    if (JSON.stringify(finalFiles) !== JSON.stringify(report.files)) throw new Error('MAC_DEV_ARTIFACT_CHANGED_AFTER_VERIFICATION');
+    verdict.fileInventorySha256 = createHash('sha256').update(JSON.stringify(report.files)).digest('hex');
+    verdict.signatureAndResourcesVerified = true;
+    verdict.finalAttributesUnchanged = true;
+    verdict.existingAttributesPreserved = true;
+    verdict.newSignatureProvenanceMatched = decision.newSignatureProvenanceMatched;
+    verdict.accepted = true;
+    await writeProof(proofRoot, 'artifact-verdict.json', verdict);
+    report.existingAttributesPreserved = true;
+    report.newSignatureProvenanceMatched = decision.newSignatureProvenanceMatched;
+    report.attributeProof = { beforeSha256, afterSha256, finalSha256, fileInventorySha256: verdict.fileInventorySha256,
+      allowedNewSignatureNodes: decision.allowedNewSignatureNodes, provenanceEvidence: decision.provenanceEvidence || null };
+    return report;
+  } catch (error) {
+    verdict.error = typeof error.message === 'string' && /^(MAC_DEV|BUNDLE)_[A-Z_]+$/.test(error.message)
+      ? error.message : 'MAC_DEV_ARTIFACT_VERIFICATION_FAILED';
+    await writeProof(proofRoot, 'artifact-verdict.json', verdict);
+    throw error;
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

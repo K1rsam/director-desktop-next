@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M6.1 — Bounded new signature-node metadata
+
+Adds only a local development-artifact comparison rule: exactly two newly created signature nodes may each carry the sole provenance value whose nonempty length/hash matches both pre-sign directory anchors. Every existing attribute remains unchanged, other new metadata/nodes remain blocked, and full acceptance additionally requires strict signatures/resources plus fresh attribute and file-inventory checks. No system metadata is written or removed. The result records equality observations without claiming inheritance or Gatekeeper trust.
+
+Cloud verification covers 121 independent adversarial policy cases, 29 packaging/process/pipeline cases, the unchanged 9 collector tests and 17 startup-runner tests. Actual M6.1 native acceptance remains pending. Canvas/runtime code is unchanged from M6.
+
 ## M6 — Independent Canvas readiness, integrated with M5.1
 
 Adds an explicit Canvas executable picker and read-only version/schema/account/image-catalog check, while preserving legacy Dreamina routing and every M5.1 signing/attribute gate. Unsupported legacy versions stop before legacy account commands. Installation, protocol, account, catalog, quota and generation evidence remain separate; no account result unlocks generation or proves free eligibility.

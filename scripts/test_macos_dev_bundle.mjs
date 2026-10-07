@@ -10,7 +10,7 @@ import { packageReadiness } from '../sdk-bridge/scripts/package-readiness.mjs';
 import { compileAttributeCollector, captureAttributeSnapshot, compareAttributeSnapshots, decodeAttributes } from './macos_xattr_proof.mjs';
 
 async function fixture(t, { signed = true } = {}) {
-  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'director-next-m5-synthetic-'));
+  const directory = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'director-next-m5-synthetic-')));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
   const app = path.join(directory, 'Synthetic.app');
   await fs.mkdir(path.join(app, 'Contents/MacOS'), { recursive: true });
@@ -133,7 +133,7 @@ test('strict signature failure and unexpected certificate signature are not acce
 test('development signing uses fixed ad-hoc argv and preserves xattrs', async t => {
   const f = await fixture(t);
   const result = await signDevelopmentBundle(f.app, f.runtime);
-  assert.equal(result.extendedAttributesPreserved, true);
+  assert.equal(result.existingAttributesPreserved, true);
   assert.equal(f.calls.some(([exe]) => exe === '/usr/bin/xattr'), false);
   assert.ok(f.calls.some(([exe, args]) => exe === f.collector && args[0] === f.app));
   assert.deepEqual(f.calls.find(([, args]) => args[0] === '--force'), ['/usr/bin/codesign', ['--force', '--sign', '-', '--options', 'runtime', f.app]]);
@@ -273,4 +273,68 @@ test('collector compilation timeout stops linker-like descendants and persists f
   assert.equal(await fs.stat(marker).then(() => true, () => false), false);
   const proof = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'collector.json'), 'utf8'));
   assert.equal(proof.compiled, false); assert.equal(proof.failureKind, 'timeout');
+});
+
+function provenanceCommand(f, transform = value => value) {
+  return (exe, args) => {
+    if (exe === f.collector) {
+      const data = { schemaVersion: 1, ok: true, kind: lstatSync(args[0]).isDirectory() ? 'directory' : 'file', attributes: [
+        { nameHex: Buffer.from('com.apple.provenance').toString('hex'), valueHex: '0100ff2a' }] };
+      return { status: 0, stdout: JSON.stringify(transform(data, args[0])), stderr: '' };
+    }
+    return f.command(exe, args);
+  };
+}
+
+test('matching new signature provenance is accepted only with full artifact and fresh-attribute proof', async t => {
+  const f = await fixture(t, { signed: false });
+  const report = await signDevelopmentBundle(f.app, { ...f.runtime, command: provenanceCommand(f) });
+  assert.equal(report.existingAttributesPreserved, true); assert.equal(report.newSignatureProvenanceMatched, true);
+  assert.equal(report.extendedAttributesPreserved, undefined);
+  const verdict = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'artifact-verdict.json'), 'utf8'));
+  assert.equal(verdict.accepted, true); assert.equal(verdict.signatureAndResourcesVerified, true);
+  assert.equal(verdict.finalAttributesUnchanged, true); assert.equal(verdict.notarizationVerified, false);
+  assert.equal(verdict.gatekeeperAssessmentPerformed, false); assert.equal(verdict.appLaunched, false);
+  assert.match(verdict.fileInventorySha256, /^[0-9a-f]{64}$/); assert.match(verdict.finalSha256, /^[0-9a-f]{64}$/);
+});
+
+test('matching metadata cannot override strict signature failure or create overall acceptance', async t => {
+  const f = await fixture(t, { signed: false }); const safe = provenanceCommand(f);
+  await assert.rejects(signDevelopmentBundle(f.app, { ...f.runtime, command: (exe, args) => args[0] === '--verify'
+    ? { status: 1, stdout: '', stderr: '' } : safe(exe, args) }), /STRICT_SIGNATURE_FAILED/);
+  const comparison = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'xattrs-decision.json'), 'utf8'));
+  assert.equal(comparison.allowed, true); assert.equal(comparison.scope, 'attribute_comparison_only');
+  const verdict = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'artifact-verdict.json'), 'utf8'));
+  assert.equal(verdict.accepted, false); assert.equal(verdict.error, 'BUNDLE_STRICT_SIGNATURE_FAILED');
+});
+
+test('post-verification attribute change blocks accepted provenance and leaves failure evidence', async t => {
+  const f = await fixture(t, { signed: false }); let verified = false;
+  const safe = provenanceCommand(f, (data, item) => {
+    if (verified && item === f.app) data.attributes[0].valueHex = '0200ff2a';
+    return data;
+  });
+  await assert.rejects(signDevelopmentBundle(f.app, { ...f.runtime, command: (exe, args) => {
+    if (args[0] === '--verify') verified = true;
+    return safe(exe, args);
+  } }), /XATTR_CHANGED/);
+  const verdict = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'artifact-verdict.json'), 'utf8'));
+  assert.equal(verdict.accepted, false); assert.match(verdict.finalSha256, /^[0-9a-f]{64}$/);
+});
+
+test('post-signature file mutation cannot reuse the earlier verified artifact inventory', async t => {
+  const f = await fixture(t, { signed: false }); let verified = false, changed = false;
+  const safe = provenanceCommand(f, data => {
+    if (verified && !changed) {
+      changed = true;
+      writeFileSync(path.join(f.app, 'Contents/Resources/sdk-readiness/src/health.mjs'), 'changed after verification');
+    }
+    return data;
+  });
+  await assert.rejects(signDevelopmentBundle(f.app, { ...f.runtime, command: (exe, args) => {
+    if (args[0] === '--verify') verified = true;
+    return safe(exe, args);
+  } }), /ARTIFACT_CHANGED_AFTER_VERIFICATION/);
+  const verdict = JSON.parse(await fs.readFile(path.join(f.proofDirectory, 'artifact-verdict.json'), 'utf8'));
+  assert.equal(verdict.accepted, false);
 });

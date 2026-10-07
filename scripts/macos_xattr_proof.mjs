@@ -105,11 +105,53 @@ export async function captureAttributeSnapshot(root, { collector, command, now =
   return snapshot;
 }
 
-export function compareAttributeSnapshots(before, after) {
-  if (!before.complete || !after.complete) return { allowed: false, error: after.error || before.error || 'MAC_DEV_XATTR_COLLECTION_INCOMPLETE', differences: [] };
+function validSnapshot(snapshot) {
+  if (!snapshot || !Array.isArray(snapshot.nodes) || !snapshot.nodes.length || snapshot.nodes.length > 128) return false;
+  const paths = new Map();
+  for (const node of snapshot.nodes) {
+    if (!node || typeof node.path !== 'string' || node.path.length > 32768
+      || node.path !== '.' && (node.path.startsWith('/') || node.path.split('/').some(part => !part || part === '.' || part === '..'))
+      || !['file', 'directory'].includes(node.kind) || paths.has(node.path)
+      || !Array.isArray(node.attributes) || node.attributes.length > 64) return false;
+    const names = new Set();
+    for (const attribute of node.attributes) {
+      if (!attribute || typeof attribute.nameHex !== 'string' || !/^(?:[0-9a-f]{2})+$/.test(attribute.nameHex)
+        || attribute.nameHex.length > 131072 || Buffer.from(attribute.nameHex, 'hex').includes(0)
+        || names.has(attribute.nameHex) || !Number.isInteger(attribute.bytes) || attribute.bytes < 0 || attribute.bytes > 65536
+        || typeof attribute.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(attribute.sha256)) return false;
+      names.add(attribute.nameHex);
+    }
+    paths.set(node.path, node);
+  }
+  if (paths.get('.')?.kind !== 'directory') return false;
+  for (const node of paths.values()) {
+    if (node.path !== '.' && paths.get(node.path.includes('/') ? node.path.slice(0, node.path.lastIndexOf('/')) : '.')?.kind !== 'directory') return false;
+  }
+  return true;
+}
+
+function matchingSignatureProvenance(previous, current) {
+  const names = ['Contents/_CodeSignature', 'Contents/_CodeSignature/CodeResources'];
+  const added = [...current.keys()].filter(name => !previous.has(name)).sort(compare);
+  if (JSON.stringify(added) !== JSON.stringify(names)
+    || current.get(names[0])?.kind !== 'directory' || current.get(names[1])?.kind !== 'file') return false;
+  const key = Buffer.from('com.apple.provenance').toString('hex');
+  const anchors = ['.', 'Contents'].map(name => previous.get(name));
+  if (anchors.some(node => node?.kind !== 'directory')) return false;
+  const attributes = anchors.map(node => node.attributes.filter(attribute => attribute.nameHex === key));
+  if (attributes.some(items => items.length !== 1) || attributes[0][0].bytes === 0) return false;
+  const anchor = attributes[0][0];
+  const matches = attribute => attribute.nameHex === key && attribute.bytes === anchor.bytes && attribute.sha256 === anchor.sha256;
+  return matches(attributes[1][0]) && names.every(name => current.get(name).attributes.length === 1 && matches(current.get(name).attributes[0]));
+}
+
+export function compareAttributeSnapshots(before, after, { allowMatchingSignatureProvenance = false } = {}) {
+  if (before?.complete !== true || after?.complete !== true) return { allowed: false, error: after?.error || before?.error || 'MAC_DEV_XATTR_COLLECTION_INCOMPLETE', differences: [] };
+  if (!validSnapshot(before) || !validSnapshot(after)) return { allowed: false, error: 'MAC_DEV_XATTR_SNAPSHOT_INVALID', differences: [] };
   const previous = new Map(before.nodes.map(node => [node.path, node]));
   const current = new Map(after.nodes.map(node => [node.path, node]));
   const differences = [], allowedNewSignatureNodes = [];
+  const matchingProvenance = allowMatchingSignatureProvenance === true && matchingSignatureProvenance(previous, current);
   for (const [name, node] of previous) {
     const next = current.get(name);
     if (!next) { differences.push({ path: name, kind: 'existing_node_removed' }); continue; }
@@ -126,7 +168,7 @@ export function compareAttributeSnapshots(before, after) {
     if (previous.has(name)) continue;
     const expected = name === 'Contents/_CodeSignature' && node.kind === 'directory'
       || name === 'Contents/_CodeSignature/CodeResources' && node.kind === 'file';
-    if (!expected || node.attributes.length || current.get('Contents/_CodeSignature/CodeResources')?.kind !== 'file') {
+    if (!expected || (node.attributes.length && !matchingProvenance) || current.get('Contents/_CodeSignature/CodeResources')?.kind !== 'file') {
       differences.push({ path: name, kind: expected ? 'new_signature_node_attributes_or_layout_require_review' : 'unexpected_new_node' });
     } else allowedNewSignatureNodes.push(name);
   }
@@ -134,6 +176,10 @@ export function compareAttributeSnapshots(before, after) {
     ? 'MAC_DEV_XATTR_CHANGED' : differences.some(item => item.kind === 'unexpected_new_node')
       ? 'MAC_DEV_XATTR_UNEXPECTED_NODES' : 'MAC_DEV_XATTR_NEW_SIGNATURE_ATTRIBUTES_REVIEW';
   return { allowed: differences.length === 0, error,
+    scope: 'attribute_comparison_only',
+    existingAttributesUnchanged: !differences.some(item => ['attribute_added', 'attribute_removed', 'attribute_value_changed', 'existing_node_removed', 'node_type_changed'].includes(item.kind)),
+    newSignatureProvenanceMatched: matchingProvenance && differences.length === 0,
+    ...(matchingProvenance ? { provenanceAnchors: ['.', 'Contents'], provenanceEvidence: 'nonempty_length_and_sha256_equality_only' } : {}),
     differences: differences.sort((a, b) => compare(a.path, b.path) || compare(a.nameHex || '', b.nameHex || '')),
     allowedNewSignatureNodes: allowedNewSignatureNodes.sort(compare) };
 }
