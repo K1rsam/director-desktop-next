@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M6.2 — Canvas stderr failure diagnostics
+
+Canvas can return a structured failure envelope on stderr with empty stdout. The adapter now classifies both bounded streams, exposes only fixed safe error enums and observed exit/stream metadata, and preserves success as a stdout-only contract. Conflicting structured streams fail closed. Only the confirmed `auth account` four-field combination maps to insufficient OAuth scope; model access denial does not imply that same remedy. No login, retry, TLS/proxy/configuration or generation operation is introduced.
+
+The reviewed component passed 41 readiness and 70 legacy-supervisor tests. Final integrated Rust aggregate evidence is recorded separately in [M6.2 integration verification](verification/M6.2-integration.json). UI and packaging/runtime gates are unchanged, so no additional frontend or GUI run is claimed. Actual native diagnostics still require the same published revision.
+
 ## M6.1 — Bounded new signature-node metadata
 
 Adds only a local development-artifact comparison rule: exactly two newly created signature nodes may each carry the sole provenance value whose nonempty length/hash matches both pre-sign directory anchors. Every existing attribute remains unchanged, other new metadata/nodes remain blocked, and full acceptance additionally requires strict signatures/resources plus fresh attribute and file-inventory checks. No system metadata is written or removed. The result records equality observations without claiming inheritance or Gatekeeper trust.

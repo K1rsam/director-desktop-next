@@ -1,0 +1,143 @@
+{
+  "schema": "director-next-canvas-stderr-diagnostics-verification/v1",
+  "checkpoint": "M6.2",
+  "baseCommit": "01e9a023a7255d64e4b5dbbd68766e50582cd1d9",
+  "date": "2026-10-07",
+  "scope": "Canvas-only bounded stderr failure diagnostics; no credential, TLS, proxy, config, generation or packaging changes",
+  "status": "reviewed_focused_offline_verified_native_pending",
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "operation": "modify",
+      "baseSha256": "c9001f9b99cd17fcfd5b206db5c57b63a14849a5fe85d771988d018f0b62f012",
+      "bytes": 198877,
+      "sha256": "5522c83132eccd66ba295ad30ebc0938e4769c4b91ade22e49599ede2feda0df"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "operation": "modify",
+      "baseSha256": "6aafe9520182ed887deb24ef9364c370c2475c37082e9505feee64e906746666",
+      "bytes": 18559,
+      "sha256": "d3feae357aea28f4262d70e46d42d67ce1e9e9b4342b779a3def950f9e384741"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "operation": "modify",
+      "baseSha256": "f284a0309d2409ef7bdc6993ef179b9d0d8e08ff3ba9a72a6e3d59353ef0bf22",
+      "bytes": 43862,
+      "sha256": "0d165b9f9db01e0fafaaf6b5a1ed9517ecc4cf58c0b27747e8e39b40aa027d39"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas_diagnostics.rs",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 14657,
+      "sha256": "add1c8b25d6e45562821b78ad95ac0e7a360b6d806d7b07e24f76b5276b792eb"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "operation": "modify",
+      "baseSha256": "aca5e309ff2d4f229b0aa602d4de93615fe50cabc949a157c3a44c86fb424612",
+      "bytes": 30252,
+      "sha256": "e4636546810d7568c1e302fef549ad9fc6022b32cde9ad51bd535f9265c8808c"
+    },
+    {
+      "path": "docs/CANVAS_FAILURE_DIAGNOSTICS.md",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 2781,
+      "sha256": "f26062de786afb5eece7a57ecb59400ac94f69e7302bae83fa010d430bf5a7ed"
+    }
+  ],
+  "tests": {
+    "readiness": {
+      "passed": 41,
+      "failed": 0,
+      "ignored": 0
+    },
+    "legacyProviderSupervisor": {
+      "passed": 70,
+      "failed": 0,
+      "ignored": 0
+    },
+    "sourceLock": {
+      "passed": true
+    },
+    "fullRustAggregateRerun": false,
+    "frontendRerun": false,
+    "frontendSourceChanged": false
+  },
+  "nativeEvidence": {
+    "account": {
+      "exitCode": 11,
+      "stdoutEmpty": true,
+      "stderrEnvelopeSchemaVersion": "1",
+      "ok": false,
+      "error": {
+        "code": "service.10000",
+        "class": "auth_required",
+        "requiredAction": "login",
+        "reason": "oauth_scope_insufficient"
+      }
+    },
+    "modelList": {
+      "exitCode": 12,
+      "stdoutEmpty": true,
+      "stderrEnvelopeSchemaVersion": "1",
+      "ok": false,
+      "error": {
+        "code": "service.10000",
+        "class": "access_denied",
+        "requiredAction": "none"
+      }
+    },
+    "rawPayloadIncluded": false,
+    "fixedNativeBuildVerified": false,
+    "tlsKeywordWasNotCauseEvidence": true
+  },
+  "safety": {
+    "realProviderCalls": 0,
+    "modelCalls": 0,
+    "autoLogin": false,
+    "autoRetry": false,
+    "credentialWrites": false,
+    "systemNetworkSettingsChanged": false,
+    "rawStreamsExportedOrPersisted": false,
+    "unknownEnumValues": "unrecognized",
+    "conflictingEnvelopeLikeStreams": "fail_closed",
+    "exitZeroEmptyStdout": "fail_closed",
+    "successOnStderr": "never_accepted"
+  },
+  "review": {
+    "status": "passed_after_fix",
+    "resolvedFinding": "Reject success stdout paired with invalid, unsupported or missing-schema envelope-like stderr before success adoption"
+  },
+  "setupRecovery": {
+    "initialReadinessRun": "37 passed, 3 SDK integration failures because isolated copy excluded node_modules",
+    "resolution": "Restored previously pinned SDK dependency files in ignored node_modules; final 41-test run passed; no source permission or provider changes"
+  },
+  "evidence": [
+    {
+      "path": "docs/verification/m6-2/readiness-final.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 5732,
+      "sha256": "7c318a42c2b888d3fae20d4ccd897bb4958704094c532a5b06256893636bb551"
+    },
+    {
+      "path": "docs/verification/m6-2/legacy-supervisor-final.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 8423,
+      "sha256": "d5e6949abe79a5745a80db74686b6206891381d49dd5cad354497f2ab0e1977b"
+    },
+    {
+      "path": "docs/verification/m6-2/source-lock.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    }
+  ],
+  "externalPublicationPerformed": false
+}

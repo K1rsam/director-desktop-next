@@ -261,6 +261,11 @@ fn dreamina_log_write_denial_stops_further_probes_and_does_not_claim_auth_failur
  assert!(engine.store(s(&p,"id")).unwrap().jobs().unwrap().is_empty());
 }
 
+// Synthetic stream payloads are never written to the fixture's command log.
+const CANVAS_ACCOUNT_STDERR_ERROR: &str = r#"{"schemaVersion":"1","ok":false,"error":{"code":"service.10000","class":"auth_required","reason":"oauth_scope_insufficient","requiredAction":"login","message":"PRIVATE_ACCOUNT_MESSAGE","token":"PRIVATE_ACCOUNT_TOKEN","path":"/PRIVATE_ACCOUNT_HOME/credentials.json","userId":987654321},"meta":{"requestId":"PRIVATE_REQUEST_ID"}}"#;
+const CANVAS_MODELS_STDERR_ERROR: &str = r#"{"schemaVersion":"1","ok":false,"error":{"code":"service.10000","class":"access_denied","requiredAction":"none","message":"PRIVATE_MODEL_MESSAGE","token":"PRIVATE_MODEL_TOKEN","path":"/PRIVATE_MODEL_HOME/credentials.json","userId":987654321},"meta":{"requestId":"PRIVATE_REQUEST_ID"}}"#;
+const CANVAS_MODELS_STDERR_TEXT: &str = "TLS certificate, proxy and authentication failure: PRIVATE_MODEL_MESSAGE token=PRIVATE_MODEL_TOKEN path=/PRIVATE_MODEL_HOME/credentials.json userId=987654321";
+
 fn canvas_native_fixture(dir: &Path, kind: &str) -> PathBuf {
     use crate::readiness_canvas::ReadCommand;
     let path=dir.join(if cfg!(windows) {format!("{kind}.exe")} else {kind.into()});
@@ -272,6 +277,31 @@ fn canvas_native_fixture(dir: &Path, kind: &str) -> PathBuf {
         (ReadCommand::AuthAccount,include_str!("../../fixtures/synthetic/canvas-readiness/account.json")),
         (ReadCommand::ImageModels,include_str!("../../fixtures/synthetic/canvas-readiness/models.json")),
     ] {
+        let stderr_failure = match (kind, command) {
+            (
+                "canvas-stderr-failures" | "canvas-unstructured-model-failure",
+                ReadCommand::AuthAccount,
+            ) => Some((CANVAS_ACCOUNT_STDERR_ERROR, 11)),
+            ("canvas-stderr-failures", ReadCommand::ImageModels) => {
+                Some((CANVAS_MODELS_STDERR_ERROR, 12))
+            }
+            ("canvas-unstructured-model-failure", ReadCommand::ImageModels) => {
+                Some((CANVAS_MODELS_STDERR_TEXT, 12))
+            }
+            _ => None,
+        };
+        if let Some((stderr, exit_code)) = stderr_failure {
+            arms.push_str(&format!(
+                "{} => {{ std::io::stderr().write_all({}.as_bytes()).unwrap(); std::process::exit({exit_code}); }},\n",
+                json!(command.args().join(" ")),
+                json!(stderr)
+            ));
+            continue;
+        }
+        if kind == "canvas-empty-account" && command == ReadCommand::AuthAccount {
+            arms.push_str(&format!("{} => {{}},\n", json!(command.args().join(" "))));
+            continue;
+        }
         let response=if kind=="canvas-output-flood" && command==ReadCommand::Version {"x".repeat(70_000)} else {response.into()};
         arms.push_str(&format!("{} => println!(\"{{}}\", {}),\n",json!(command.args().join(" ")),json!(response)));
     }
@@ -305,6 +335,206 @@ fn canvas_readiness_native_allowlist_preserves_legacy_jobs_settings_and_generati
     assert_eq!(fs::read_to_string(dir.path().join("canvas-success-calls.txt")).unwrap(),log);
     for field in ["dreaminaPath","login","command","profile","region","authToken","sdkOfflineFixture"] {
         assert!(crate::readiness::request_settings(&json!({"provider":"dreamina_canvas","settings":{field:"forbidden"}}),&json!({})).is_err());
+    }
+}
+
+#[test]
+fn canvas_native_stderr_failures_preserve_local_auth_and_only_export_safe_process_diagnostics() {
+    use crate::readiness_canvas::ReadCommand;
+    for (kind, model_stderr, model_shape, model_source) in [
+        (
+            "canvas-stderr-failures",
+            CANVAS_MODELS_STDERR_ERROR,
+            "error_envelope",
+            "stderr",
+        ),
+        (
+            "canvas-unstructured-model-failure",
+            CANVAS_MODELS_STDERR_TEXT,
+            "malformed_json",
+            "none",
+        ),
+    ] {
+        let dir = tempfile::tempdir().unwrap();
+        let path = canvas_native_fixture(dir.path(), kind);
+        let engine = enabled_engine(dir.path().join("home"));
+        let project = engine
+            .dispatch(
+                json!({"action":"projects.create","title":"Synthetic stderr-only Canvas failures"}),
+            )
+            .unwrap();
+        let store = engine.store(s(&project, "id")).unwrap();
+        let before_settings = store.settings().unwrap();
+        let report = engine
+        .dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"dreamina_canvas","settings":{"dreaminaCanvasPath":path}}))
+        .unwrap();
+
+        assert_eq!(report["installation"]["state"], "ready");
+        assert_eq!(report["installation"]["version"], "1.0.2");
+        assert_eq!(report["protocol"]["state"], "ready");
+        assert_eq!(report["authentication"]["state"], "authenticated");
+        assert_eq!(report["authentication"]["identityVerified"], false);
+        assert_eq!(report["details"]["accountQuery"]["state"], "unavailable");
+        assert_eq!(report["catalog"]["state"], "unavailable");
+        assert_eq!(report["network"]["state"], "not_tested");
+        assert_eq!(report["generation"]["calls"], 0);
+        assert_eq!(
+            report["details"]["checks"]["auth account"]["state"],
+            "failed"
+        );
+        assert_eq!(
+            report["details"]["checks"]["auth account"]["code"],
+            "CANVAS_OAUTH_SCOPE_INSUFFICIENT"
+        );
+        assert_eq!(
+            report["details"]["checks"]["model list --type image"]["state"],
+            "failed"
+        );
+
+        let diagnostics = report["details"]["processDiagnostics"].as_object().unwrap();
+        assert_eq!(diagnostics.len(), 5);
+        for label in ["version", "schema", "auth status"] {
+            let diagnostic = &diagnostics[label];
+            assert_eq!(diagnostic["termination"], "exit");
+            assert_eq!(diagnostic["exitCode"], 0);
+            assert_eq!(diagnostic["signal"], Value::Null);
+            assert!(diagnostic["stdoutBytes"].as_u64().unwrap() > 0);
+            assert_eq!(diagnostic["stderrBytes"], 0);
+            assert_eq!(diagnostic["stdoutShape"], "success_envelope");
+            assert_eq!(diagnostic["stderrShape"], "empty");
+            assert_eq!(diagnostic["structuredErrorSource"], "none");
+        }
+        for (label, exit_code, stderr, shape, source) in [
+            (
+                "auth account",
+                11,
+                CANVAS_ACCOUNT_STDERR_ERROR,
+                "error_envelope",
+                "stderr",
+            ),
+            (
+                "model list --type image",
+                12,
+                model_stderr,
+                model_shape,
+                model_source,
+            ),
+        ] {
+            let diagnostic = &diagnostics[label];
+            assert_eq!(diagnostic["termination"], "exit");
+            assert_eq!(diagnostic["exitCode"], exit_code);
+            assert_eq!(diagnostic["signal"], Value::Null);
+            assert_eq!(diagnostic["stdoutBytes"], 0);
+            assert_eq!(diagnostic["stderrBytes"], stderr.len());
+            assert_eq!(diagnostic["stdoutShape"], "empty");
+            assert_eq!(diagnostic["stderrShape"], shape);
+            assert_eq!(diagnostic["structuredErrorSource"], source);
+            assert!(diagnostic["errors"].get("stdout").is_none());
+        }
+        assert_eq!(
+            diagnostics["auth account"]["errors"]["stderr"],
+            json!({
+                "code":"service.10000", "class":"auth_required", "reason":"oauth_scope_insufficient",
+                "requiredAction":"login"
+            })
+        );
+        if model_source == "stderr" {
+            assert_eq!(
+                diagnostics["model list --type image"]["errors"]["stderr"],
+                json!({
+                    "code":"service.10000", "class":"access_denied", "requiredAction":"none"
+                })
+            );
+        } else {
+            assert_eq!(diagnostics["model list --type image"]["errors"], json!({}));
+        }
+        // Unstructured stderr and conventional exit numbers cannot establish TLS,
+        // proxy, authentication, or transport diagnoses.
+        let model_check = report["details"]["checks"]["model list --type image"].to_string();
+        for inferred in ["TLS", "PROXY", "CERTIFICATE"] {
+            assert!(!model_check.contains(inferred));
+        }
+        if model_source == "none" {
+            assert!(!model_check.contains("AUTH"));
+        }
+        let serialized = report.to_string();
+        for private in [
+            "PRIVATE_",
+            "987654321",
+            "123456789",
+            "userId",
+            "credentials.json",
+        ] {
+            assert!(!serialized.contains(private));
+        }
+        assert_eq!(store.settings().unwrap(), before_settings);
+        assert!(store.jobs().unwrap().is_empty());
+
+        let expected_calls = [
+            ReadCommand::Version,
+            ReadCommand::Schema,
+            ReadCommand::AuthStatus,
+            ReadCommand::AuthAccount,
+            ReadCommand::ImageModels,
+        ]
+        .iter()
+        .map(|command| command.args().join(" "))
+        .collect::<Vec<_>>()
+        .join("\n")
+            + "\n";
+        let log_path = dir.path().join(format!("{kind}-calls.txt"));
+        assert_eq!(fs::read_to_string(&log_path).unwrap(), expected_calls);
+        assert!(engine
+            .dispatch(json!({"action":"images.run","projectId":project["id"]}))
+            .unwrap_err()
+            .contains("OFFLINE_EXECUTION_BLOCKED"));
+        assert_eq!(fs::read_to_string(log_path).unwrap(), expected_calls);
+    }
+}
+
+#[test]
+fn canvas_native_zero_exit_with_empty_account_stdout_never_verifies_remote_identity() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = canvas_native_fixture(dir.path(), "canvas-empty-account");
+    let engine = enabled_engine(dir.path().join("home"));
+    let project = engine
+        .dispatch(json!({"action":"projects.create","title":"Synthetic empty Canvas account"}))
+        .unwrap();
+    let report = engine
+        .dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"dreamina_canvas","settings":{"dreaminaCanvasPath":path}}))
+        .unwrap();
+    assert_eq!(report["protocol"]["state"], "ready");
+    assert_eq!(report["authentication"]["state"], "authenticated");
+    assert_eq!(report["authentication"]["identityVerified"], false);
+    assert_eq!(report["details"]["accountQuery"]["state"], "unavailable");
+    assert_eq!(
+        report["details"]["checks"]["auth account"]["state"],
+        "failed"
+    );
+    assert_eq!(report["catalog"]["state"], "available");
+    assert_eq!(report["network"]["state"], "not_tested");
+    assert_eq!(report["generation"]["calls"], 0);
+    let diagnostic = &report["details"]["processDiagnostics"]["auth account"];
+    assert_eq!(diagnostic["termination"], "exit");
+    assert_eq!(diagnostic["exitCode"], 0);
+    assert_eq!(diagnostic["signal"], Value::Null);
+    assert_eq!(diagnostic["stdoutBytes"], 0);
+    assert_eq!(diagnostic["stderrBytes"], 0);
+    assert_eq!(diagnostic["stdoutShape"], "empty");
+    assert_eq!(diagnostic["stderrShape"], "empty");
+    assert_eq!(diagnostic["structuredErrorSource"], "none");
+    assert_eq!(diagnostic["errors"], json!({}));
+    let log = fs::read_to_string(dir.path().join("canvas-empty-account-calls.txt")).unwrap();
+    assert_eq!(log.lines().count(), 5);
+    assert!(!log.contains("FORBIDDEN"));
+    assert!(engine
+        .store(s(&project, "id"))
+        .unwrap()
+        .jobs()
+        .unwrap()
+        .is_empty());
+    for private in ["PRIVATE_", "123456789", "userId"] {
+        assert!(!report.to_string().contains(private));
     }
 }
 

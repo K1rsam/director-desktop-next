@@ -268,7 +268,7 @@ pub(crate) fn canvas_readiness_command(
     config: &ProviderConfig,
     command: crate::readiness_canvas::ReadCommand,
     deadline: std::time::Instant,
-) -> ProviderResult<Vec<u8>> {
+) -> ProviderResult<crate::readiness_canvas::ProcessOutput> {
     dreamina::canvas_readiness_command(config, command, deadline)
 }
 /// User-triggered headless OAuth. Device material is for core memory only, never project state.

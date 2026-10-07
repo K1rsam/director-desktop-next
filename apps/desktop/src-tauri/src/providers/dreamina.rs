@@ -29,6 +29,7 @@ fn cli_path(config: &ProviderConfig) -> ProviderResult<&Path> {
 struct CliOutput {
     success: bool,
     exit_code: Option<i32>,
+    signal: Option<i32>,
     launch: String,
     stdout: Vec<u8>,
     stderr: Vec<u8>,
@@ -606,6 +607,10 @@ async fn supervise_command_async(
     Ok(CliOutput {
         success: status.success(),
         exit_code: status.code(),
+        signal: {
+            #[cfg(unix)] { use std::os::unix::process::ExitStatusExt; status.signal() }
+            #[cfg(not(unix))] { None }
+        },
         launch,
         stdout: bytes.bytes,
         stderr: error.bytes,
@@ -1302,20 +1307,16 @@ pub(super) fn canvas_readiness_command(
     config: &ProviderConfig,
     command: crate::readiness_canvas::ReadCommand,
     deadline: Instant,
-) -> ProviderResult<Vec<u8>> {
+) -> ProviderResult<crate::readiness_canvas::ProcessOutput> {
     let args = command.args().iter().map(|s| (*s).to_string()).collect::<Vec<_>>();
     let output = execute_until(config, &args, false, Some(deadline))?;
-    if readiness_log_write_restricted(&output) {
-        return Err(ProviderError::new("CLI_LOCAL_LOG_WRITE_RESTRICTED", "CLI 本地日志写入受限，未尝试修改权限或目录。"));
-    }
-    if output.stdout.len() > command.output_limit() {
-        return Err(ProviderError::new("CANVAS_OUTPUT_LIMIT", "Canvas 只读输出超过检查限制。"));
-    }
-    // Structured failure envelopes are parsed without retaining/logging stderr or raw account output.
-    if !output.success && !serde_json::from_slice::<Value>(&output.stdout).is_ok_and(|body| body["schemaVersion"] == "1" && body["ok"] == false) {
-        return Err(ProviderError::new("CANVAS_COMMAND_FAILED", "Canvas 只读命令未完成。"));
-    }
-    Ok(output.stdout)
+    // Keep both bounded streams in memory until the Canvas-only classifier has
+    // checked failure envelopes. Do not route through the legacy text classifier.
+    Ok(crate::readiness_canvas::ProcessOutput {
+        success: output.success, exit_code: output.exit_code, signal: output.signal,
+        local_log_write_restricted: readiness_log_write_restricted(&output),
+        stdout: output.stdout, stderr: output.stderr,
+    })
 }
 
 fn login_material(body: &Value) -> ProviderResult<Value> {
@@ -3793,6 +3794,7 @@ mod tests {
     fn auth_output(success: bool, stdout: Value, stderr: &str) -> CliOutput {
         CliOutput {
             success,
+            signal: None,
             exit_code: Some(if success { 0 } else { 1 }),
             launch: "offline-launch".into(),
             stdout: serde_json::to_vec(&stdout).unwrap(),

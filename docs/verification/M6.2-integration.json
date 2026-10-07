@@ -1,0 +1,95 @@
+{
+  "schema": "director-next-canvas-diagnostics-integration/v1",
+  "checkpoint": "M6.2 integrated",
+  "date": "2026-10-07",
+  "baseCommit": "01e9a023a7255d64e4b5dbbd68766e50582cd1d9",
+  "scope": "Reviewed bounded stderr diagnostic parsing and safe display; no login/retry/network settings/generation actions",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "deliveryManifestSha256": "f8ad2d3979565a3967696fb24e8242980c461f062062194b6e4a981395205a4a",
+  "appliedFiles": 10,
+  "allBaseAndNewHashesMatched": true,
+  "extraProductionCodeChanges": false,
+  "fullReleaseRust": {
+    "passed": 821,
+    "failed": 0,
+    "ignored": 24,
+    "summaries": 24,
+    "exitCode": 0,
+    "command": "cargo test --release --offline --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features -- --test-threads=1",
+    "ignoredTestsRun": false,
+    "runOn": "final integrated tree"
+  },
+  "componentFocusedChecks": {
+    "readinessPassed": 41,
+    "legacySupervisorPassed": 70,
+    "failures": 0
+  },
+  "sourceLock": {
+    "passed": true,
+    "frozenCandidates": 22,
+    "pinnedSourceFiles": 144,
+    "candidateRuntimeActive": false
+  },
+  "unchangedProtectedFiles": 119,
+  "frontendSourceChanged": false,
+  "frontendRerun": false,
+  "packagingPolicyChanged": false,
+  "nativeFixedBuildVerified": false,
+  "realProviderCalls": 0,
+  "modelCalls": 0,
+  "credentialWrites": false,
+  "autoLogin": false,
+  "autoRetry": false,
+  "sslProxyOrSystemSettingsChanged": false,
+  "reviewStatus": "component review passed; final manifest binding required",
+  "evidence": [
+    {
+      "path": "docs/verification/m6-2/full-rust-release-integrated.log",
+      "bytes": 102855,
+      "sha256": "29df8e9d411422e9ddc07e950917273c33da3573158063676337a0fd91c0f1a6"
+    },
+    {
+      "path": "docs/verification/m6-2/integrated-source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    },
+    {
+      "path": "docs/verification/m6-2/integration-proof.json",
+      "bytes": 2855,
+      "sha256": "1ecaa45f0137861451dad46e3edf234305a467d8025d241c8f190fe954e28b72"
+    },
+    {
+      "path": "docs/verification/M6.2.json",
+      "bytes": 4780,
+      "sha256": "e1de33457acf540df44e9fa5bf38ca5ac695009a1b67e0809516f2dd112ae51e"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "bytes": 198877,
+      "sha256": "5522c83132eccd66ba295ad30ebc0938e4769c4b91ade22e49599ede2feda0df"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "bytes": 18559,
+      "sha256": "d3feae357aea28f4262d70e46d42d67ce1e9e9b4342b779a3def950f9e384741"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "bytes": 43862,
+      "sha256": "0d165b9f9db01e0fafaaf6b5a1ed9517ecc4cf58c0b27747e8e39b40aa027d39"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas_diagnostics.rs",
+      "bytes": 14657,
+      "sha256": "add1c8b25d6e45562821b78ad95ac0e7a360b6d806d7b07e24f76b5276b792eb"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "bytes": 30252,
+      "sha256": "e4636546810d7568c1e302fef549ad9fc6022b32cde9ad51bd535f9265c8808c"
+    }
+  ]
+}

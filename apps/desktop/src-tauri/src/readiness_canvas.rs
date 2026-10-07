@@ -13,6 +13,10 @@ use std::{
     time::{Duration, Instant},
 };
 
+#[path = "readiness_canvas_diagnostics.rs"]
+mod diagnostics;
+pub(crate) use diagnostics::ProcessOutput;
+
 const PROVIDER: &str = "dreamina_canvas";
 const OVERALL_TIMEOUT: Duration = Duration::from_secs(45);
 
@@ -428,9 +432,52 @@ pub fn check(settings: &Value) -> Value {
     )
     .expect("fixed Canvas readiness config");
     let deadline = Instant::now() + OVERALL_TIMEOUT;
-    inspect(report, |command| {
-        providers::canvas_readiness_command(&config, command, deadline)
-    })
+    let mut process_diagnostics = Map::new();
+    let mut report = inspect(report, |command| {
+        let output = providers::canvas_readiness_command(&config, command, deadline)?;
+        let (diagnostic, result) = diagnostics::classify(command, output);
+        process_diagnostics.insert(command.label().into(), diagnostic);
+        result
+    });
+    for (command, diagnostic) in &process_diagnostics {
+        if report["details"]["checks"][command]["state"] == "failed" {
+            let termination = if let Some(signal) = diagnostic["signal"].as_i64() {
+                format!("信号 {signal}")
+            } else if let Some(code) = diagnostic["exitCode"].as_i64() {
+                format!("退出码 {code}")
+            } else {
+                "退出状态未知".into()
+            };
+            report["messages"].as_array_mut().unwrap().push(json!(format!(
+                "{command}：{termination}，标准输出 {} 字节，错误输出 {} 字节；只保留结构化安全诊断，未推断原因或自动重试。",
+                diagnostic["stdoutBytes"], diagnostic["stderrBytes"]
+            )));
+            if let Some(source) = diagnostic["structuredErrorSource"]
+                .as_str()
+                .filter(|source| ["stdout", "stderr"].contains(source))
+            {
+                let error = &diagnostic["errors"][source];
+                let fields: Vec<_> = ["code", "class", "reason", "requiredAction"]
+                    .iter()
+                    .filter_map(|key| error[*key].as_str().map(|value| format!("{key}={value}")))
+                    .collect();
+                if !fields.is_empty() {
+                    report["messages"]
+                        .as_array_mut()
+                        .unwrap()
+                        .push(json!(format!(
+                            "{command} 结构化错误：{}",
+                            fields.join("；")
+                        )));
+                }
+            }
+            if report["details"]["checks"][command]["code"] == "CANVAS_OAUTH_SCOPE_INSUFFICIENT" {
+                report["messages"].as_array_mut().unwrap().push(json!("Canvas 官方账户接口报告授权范围不足，需要通过官方流程补充授权；本次检查没有启动登录或修改凭据。"));
+            }
+        }
+    }
+    report["details"]["processDiagnostics"] = Value::Object(process_diagnostics);
+    report
 }
 
 fn inspect(
@@ -905,7 +952,10 @@ mod report_tests {
         assert_eq!(report["protocol"]["state"], "ready");
         assert_eq!(report["authentication"]["state"], "authenticated");
         assert_eq!(report["authentication"]["identityVerified"], true);
-        assert_eq!(report["network"], json!({"state":"verified_read_only","proof":["auth account"]}));
+        assert_eq!(
+            report["network"],
+            json!({"state":"verified_read_only","proof":["auth account"]})
+        );
         assert_eq!(report["catalog"]["models"][0]["id"], "seedream_5.0_lite");
         assert_eq!(report["details"]["accountQuery"]["isVip"], false);
         assert_eq!(report["details"]["quota"]["state"], "unsupported");
@@ -952,7 +1002,10 @@ mod report_tests {
         });
         assert_eq!(failed["authentication"]["identityVerified"], true);
         assert_eq!(failed["catalog"]["state"], "unavailable");
-        assert_eq!(failed["network"], json!({"state":"verified_read_only","proof":["auth account"]}));
+        assert_eq!(
+            failed["network"],
+            json!({"state":"verified_read_only","proof":["auth account"]})
+        );
         let empty = inspect(base_report(), |command| {
             if command == ReadCommand::ImageModels {
                 Ok(br#"{"schemaVersion":"1","ok":true,"data":{"items":[]}}"#.to_vec())
