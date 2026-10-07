@@ -18,6 +18,8 @@ M6.1 仅补充[新签名节点元数据的有界验收](docs/MACOS_XATTR_EVIDENC
 
 M6.2 补充 [Canvas 标准错误流诊断](docs/CANVAS_FAILURE_DIAGNOSTICS.md)：识别已核验的授权范围不足与模型访问被拒绝，保留脱敏退出信息。它不自动登录、重试或更改网络配置；修复后的原生提示仍需同版本复验。
 
+M6.3 增加折叠的 [Canvas 进程阶段诊断](docs/CANVAS_PROCESS_PHASES.md)，让超时失败仍保留启动、退出、输出管道与清理的观察结果。原超时和清理规则保持；实际 Mac 原因仍待一次同版本 GUI 检查确认。
+
 三项检查按安装、协议、账户、模型目录和真实生成分层展示，检查不提交模型请求；[连接检查合同与本地验收](docs/READINESS_CONTRACT.md)、[真正官方 SDK 的健康检查与打包](docs/SDK_READINESS.md)。
 
 ## 实施入口

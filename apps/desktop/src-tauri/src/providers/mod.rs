@@ -3,6 +3,7 @@
 mod bh;
 mod chrome;
 mod dreamina;
+mod cli_observation;
 mod wire;
 #[cfg(test)]
 mod wire_tests;
@@ -268,7 +269,7 @@ pub(crate) fn canvas_readiness_command(
     config: &ProviderConfig,
     command: crate::readiness_canvas::ReadCommand,
     deadline: std::time::Instant,
-) -> ProviderResult<crate::readiness_canvas::ProcessOutput> {
+) -> (ProviderResult<crate::readiness_canvas::ProcessOutput>, Value) {
     dreamina::canvas_readiness_command(config, command, deadline)
 }
 /// User-triggered headless OAuth. Device material is for core memory only, never project state.

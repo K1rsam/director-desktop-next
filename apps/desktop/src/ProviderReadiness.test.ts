@@ -77,7 +77,7 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
     const policy = await server.ssrLoadModule('/src/executionPolicy.ts');
     const { TextExecutionSettings } = await server.ssrLoadModule('/src/TextExecutionSettings.tsx');
     const { SettingsPanel } = await server.ssrLoadModule('/src/Panels.tsx');
-    const { validateProviderReadiness } = await server.ssrLoadModule('/src/ProviderReadiness.tsx');
+    const { validateProviderReadiness, ProviderReadinessResult } = await server.ssrLoadModule('/src/ProviderReadiness.tsx');
     const { previewWorkspace } = await server.ssrLoadModule('/src/preview.ts');
     const workspace = { ...structuredClone(previewWorkspace), project: { id: 'readiness-project', title: 'Synthetic' }, settings: { codexPath: '/saved/codex', dreaminaPath: '/saved/dreamina', dreaminaCanvasPath: '/saved/canvas', imageProvider: 'dreamina', videoProvider: 'dreamina' } };
     const props = { workspace, settings: { textProvider: 'codex', codexPath: '/unsaved/CLI path' }, writable: true, update() {}, saveSettings: async () => { throw new Error('readiness must not save settings'); } };
@@ -295,6 +295,63 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
         assert.ok(view.render(element).map(content).join(' ').includes('当前协议未提供只读账户查询'));
         assert.equal(calls.length, 2);
       } finally { view.unmount(); respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
+    });
+    await t.test('Canvas supervisor diagnostics are collapsed historical observations and never issue IPC', () => {
+      calls.length = 0; const view = hookRenderer();
+      const supervisor = {
+        phase: 'thread_joined', pid: 1234, elapsedMs: 805, budgetMs: 800,
+        milestones: { created: 0, spawn_end: 2, exit_observed: 804, cleanup_end: 804, thread_joined: 805 },
+        stdout: { bytes: 12, eof: true, readError: false, firstByteMs: 10, eofMs: 30 },
+        stderr: { bytes: 0, eof: false, readError: false, firstByteMs: null, eofMs: null },
+        processExit: { code: 0, signal: null, success: true, observedAtMs: 804 },
+        timeout: { kind: 'run', elapsedMs: 804, overshootMs: 4, exitObserved: false },
+        preCleanup: { state: 'running', exitCode: null, signal: null },
+        cleanup: { killRequested: true, reapConfirmed: true }, controlTicks: 40, maxControlGapMs: 21,
+      };
+      const report = { ...result('dreamina_canvas'), details: { processDiagnostics: Object.fromEntries(['version', 'schema', 'auth status', 'auth account', 'model list --type image'].map(command => [command, { supervisor }])) } };
+      const before = structuredClone(report);
+      try {
+        const nodes = view.render(React.createElement(ProviderReadinessResult, { check: { result: report, error: '', busy: false, blocked: null, provider: 'dreamina_canvas' } }));
+        const panel = nodes.find(node => node.type === 'details' && node.props['data-canvas-process-diagnostics']);
+        assert.ok(panel); assert.ok(!panel.props.open, 'diagnostics start collapsed');
+        const text = content(panel);
+        for (const label of ['version', 'schema', 'auth status', 'auth account', 'model list --type image', '1234', '最后记录阶段thread_joined', 'created0 ms', 'spawn_end2 ms', 'thread_joined805 ms', '805 ms / 800 ms', '40 / 21 ms', '字节：12', 'EOF：是', '读取错误：否', '首字节：10 ms', 'EOF 时间：30 ms', '退出码：0', '成功：是', '类型：run', '超出：4 ms', '已观察退出：否', '状态：running', '已请求终止：是', '已确认回收：是', 'PID 不表示进程当前仍在运行', '不能单独确定故障原因或证明问题已修复']) assert.ok(text.includes(label), label);
+        assert.equal(nodes.filter(node => node.props['data-canvas-command']).length, 5);
+        assert.ok(!nodes.some(node => node.type === 'button'), 'diagnostics have no probe or retry controls');
+        assert.deepEqual(report, before, 'diagnostics do not change evidence');
+        assert.deepEqual(calls, []);
+      } finally { view.unmount(); }
+    });
+    await t.test('Canvas diagnostics keep missing and malformed fields unknown without claiming exit or cleanup', () => {
+      calls.length = 0; const view = hookRenderer();
+      try {
+        for (const supervisor of [undefined, null, [], {}, { pid: 0, phase: 'future-phase', elapsedMs: -1, budgetMs: Infinity, stdout: { bytes: '12', eof: 'true' }, cleanup: { reapConfirmed: null } }]) {
+          const report = { ...result('dreamina_canvas'), details: { processDiagnostics: { version: { supervisor } } } };
+          const nodes = view.render(React.createElement(ProviderReadinessResult, { check: { result: report, error: '', busy: false, provider: 'dreamina_canvas' } }));
+          const panel = nodes.find(node => node.props['data-canvas-command'] === 'version'); assert.ok(panel);
+          const text = content(panel);
+          for (const label of ['检查时 PID（历史）未知', '最后记录阶段未知', '已用时间 / 预算未知 / 未知', '字节：未知', 'EOF：未知', '未知 / 无退出记录', '已请求终止：未知', '已确认回收：未知']) assert.ok(text.includes(label), label);
+          assert.ok(!text.includes('future-phase'));
+        }
+        for (const details of [{}, { processDiagnostics: null }, { processDiagnostics: [] }]) {
+          const nodes = view.render(React.createElement(ProviderReadinessResult, { check: { result: { ...result('dreamina_canvas'), details }, error: '', busy: false } }));
+          assert.ok(nodes.map(content).join(' ').includes('进程阶段诊断未知'));
+        }
+        assert.deepEqual(calls, []);
+      } finally { view.unmount(); }
+    });
+    await t.test('Canvas telemetry rejects arbitrary keys, private strings and non-Canvas providers', () => {
+      const view = hookRenderer(), secret = '/private/synthetic-token-environment-and-output';
+      const injected = { phase: secret, pid: secret, elapsedMs: secret, budgetMs: secret, milestones: { [secret]: 1, created: secret }, stdout: { bytes: secret, eof: secret, readError: secret, firstByteMs: secret, eofMs: secret, raw: secret }, stderr: secret, processExit: { code: secret, signal: secret, success: secret, observedAtMs: secret }, timeout: { kind: secret, elapsedMs: secret, overshootMs: secret, exitObserved: secret }, preCleanup: { state: secret, exitCode: secret, signal: secret }, cleanup: { killRequested: secret, reapConfirmed: secret }, controlTicks: secret, maxControlGapMs: secret, environment: secret };
+      try {
+        const diagnostics = { [secret]: { supervisor: injected }, version: { supervisor: injected, rawOutput: secret } };
+        const nodes = view.render(React.createElement(ProviderReadinessResult, { check: { result: { ...result('dreamina_canvas'), details: { processDiagnostics: diagnostics } }, error: '', busy: false } }));
+        assert.ok(!nodes.map(content).join(' ').includes(secret));
+        assert.ok(!JSON.stringify(nodes.map(node => ({ type: node.type, label: node.props['aria-label'], command: node.props['data-canvas-command'] }))).includes(secret));
+        assert.equal(nodes.filter(node => node.props['data-canvas-command']).length, 1, 'unknown command keys are never rendered');
+        const other = view.render(React.createElement(ProviderReadinessResult, { check: { result: { ...result('dreamina'), details: { processDiagnostics: diagnostics } }, error: '', busy: false } }));
+        assert.ok(!other.some(node => node.props['data-canvas-process-diagnostics']), 'display is Canvas only');
+      } finally { view.unmount(); }
     });
     await t.test('Canvas path is saved only on explicit save, preserving legacy and generation settings', async () => {
       calls.length = 0; const view = hookRenderer(), writes: { action: string; settings: Record<string, unknown> }[] = [];

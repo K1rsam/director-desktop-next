@@ -1,0 +1,125 @@
+{
+  "schema": "director-next-canvas-phase-integration/v1",
+  "checkpoint": "M6.3 integrated",
+  "date": "2026-10-07",
+  "baseCommit": "5c5d9cc9816e0287233cf5411144d015e75f31a4",
+  "scope": "Optional Canvas phase observation on success/error plus collapsed allowlisted UI; no execution-rule changes",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "deliveryManifestSha256": "3866dfac89ef8a34e8ce8e9942807bc1b11c75dc2b234f4f1c9977da415543fb",
+  "appliedFiles": 16,
+  "allBaseAndNewHashesMatched": true,
+  "extraProductionCodeChanges": false,
+  "fullReleaseRust": {
+    "passed": 826,
+    "failed": 0,
+    "ignored": 24,
+    "summaries": 24,
+    "exitCode": 0,
+    "command": "cargo test --release --offline --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features -- --test-threads=1",
+    "ignoredTestsRun": false,
+    "runOn": "final integrated tree"
+  },
+  "integratedFrontend": {
+    "passed": 104,
+    "failed": 0,
+    "typecheck": true,
+    "productionBuild": true,
+    "nativeGUIVerified": false
+  },
+  "componentFocusedChecks": {
+    "readinessPassed": 42,
+    "providerAndSupervisorPassed": 83,
+    "failures": 0
+  },
+  "sourceLock": {
+    "passed": true,
+    "frozenCandidates": 22,
+    "pinnedSourceFiles": 144,
+    "candidateRuntimeActive": false
+  },
+  "unchangedProtectedFiles": 73,
+  "packagingPolicyChanged": false,
+  "timeoutBudgetsChanged": false,
+  "deadlineSelectionOrderChanged": false,
+  "cleanupSemanticsChanged": false,
+  "retryOrLoginAdded": false,
+  "nativeCauseEstablished": false,
+  "nativeBehaviorFixClaimed": false,
+  "nativeSameRevisionGuiProbePending": true,
+  "realProviderCalls": 0,
+  "modelCalls": 0,
+  "credentialWrites": false,
+  "sslProxyOrSystemSettingsChanged": false,
+  "rawOutputEnvironmentArgumentsOrPathsRecorded": false,
+  "reviewStatus": "component review passed; final manifest binding required",
+  "evidence": [
+    {
+      "path": "docs/verification/m6-3/full-rust-release-integrated.log",
+      "bytes": 104130,
+      "sha256": "c2dcd0ca791eab448d25fb1a98e66f2d0012abd498504ee78c1c30ec84505c03"
+    },
+    {
+      "path": "docs/verification/m6-3/integrated-frontend.log",
+      "bytes": 12038,
+      "sha256": "fc0288194402aed514d7c8fec7b03a82db8d1991c34e84958abc1ac570a9fea5"
+    },
+    {
+      "path": "docs/verification/m6-3/integrated-source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    },
+    {
+      "path": "docs/verification/m6-3/integration-proof.json",
+      "bytes": 4335,
+      "sha256": "93fe9ec90d918c7ecdf1be44b2f46f7e26c107f6511f2bbcd9868362a2d3339e"
+    },
+    {
+      "path": "docs/verification/M6.3.json",
+      "bytes": 6118,
+      "sha256": "7927e8470ea87ffb83d3477eb37a7b3865d9ae214e78016a694a983fb9e69908"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/cli_observation.rs",
+      "bytes": 5280,
+      "sha256": "5535085bc6549971a70fd903ab9723ef9f24bf5d85f98c345d6cf7d0e5c5aef0"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/cli_observation_tests.rs",
+      "bytes": 8655,
+      "sha256": "8ce1e3544f933c708f1f921eb590db259fa96c9d654d79de1947f947f00d0e38"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "bytes": 202263,
+      "sha256": "b2096a9659b8c4b621f246951956a284ae92abc303cb9675d4a354d31c38cd97"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "bytes": 18589,
+      "sha256": "bb9402f07f4c8c91d33682857a37d0465e979703ae2502a264a17fcb04f24c78"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "bytes": 44336,
+      "sha256": "48b32c7dd6656cd6916d02bc8d6ebd4856040cb6372b4f023a5af05708c6e56e"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "bytes": 31746,
+      "sha256": "cfd6eaba6c2d8ca8f06763368b5bdcff35fb35b41fb25ab9ae2d115573a134eb"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.tsx",
+      "bytes": 15722,
+      "sha256": "304340ee355f99d60fb943a3b861576da6ab75d736c734d2bb1dc101a70d7305"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.test.ts",
+      "bytes": 40236,
+      "sha256": "b9b6fe3a985e7abfc0eab5dfbb2792c15d2df0e280fa266ba71870955cc44a83"
+    }
+  ]
+}

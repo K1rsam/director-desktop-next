@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M6.3 — Canvas process-phase observations
+
+Adds a Canvas-only optional observer whose safe phase/PID/timing/count/EOF/exit/cleanup facts survive failure, plus a collapsed UI view with a strict display allowlist. The original timeout selection order, budgets, process cleanup, errors and retry behavior are preserved. A timeout still means the deadline branch was selected; it does not by itself prove that the child was running then or that it exited naturally afterward.
+
+The reviewed component passed 42 readiness, 83 provider/supervisor and 104 frontend tests with typecheck/build. Final integrated aggregate and UI evidence are recorded in [M6.3 integration verification](verification/M6.3-integration.json). One native GUI probe on that exact published revision is still needed to establish the actual phase facts; no native cause or behavior fix is claimed.
+
 ## M6.2 — Canvas stderr failure diagnostics
 
 Canvas can return a structured failure envelope on stderr with empty stdout. The adapter now classifies both bounded streams, exposes only fixed safe error enums and observed exit/stream metadata, and preserves success as a stdout-only contract. Conflicting structured streams fail closed. Only the confirmed `auth account` four-field combination maps to insufficient OAuth scope; model access denial does not imply that same remedy. No login, retry, TLS/proxy/configuration or generation operation is introduced.

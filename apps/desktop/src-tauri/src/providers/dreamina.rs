@@ -1,4 +1,5 @@
 use super::*;
+use super::cli_observation::CliObservation;
 use std::{
     collections::HashMap,
     io::Read,
@@ -363,6 +364,12 @@ fn execute_until_in_directory(
     deadline: Option<Instant>,
     directory: Option<&Path>,
 ) -> ProviderResult<CliOutput> {
+    execute_until_in_directory_observed(config,args,submitting,deadline,directory,None)
+}
+fn execute_until_in_directory_observed(
+    config: &ProviderConfig, args: &[String], submitting: bool, deadline: Option<Instant>,
+    directory: Option<&Path>, observation: Option<CliObservation>,
+) -> ProviderResult<CliOutput> {
     let _active = CliGuard::enter();
     if shutting_down() {
         return Err(ProviderError::new(
@@ -395,7 +402,7 @@ fn execute_until_in_directory(
         cleanup: Duration::from_secs(5),
         inspection_deadline: deadline,
     };
-    supervise_command(command, submitting, launch, policy, Arc::new(shutting_down))
+    supervise_command_observed(command, submitting, launch, policy, Arc::new(shutting_down), observation)
 }
 
 #[derive(Clone, Copy)]
@@ -413,13 +420,18 @@ struct CliPipeOutput {
 
 async fn drain_cli_pipe<R: tokio::io::AsyncRead + Unpin>(
     mut stream: R,
+    observation: Option<CliObservation>, stream_name: &'static str,
 ) -> std::io::Result<CliPipeOutput> {
     use tokio::io::AsyncReadExt;
     let mut chunk = [0; 8192];
     let mut bytes = Vec::new();
     let mut exceeded = false;
     loop {
-        let count = stream.read(&mut chunk).await?;
+        let count = match stream.read(&mut chunk).await {
+            Ok(count) => count,
+            Err(error) => {if let Some(o)=&observation{o.pipe(stream_name,0,false,true);} return Err(error);}
+        };
+        if let Some(o)=&observation{o.pipe(stream_name,count,count==0,false);}
         if count == 0 {
             return Ok(CliPipeOutput { bytes, exceeded });
         }
@@ -450,25 +462,39 @@ fn supervise_command(
     policy: CliProcessPolicy,
     stopped: Arc<dyn Fn() -> bool + Send + Sync>,
 ) -> ProviderResult<CliOutput> {
+    supervise_command_observed(command,submitting,launch,policy,stopped,None)
+}
+fn supervise_command_observed(
+    command: Command, submitting: bool, launch: String, policy: CliProcessPolicy,
+    stopped: Arc<dyn Fn() -> bool + Send + Sync>, observation: Option<CliObservation>,
+) -> ProviderResult<CliOutput> {
     let spawned = Arc::new(std::sync::atomic::AtomicBool::new(false));
     let child_started = spawned.clone();
-    std::thread::scope(|scope| {
+    let worker_observation=observation.clone();
+    let result=std::thread::scope(|scope| {
         scope
             .spawn(move || {
+                if let Some(o)=&worker_observation{o.mark("thread_started");}
                 let runtime = tokio::runtime::Builder::new_current_thread()
                     .enable_all()
                     .build()
                     .map_err(|_| {
                         ProviderError::new("CLI_RUNTIME", "无法建立本地 CLI 监督；尚未提交生成。")
                     })?;
-                runtime.block_on(supervise_command_async(
+                if let Some(o)=&worker_observation{o.mark("runtime_ready");}
+                let result=runtime.block_on(supervise_command_async(
                     command,
                     submitting,
                     launch,
                     policy,
                     stopped,
                     child_started,
-                ))
+                    worker_observation.clone(),
+                ));
+                if let Some(o)=&worker_observation{o.mark("runtime_finished");}
+                drop(runtime);
+                if let Some(o)=&worker_observation{o.mark("runtime_dropped");}
+                result
             })
             .join()
             .map_err(|_| {
@@ -478,7 +504,9 @@ fn supervise_command(
                     "本地 CLI 监督异常；执行记录保持原状。",
                 )
             })?
-    })
+    });
+    if let Some(o)=&observation{o.mark("thread_joined");}
+    result
 }
 
 async fn supervise_command_async(
@@ -488,6 +516,7 @@ async fn supervise_command_async(
     policy: CliProcessPolicy,
     stopped: Arc<dyn Fn() -> bool + Send + Sync>,
     spawned: Arc<std::sync::atomic::AtomicBool>,
+    observation: Option<CliObservation>,
 ) -> ProviderResult<CliOutput> {
     if stopped() {
         return Err(ProviderError::new(
@@ -506,6 +535,7 @@ async fn supervise_command_async(
         return Err(capability_timeout());
     }
     let deadline = tokio::time::Instant::now() + budget;
+    if let Some(o)=&observation{o.budget(budget.as_millis().min(u64::MAX as u128) as u64);}
     let mut command = command;
     // Tokio's Windows anonymous ChildStdout uses a blocking ReadFile worker.
     // An inherited writer would keep that worker (and Runtime::drop) alive after
@@ -530,10 +560,12 @@ async fn supervise_command_async(
     };
     let mut command = tokio::process::Command::from(command);
     command.kill_on_drop(true);
+    if let Some(o)=&observation{o.mark("spawn_start");}
     let mut child = command
         .spawn()
         .map_err(|_| ProviderError::new("CLI_START", "无法启动官方 CLI；尚未提交生成。"))?;
     spawned.store(true, std::sync::atomic::Ordering::SeqCst);
+    if let Some(o)=&observation{o.spawned(child.id());o.mark("observing");}
     // Close the parent's copies of the child-side writers immediately. The
     // command is single-use; retaining it would itself prevent pipe EOF.
     drop(command);
@@ -542,8 +574,8 @@ async fn supervise_command_async(
         let stdout = child.stdout.take().ok_or_else(|| cli_execution_error(submitting, "CLI_OUTPUT", "无法读取 CLI 输出。"))?;
         #[cfg(not(windows))]
         let stderr = child.stderr.take().ok_or_else(|| cli_execution_error(submitting, "CLI_OUTPUT", "无法读取 CLI 错误输出。"))?;
-        let output = drain_cli_pipe(stdout);
-        let errors = drain_cli_pipe(stderr);
+        let output = drain_cli_pipe(stdout,observation.clone(),"stdout");
+        let errors = drain_cli_pipe(stderr,observation.clone(),"stderr");
         tokio::pin!(output, errors);
         let mut bytes = None;
         let mut error = None;
@@ -557,6 +589,7 @@ async fn supervise_command_async(
             tokio::select! {
                 biased;
                 _ = tokio::time::sleep_until(deadline) => {
+                    if let Some(o)=&observation{o.timed_out(if policy.inspection_deadline.is_some_and(|end| Instant::now()>=end){"overall"}else{"run"},tokio::time::Instant::now().saturating_duration_since(deadline).as_millis().min(u64::MAX as u128) as u64,status.is_some());}
                     break Err(if !submitting && policy.inspection_deadline.is_some_and(|end| Instant::now() >= end) {
                         capability_timeout()
                     } else {
@@ -564,9 +597,11 @@ async fn supervise_command_async(
                     });
                 }
                 _ = tokio::time::sleep_until(drain_deadline), if status.is_some() => {
+                    if let Some(o)=&observation{o.timed_out("drain",tokio::time::Instant::now().saturating_duration_since(drain_deadline).as_millis().min(u64::MAX as u128) as u64,true);}
                     break Err(cli_execution_error(submitting, "CLI_OUTPUT_TIMEOUT", "CLI 已退出，但输出管道未在5秒排空期限内结束。"));
                 }
                 _ = control.tick() => {
+                    if let Some(o)=&observation{o.tick();}
                     if stopped() {
                         break Err(cli_execution_error(submitting, "CLIENT_CLOSING", "客户端已停止本地 CLI 执行。"));
                     }
@@ -579,6 +614,7 @@ async fn supervise_command_async(
                 }
                 result = child.wait(), if status.is_none() => {
                     status = Some(result.map_err(|_| cli_execution_error(submitting, "CLI_WAIT", "CLI 进程状态未确认。"))?);
+                    if let Some(o)=&observation{o.exited(status.unwrap());}
                     drain_deadline = (tokio::time::Instant::now() + policy.drain).min(deadline);
                 }
             }
@@ -589,7 +625,7 @@ async fn supervise_command_async(
     let (status, bytes, error) = match execution {
         Ok(result) => result,
         Err(mut error) => {
-            if !stop_cli_process(&mut child, policy.cleanup).await {
+            if !stop_cli_process_observed(&mut child, policy.cleanup, observation.clone()).await {
                 error
                     .message
                     .push_str(" 本地进程退出尚未确认；不会自动重发。");
@@ -604,6 +640,7 @@ async fn supervise_command_async(
             "CLI 输出超出大小限制。",
         ));
     }
+    if let Some(o)=&observation{o.mark("completed");}
     Ok(CliOutput {
         success: status.success(),
         exit_code: status.code(),
@@ -635,10 +672,18 @@ async fn owned_cli_output_pipe(
 }
 
 async fn stop_cli_process(child: &mut tokio::process::Child, limit: Duration) -> bool {
-    // Do not pass an already-exited PID to taskkill: it may have been reused.
-    if child.try_wait().ok().flatten().is_some() {
+    stop_cli_process_observed(child,limit,None).await
+}
+async fn stop_cli_process_observed(child: &mut tokio::process::Child, limit: Duration, observation: Option<CliObservation>) -> bool {
+    if let Some(o)=&observation{o.mark("cleanup_start");}
+    // Preserve the existing single pre-kill query and never act on an exited PID.
+    let before=child.try_wait();
+    if let Some(o)=&observation{o.pre_cleanup(&before);}
+    if before.ok().flatten().is_some() {
+        if let Some(o)=&observation{o.cleanup_done(true);}
         return true;
     }
+    if let Some(o)=&observation{o.kill_requested();}
     #[cfg(windows)]
     if let Some(pid) = child.id() {
         let mut command = tokio::process::Command::new("taskkill.exe");
@@ -657,7 +702,12 @@ async fn stop_cli_process(child: &mut tokio::process::Child, limit: Duration) ->
         }
     }
     let _ = child.start_kill();
-    matches!(tokio::time::timeout(limit, child.wait()).await, Ok(Ok(_)))
+    let confirmed=match tokio::time::timeout(limit, child.wait()).await {
+        Ok(Ok(status))=>{if let Some(o)=&observation{o.exited(status);} true},
+        _=>false,
+    };
+    if let Some(o)=&observation{o.cleanup_done(confirmed);}
+    confirmed
 }
 
 fn cli_command_in_directory(
@@ -1307,16 +1357,19 @@ pub(super) fn canvas_readiness_command(
     config: &ProviderConfig,
     command: crate::readiness_canvas::ReadCommand,
     deadline: Instant,
-) -> ProviderResult<crate::readiness_canvas::ProcessOutput> {
+) -> (ProviderResult<crate::readiness_canvas::ProcessOutput>, Value) {
     let args = command.args().iter().map(|s| (*s).to_string()).collect::<Vec<_>>();
-    let output = execute_until(config, &args, false, Some(deadline))?;
+    let observation=CliObservation::new();
+    let result=execute_until_in_directory_observed(config,&args,false,Some(deadline),None,Some(observation.clone())).map(|output| {
     // Keep both bounded streams in memory until the Canvas-only classifier has
     // checked failure envelopes. Do not route through the legacy text classifier.
-    Ok(crate::readiness_canvas::ProcessOutput {
+    crate::readiness_canvas::ProcessOutput {
         success: output.success, exit_code: output.exit_code, signal: output.signal,
         local_log_write_restricted: readiness_log_write_restricted(&output),
         stdout: output.stdout, stderr: output.stderr,
-    })
+    }
+    });
+    (result,observation.snapshot())
 }
 
 fn login_material(body: &Value) -> ProviderResult<Value> {
@@ -2554,6 +2607,7 @@ fn query_with_runner(
 #[cfg(test)]
 mod bounded_process_tests {
     use super::*;
+    include!("cli_observation_tests.rs");
 
     struct Fixture {
         _directory: tempfile::TempDir,

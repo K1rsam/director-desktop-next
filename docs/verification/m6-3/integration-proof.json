@@ -1,0 +1,121 @@
+{
+  "schema": "director-next-integration/v1",
+  "baseCommit": "5c5d9cc9816e0287233cf5411144d015e75f31a4",
+  "baseFiles": 360,
+  "deliveryManifestSha256": "3866dfac89ef8a34e8ce8e9942807bc1b11c75dc2b234f4f1c9977da415543fb",
+  "appliedFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/providers/cli_observation.rs",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 5280,
+      "sha256": "5535085bc6549971a70fd903ab9723ef9f24bf5d85f98c345d6cf7d0e5c5aef0"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/cli_observation_tests.rs",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 8655,
+      "sha256": "8ce1e3544f933c708f1f921eb590db259fa96c9d654d79de1947f947f00d0e38"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "operation": "modify",
+      "baseSha256": "5522c83132eccd66ba295ad30ebc0938e4769c4b91ade22e49599ede2feda0df",
+      "bytes": 202263,
+      "sha256": "b2096a9659b8c4b621f246951956a284ae92abc303cb9675d4a354d31c38cd97"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "operation": "modify",
+      "baseSha256": "d3feae357aea28f4262d70e46d42d67ce1e9e9b4342b779a3def950f9e384741",
+      "bytes": 18589,
+      "sha256": "bb9402f07f4c8c91d33682857a37d0465e979703ae2502a264a17fcb04f24c78"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "operation": "modify",
+      "baseSha256": "0d165b9f9db01e0fafaaf6b5a1ed9517ecc4cf58c0b27747e8e39b40aa027d39",
+      "bytes": 44336,
+      "sha256": "48b32c7dd6656cd6916d02bc8d6ebd4856040cb6372b4f023a5af05708c6e56e"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "operation": "modify",
+      "baseSha256": "e4636546810d7568c1e302fef549ad9fc6022b32cde9ad51bd535f9265c8808c",
+      "bytes": 31746,
+      "sha256": "cfd6eaba6c2d8ca8f06763368b5bdcff35fb35b41fb25ab9ae2d115573a134eb"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.tsx",
+      "operation": "modify",
+      "baseSha256": "c7482725580d57257689ddb31e69b6a8493c255693eae13cf693149ca107eb3c",
+      "bytes": 15722,
+      "sha256": "304340ee355f99d60fb943a3b861576da6ab75d736c734d2bb1dc101a70d7305"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.test.ts",
+      "operation": "modify",
+      "baseSha256": "24905566fedad4e70650b33a17c7f700301418d6f7d237bca3e752da50412520",
+      "bytes": 40236,
+      "sha256": "b9b6fe3a985e7abfc0eab5dfbb2792c15d2df0e280fa266ba71870955cc44a83"
+    },
+    {
+      "path": "docs/CANVAS_PROCESS_PHASES.md",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 2897,
+      "sha256": "06a8a7dbb7514874f3321cff2a95c892e3a0074969c8ea4cb70664bb744dceda"
+    },
+    {
+      "path": "docs/verification/M6.3.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 6118,
+      "sha256": "7927e8470ea87ffb83d3477eb37a7b3865d9ae214e78016a694a983fb9e69908"
+    },
+    {
+      "path": "docs/verification/m6-3/readiness-final.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 6140,
+      "sha256": "21a4d6cbbb82269d5980101f80db44d73dfcf62f084b47d59da6707e2e76e362"
+    },
+    {
+      "path": "docs/verification/m6-3/provider-final.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 10355,
+      "sha256": "731ff99d6723ec4cd5f5aae9b215cec273e751a553b95b8d96f425fef5232010"
+    },
+    {
+      "path": "docs/verification/m6-3/frontend.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 11304,
+      "sha256": "950c01079f39a8d7d87bd7a620b013a673673909f4fc173b1eec78c6f92b027f"
+    },
+    {
+      "path": "docs/verification/m6-3/typecheck.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 165,
+      "sha256": "4394750c4a4ccf6c6410666577d57aa84c3252d983601359bb7bc60ae591f44d"
+    },
+    {
+      "path": "docs/verification/m6-3/build.log",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 532,
+      "sha256": "414bef7e3326157ce38c368863e29acb0e4d2d0771b8c558195acd8c4c234689"
+    },
+    {
+      "path": "docs/verification/m6-3/source-lock.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    }
+  ],
+  "unexpectedCodeChanges": false
+}

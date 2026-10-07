@@ -277,6 +277,10 @@ fn canvas_native_fixture(dir: &Path, kind: &str) -> PathBuf {
         (ReadCommand::AuthAccount,include_str!("../../fixtures/synthetic/canvas-readiness/account.json")),
         (ReadCommand::ImageModels,include_str!("../../fixtures/synthetic/canvas-readiness/models.json")),
     ] {
+        if kind == "canvas-version-timeout" && command == ReadCommand::Version {
+            arms.push_str(&format!("{} => {{ std::thread::sleep(std::time::Duration::from_secs(15)); }},\n", json!(command.args().join(" "))));
+            continue;
+        }
         let stderr_failure = match (kind, command) {
             (
                 "canvas-stderr-failures" | "canvas-unstructured-model-failure",
@@ -565,4 +569,17 @@ fn failed_legacy_version_never_reaches_user_credit() {
     let report=engine.dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"dreamina","settings":{"dreaminaPath":path}})).unwrap();
     assert_eq!(report["protocol"]["state"],"failed");assert_eq!(report["authentication"]["state"],"not_checked");
     assert_eq!(fs::read_to_string(dir.path().join("dreamina-version-failure-calls.txt")).unwrap(),"version\n");
+}
+
+#[test]
+fn canvas_supervisor_timeout_survives_the_full_readiness_error_path() {
+    let dir=tempfile::tempdir().unwrap();let path=canvas_native_fixture(dir.path(),"canvas-version-timeout");
+    let engine=enabled_engine(dir.path().join("home"));let p=engine.dispatch(json!({"action":"projects.create","title":"Synthetic phase timeout"})).unwrap();
+    let report=engine.dispatch(json!({"action":"readiness.check","projectId":p["id"],"provider":"dreamina_canvas","settings":{"dreaminaCanvasPath":path}})).unwrap();
+    assert_eq!(report["details"]["checks"]["version"]["code"],"CLI_TIMEOUT");
+    let observation=&report["details"]["processDiagnostics"]["version"]["supervisor"];
+    assert!(observation["pid"].as_u64().is_some());assert_eq!(observation["timeout"]["kind"],"run");
+    assert_eq!(observation["preCleanup"]["state"],"running");assert_eq!(observation["cleanup"]["killRequested"],true);assert_eq!(observation["cleanup"]["reapConfirmed"],true);
+    assert_eq!(observation["stdout"]["bytes"],0);assert_eq!(report["authentication"]["state"],"not_checked");assert_eq!(report["generation"]["calls"],0);
+    assert_eq!(fs::read_to_string(dir.path().join("canvas-version-timeout-calls.txt")).unwrap(),"--format json version\n");
 }

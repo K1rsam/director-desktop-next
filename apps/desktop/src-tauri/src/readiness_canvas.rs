@@ -434,9 +434,13 @@ pub fn check(settings: &Value) -> Value {
     let deadline = Instant::now() + OVERALL_TIMEOUT;
     let mut process_diagnostics = Map::new();
     let mut report = inspect(report, |command| {
-        let output = providers::canvas_readiness_command(&config, command, deadline)?;
-        let (diagnostic, result) = diagnostics::classify(command, output);
-        process_diagnostics.insert(command.label().into(), diagnostic);
+        let (outcome,supervisor) = providers::canvas_readiness_command(&config, command, deadline);
+        let (mut diagnostic,result)=match outcome {
+            Ok(output)=>diagnostics::classify(command,output),
+            Err(error)=>(json!({"termination":"unknown","exitCode":null,"signal":null,"stdoutBytes":null,"stderrBytes":null,"stdoutShape":"not_parsed","stderrShape":"not_parsed","structuredErrorSource":"none","errors":{}}),Err(error)),
+        };
+        diagnostic["supervisor"]=supervisor;
+        process_diagnostics.insert(command.label().into(),diagnostic);
         result
     });
     for (command, diagnostic) in &process_diagnostics {
@@ -450,7 +454,7 @@ pub fn check(settings: &Value) -> Value {
             };
             report["messages"].as_array_mut().unwrap().push(json!(format!(
                 "{command}：{termination}，标准输出 {} 字节，错误输出 {} 字节；只保留结构化安全诊断，未推断原因或自动重试。",
-                diagnostic["stdoutBytes"], diagnostic["stderrBytes"]
+                diagnostic["stdoutBytes"].as_u64().map(|n|n.to_string()).unwrap_or_else(||"未知".into()), diagnostic["stderrBytes"].as_u64().map(|n|n.to_string()).unwrap_or_else(||"未知".into())
             )));
             if let Some(source) = diagnostic["structuredErrorSource"]
                 .as_str()
