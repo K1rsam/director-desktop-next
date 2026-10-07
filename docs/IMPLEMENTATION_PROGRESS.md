@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M5 — Explicit Mac development bundle signing
+
+Adds `desktop:build:mac-dev` and a read-only bundle verifier after M4 native evidence showed the same missing resource seal in raw and copied artifacts. The helper builds into a fresh target, bypasses Tauri's attribute-clearing signing branch, applies credential-free Apple ad-hoc signing to the known helper and app, preserves extended attributes, and requires strict signatures, hardened runtime and exact SDK resources. It does not change shared product runtime code or diagnose the separate NSApplication abort.
+
+Linux evidence: 16 focused synthetic packaging/process tests and the existing 17 startup-runner tests pass; source lock passes. Mac signing itself, rebuilt GUI/startup behavior and provider readiness require the next native run. See [native build instructions](MACOS_DEVELOPMENT_BUNDLE.md) and [machine-readable evidence](verification/M5.json).
+
 ## M0 — Independent, pinned migration
 
 - Migrated 144 explicitly selected source/rule/icon/help files from `K1rsam/director-web` commit `2ac7c216183f936aa08f16a93b2a24130cf5ebcd`

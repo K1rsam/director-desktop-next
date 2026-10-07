@@ -12,6 +12,7 @@
     "tauri": "tauri",
     "desktop:dev": "tauri dev --features desktop",
     "desktop:build": "tauri build --features desktop,custom-protocol",
+    "desktop:build:mac-dev": "node ../../scripts/build_macos_dev.mjs",
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {

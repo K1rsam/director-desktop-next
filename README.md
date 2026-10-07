@@ -8,6 +8,8 @@
 
 M3 只增加有界启动记录和单次诊断运行器，不推断或修复尚未定位的 Mac SIGABRT；[诊断范围与精确本地命令](docs/NATIVE_STARTUP_DIAGNOSTICS.md)。
 
+M5 增加独立的 Mac 开发构建签名命令：对新产物做 ad-hoc 签名、资源封装验证，并保留扩展属性；[构建与原生复验步骤](docs/MACOS_DEVELOPMENT_BUNDLE.md)。云端合成测试通过不等于 Mac 签名或启动已经通过，原 SIGABRT 原因仍待核验。
+
 三项检查按安装、协议、账户、模型目录和真实生成分层展示，检查不提交模型请求；[连接检查合同与本地验收](docs/READINESS_CONTRACT.md)、[真正官方 SDK 的健康检查与打包](docs/SDK_READINESS.md)。
 
 ## 实施入口

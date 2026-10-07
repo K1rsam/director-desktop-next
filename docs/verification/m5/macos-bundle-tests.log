@@ -1,0 +1,24 @@
+✔ development build is Mac-only, architecture-bound and rejects argument overrides (1.599187ms)
+✔ child environment removes all Apple credentials without changing caller environment (0.648018ms)
+✔ native command collector keeps success stderr and bounds captured output (59.383426ms)
+✔ native timeout returns even when the exact child ignores SIGTERM (151.996003ms)
+✔ build timeout stops its owned process group including compiler-like descendants (1164.556685ms)
+✔ synthetic strict verifier records complete inventory and genuine SDK bytes, without launching (35.814252ms)
+✔ missing resource seal fails even when executable or SDK resources exist (17.500775ms)
+✔ SDK resource tampering is rejected before signature acceptance (13.069949ms)
+✔ unexpected nested native binary requires a separate signing plan (17.288782ms)
+✔ bundle symlinks and wrong app identity are rejected (9.896924ms)
+✔ strict signature failure and unexpected certificate signature are not accepted (25.911409ms)
+✔ development signing uses fixed ad-hoc argv and preserves xattrs (26.640979ms)
+✔ changed xattrs fail without restoration, retry or security alteration (12.033044ms)
+✔ signing failure stops before verification or any retry (14.52357ms)
+✔ known core helper is signed first and verified separately, never deep-signed (30.302527ms)
+✔ ad-hoc signatures without hardened runtime do not pass (13.059473ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1680.292076

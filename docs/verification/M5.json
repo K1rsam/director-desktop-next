@@ -1,0 +1,81 @@
+{
+  "schema": "director-next-macos-development-verification/v1",
+  "checkpoint": "M5",
+  "date": "2026-10-07",
+  "baseCommit": "3c6c7c30d8b6af90ab201bee62e995f485201298",
+  "scope": "Development artifact signature and resource verification; no shared application runtime changes",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "tests": {
+    "macosBundleTooling": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "nativeCommands": "stubbed; actual Node synthetic subprocess and process-group timeout exercised"
+    },
+    "startupRunner": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sourceLock": {
+      "passed": true,
+      "frozenCandidates": 22,
+      "pinnedSourceFiles": 144,
+      "candidateRuntimeActive": false
+    }
+  },
+  "nativeMacSigningVerified": false,
+  "nativeMacStartupVerified": false,
+  "nativeWindowsVerified": false,
+  "sigabrtCauseEstablished": false,
+  "modelCalls": 0,
+  "providerAccountCalls": 0,
+  "sdkLiveCalls": 0,
+  "fullRustOrFrontendRerun": false,
+  "reviewStatus": "independent_code_review_passed; publication requires exact manifest binding",
+  "evidence": [
+    {
+      "path": "scripts/build_macos_dev.mjs",
+      "bytes": 7289,
+      "sha256": "cb087a41099e0923085ac31275b0dce27430f7b1cdbc54fbc7893579fd243949"
+    },
+    {
+      "path": "scripts/verify_macos_bundle.mjs",
+      "bytes": 9172,
+      "sha256": "c7b2be211ce76301d81a9e17a6ffd9f882487c639f79840b9de5fa46e54360ba"
+    },
+    {
+      "path": "scripts/test_macos_dev_bundle.mjs",
+      "bytes": 11662,
+      "sha256": "ead5762de7f681960e5d4a3b6741d10d1405f147b4a9c07f9c4a2312325ee1ec"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 997,
+      "sha256": "70b3dd2182ca331a44b206f3da9124cbe0bd2858a4e50694ec696ad3c73a4562"
+    },
+    {
+      "path": ".github/workflows/offline-checks.yml",
+      "bytes": 2081,
+      "sha256": "826c192cda5f1508e9104440b54c85e329c05d4ffa4ef013c00889aa32f7122d"
+    },
+    {
+      "path": "docs/verification/m5/macos-bundle-tests.log",
+      "bytes": 1534,
+      "sha256": "23b44d6b7cded58f7a9a8c6c63380af2d387be2af1ab786ccf4bcb47860b22ff"
+    },
+    {
+      "path": "docs/verification/m5/startup-runner-tests.log",
+      "bytes": 3121,
+      "sha256": "d4483ebe38d3bafe7bc088c80f3655f741f8335523efef0eee9c8e6f0c0b1dea"
+    },
+    {
+      "path": "docs/verification/m5/source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    }
+  ]
+}

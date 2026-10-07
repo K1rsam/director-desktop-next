@@ -34,9 +34,9 @@ M3_EVIDENCE_ROOT="$(mktemp -d /tmp/director-next-m3-native.XXXXXX)"
 test "$(git -C "$M3_CHECKOUT" rev-parse HEAD)" = "$M3_COMMIT" || exit 1
 (
   cd "$M3_CHECKOUT/apps/desktop" || exit 1
-  npm ci --no-audit --no-fund && npm run desktop:build -- --bundles app
+  npm ci --no-audit --no-fund && npm run desktop:build:mac-dev
 ) || exit 1
-# Confirm M3_APP is the .app produced by this successful build before continuing.
+# Confirm M3_APP is the exact verified .app path printed by this build.
 python3 "$M3_CHECKOUT/scripts/diagnose_native_startup.py" \
   --mode direct \
   --app "$M3_APP" \
@@ -48,6 +48,8 @@ python3 -m json.tool "$M3_EVIDENCE_ROOT/direct/result.json"
 ```
 
 There is exactly one direct app launch. Runner exit `0` means the direct child exited zero and a valid, persisted, successful startup report agrees with the journal and child PID. Runner exit `1` means diagnostic failure, incomplete evidence, or a LaunchServices result requiring the interpretation below. Exit `2` means refusal or runner unavailability. A nonzero exit is not an instruction to repeat the command.
+
+For M5 and later local development builds, follow [the signature/resource gate](MACOS_DEVELOPMENT_BUNDLE.md) first and substitute the actual reviewed commit for the historical M3 placeholders. That gate does not establish startup success or authorize repeating an earlier probe.
 
 Only if this direct invocation completed with a nonzero app return code, `classification` is `failed_before_rust_marker`, `eligibleForLaunchServices` is true, and its journal/report/probe home remain absent, an explicitly chosen second invocation may use LaunchServices:
 
