@@ -35,6 +35,19 @@ M2 is based on the published offline M1 commit `d2ad2bd6a21de9293f51c5b8296f6ac8
 
 M2 native/creative acceptance remains pending. [Final M2 cloud evidence](verification/M2.json): **775 Rust tests passed, zero failed, 24 deliberately ignored** across 24 suites; **84 frontend tests and build passed**; **41 official SDK bridge tests passed without skips**; 11-process core smoke created zero generation jobs. Independent read-only review gave GO for the offline checkpoint only after all five integration blockers and the Stage2 atomic-publication edge were resolved. The first aggregate had four stale synthetic CLI preflight fixtures; those were corrected without weakening the production identity boundary, and the complete aggregate was rerun.
 
+## M3 — Opt-in native startup diagnostics
+
+Based on published M2 `41887d1c19fe547d1c75ebc7bc0beb5dc9f5a4a2`. The prior isolated Mac M1 probe returned SIGABRT without a report. M3 adds observability rather than assuming a cause or treating an existing ordinary GUI window as a successful isolated probe.
+
+- Only `--verify-startup` creates a bounded, durable journal before Tauri construction and installs a panic hook that records compiler location without payload
+- Fixed frontend progress checkpoints preserve every original probe action and assertion; removing those additions reproduces the exact M2 probe bytes
+- One native runner invocation owns one fresh report directory. A separately requested LaunchServices comparison requires a completed matching direct failure with no Rust/report/home evidence; timeouts and unknowns do not permit another launch
+- Both exit identity and evidence integrity are checked. An `open` waiter is never called the app, and its exit code cannot establish the app's actual exit status
+- Five Rust diagnostics tests, fifteen existing isolation/execution-boundary tests, and seventeen Python synthetic-runner tests pass. Shared core type checking and Rust/JavaScript syntax checks pass. The unchanged M2 UI/SDK/creative suites were not rerun as if this were another full implementation checkpoint
+- Linux desktop-feature compilation is blocked by missing `gobject-2.0.pc`; no M3 native shell compilation or macOS/Windows execution is claimed. A build from the reviewed M3 commit remains part of the bounded Mac handoff
+
+See [commands and result meanings](NATIVE_STARTUP_DIAGNOSTICS.md) and [M3 evidence](verification/M3.json). Product execution policy, SDK live closure, Stage3 inactive rules, credentials and workflow recovery code are unchanged.
+
 ## Verification commands
 
 From repository root:

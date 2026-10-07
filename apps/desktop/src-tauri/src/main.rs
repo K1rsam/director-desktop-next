@@ -2,7 +2,7 @@
 #[cfg(all(not(debug_assertions), not(feature = "custom-protocol")))]
 compile_error!("Release desktop builds require custom-protocol to embed the frontend. Use npm run desktop:build -- --no-bundle, or enable desktop,custom-protocol.");
 
-use director_core::Engine;
+use director_core::{Engine, startup_diagnostics::{Stage as DiagnosticStage, StartupDiagnostics}};
 use std::sync::Arc;
 use tauri::Manager;
 
@@ -13,6 +13,7 @@ struct StartupVerification {
     home: std::path::PathBuf,
     finished: Arc<std::sync::atomic::AtomicBool>,
     development_server_at_start: bool,
+    diagnostics: Arc<StartupDiagnostics>,
 }
 
 fn development_server_available() -> bool {
@@ -32,6 +33,7 @@ fn startup_verification_report(
     report: serde_json::Value,
 ) -> Result<(), String> {
     let v = verification.as_ref().ok_or("未启用启动验证")?;
+    v.diagnostics.mark(DiagnosticStage::ReportReceived);
     let mut report = report;
     let frontend_url = app
         .get_webview_window("main")
@@ -61,12 +63,24 @@ fn startup_verification_report(
     report["developmentServerAtFinish"] = serde_json::json!(development_server_at_finish);
     report["standalone"] = serde_json::json!(standalone);
     report["platform"] = serde_json::json!(std::env::consts::OS);
+    report["diagnosticPid"] = serde_json::json!(std::process::id());
+    report["diagnosticSchema"] = serde_json::json!("startup-diagnostics/v1");
     report["home"] = serde_json::json!(v.home);
     let success = report["ok"] == true;
     director_core::store::atomic_json(&v.output, &report)?;
+    v.diagnostics.mark(DiagnosticStage::ReportPersisted);
     v.finished.store(true, std::sync::atomic::Ordering::SeqCst);
     app.exit(if success { 0 } else { 2 });
     Ok(())
+}
+
+#[tauri::command]
+fn startup_verification_progress(
+    verification: tauri::State<'_, Option<StartupVerification>>,
+    checkpoint: String,
+) -> Result<(), String> {
+    let v = verification.as_ref().ok_or("未启用启动验证")?;
+    v.diagnostics.frontend(&checkpoint).map_err(str::to_owned)
 }
 
 const STARTUP_PROBE: &str = r#"
@@ -74,7 +88,11 @@ const STARTUP_PROBE: &str = r#"
   if (window.__directorStartupProbe) return;
   window.__directorStartupProbe = true;
   const invoke = window.__TAURI_INTERNALS__.invoke;
+  const progress = async checkpoint => {
+    try { await invoke('startup_verification_progress', {checkpoint}); } catch { /* best-effort fixed metadata only */ }
+  };
   try {
+    await progress('started');
     for (let attempt = 0; attempt < 100; attempt++) {
       if (document.querySelector('.local-status')?.textContent.includes('本地核心已连接') && document.querySelector('.project-card')) break;
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -84,6 +102,7 @@ const STARTUP_PROBE: &str = r#"
     if (projects.length !== 1) throw new Error('Isolated project registry did not round trip');
     const workspace = await invoke('desktop_request', {request:{action:'workspace.get', projectId:projects[0].id}});
     if (!workspace.source.text || workspace.jobs.length || workspace.media.length !== 1) throw new Error('SQLite workspace did not round trip');
+    await progress('project_round_trip');
     const media = workspace.media[0];
     const image = new Image();
     await new Promise((resolve, reject) => {
@@ -91,6 +110,7 @@ const STARTUP_PROBE: &str = r#"
       image.src = window.__TAURI_INTERNALS__.convertFileSrc(media.path);
     });
     if (image.naturalWidth !== 32 || image.naturalHeight !== 24) throw new Error('Image dimensions changed');
+    await progress('asset_protocol');
     document.querySelector('.project-card-open').click();
     for (let attempt=0; attempt<100 && !document.querySelector('.stage-nav button:not(:disabled)'); attempt++) await new Promise(resolve=>setTimeout(resolve,50));
     const foundationButton=[...document.querySelectorAll('.stage-nav button')].find(button=>button.textContent.includes('剧本与基础'));
@@ -98,6 +118,7 @@ const STARTUP_PROBE: &str = r#"
     for (let attempt=0; attempt<100 && !document.querySelector('.stage-one-workbench'); attempt++) await new Promise(resolve=>setTimeout(resolve,50));
     if (!document.querySelector('[aria-label="集场目录"]') || !document.querySelector('[aria-label="制作基础内容"]') || !document.querySelector('.production-source-document')?.textContent.includes('甲：走吧。')) throw new Error('Stage 1 locked source workbench did not render');
     if (!document.querySelector('.source-structure-summary')?.textContent.includes('已识别 1 集 / 1 场') || document.querySelector('dialog[open]')) throw new Error('Stage 1 source structure summary is missing or requires an unsolicited dialog');
+    await progress('stage_one');
     const structureButton=[...document.querySelectorAll('.stage-one-workbench button')].find(button=>button.textContent==='查看分集结构');
     if (!structureButton) throw new Error('Source structure review entry is missing');
     structureButton.click();
@@ -107,6 +128,7 @@ const STARTUP_PROBE: &str = r#"
     backgroundButton.click();
     for (let attempt=0; attempt<100 && document.querySelector('.production-reading-heading h3')?.textContent!=='背景资料'; attempt++) await new Promise(resolve=>setTimeout(resolve,50));
     if (!document.querySelector('.production-source-document')?.textContent.includes('【人物关系】') || document.querySelector('.production-source-document')?.textContent.includes('甲：走吧。')) throw new Error('Background readback mixes production body or lost original context');
+    await progress('source_review');
     const storyboardButton=[...document.querySelectorAll('.stage-nav button')].find(button=>button.textContent.includes('分镜提示词'));
     if (!storyboardButton) throw new Error('Storyboard navigation is missing');
     storyboardButton.click();
@@ -122,6 +144,7 @@ const STARTUP_PROBE: &str = r#"
     try { await invoke('desktop_request',{request:{action:'storyboard.run',projectId:projects[0].id}}); } catch(error) { blockedGeneration = String(error).includes('OFFLINE_EXECUTION_BLOCKED'); }
     if(!blockedGeneration) throw new Error('Raw IPC bypassed the offline generation gate');
     if (!document.querySelector('.text-execution-summary')?.textContent.includes('Codex CLI')) throw new Error('Stage text executor identity did not render');
+    await progress('stage_three');
     const settingsButton=[...document.querySelectorAll('.sidebar-link')].find(button=>button.textContent.includes('渠道与设置'));
     if (!settingsButton) throw new Error('Settings navigation is missing');
     settingsButton.click();
@@ -130,6 +153,7 @@ const STARTUP_PROBE: &str = r#"
     if (!accountCard || !accountCard.textContent.includes('即梦账户与积分') || !accountCard.textContent.includes('OAuth 连接即梦')) throw new Error('OAuth account panel did not render');
     const cliCard=document.querySelector('.text-execution-settings');
     if (!cliCard || !cliCard.textContent.includes('文本执行 · 阶段 1 / 2 / 3') || !cliCard.textContent.includes('检查 CLI 与账户')) throw new Error('Text CLI connection settings did not render');
+    await progress('settings');
     // Reversible mutations in the isolated diagnostic project exercise the real
     // Tauri IPC and SQLite lifecycle. No provider worker is running in this mode.
     const pid=projects[0].id;
@@ -159,6 +183,7 @@ const STARTUP_PROBE: &str = r#"
     for (let attempt=0; attempt<100 && !document.querySelector('.asset-management-form'); attempt++) await new Promise(resolve=>setTimeout(resolve,50));
     if (!document.querySelector('dialog[open] .asset-management-form')) throw new Error('Asset edit dialog did not open');
     document.querySelector('dialog[open] .modal-header button').click();
+    await progress('asset_lifecycle');
     const episode=workspace.source.episodes[0].id, scene=workspace.source.scenes[0].id, row=workspace.source.rows.find(row=>row.kind==='body' && row.episodeId===episode && row.sceneId===scene).id;
     await call({action:'units.save',unit:{id:'probe-unit',episodeId:episode,sceneId:scene,sourceRefs:[row],title:'离线配图验证',prompt:'推门进入 {{asset:probe-asset:base}}',duration:12,assetRefs:[{assetId:before.id,variantId:'base',role:'人物',order:1}]}});
     const videoButton=[...document.querySelectorAll('.stage-nav button')].find(button=>button.textContent.includes('单元视频'));
@@ -178,6 +203,7 @@ const STARTUP_PROBE: &str = r#"
     const finalWorkspace=await call({action:'workspace.get'});
     if (finalWorkspace.jobs.length) throw new Error('Offline asset lifecycle probe unexpectedly created a generation task');
     document.querySelector('dialog[open] .modal-header button').click();
+    await progress('unit_editor');
     const waitFor=async (predicate,message)=>{
       for(let attempt=0; attempt<150; attempt++) { if(predicate()) return; await new Promise(resolve=>setTimeout(resolve,50)); }
       throw new Error(message);
@@ -224,6 +250,7 @@ const STARTUP_PROBE: &str = r#"
     await waitFor(()=>!projectCard(),'Deleted project remained in the project library');
     const deletedProjects=await invoke('desktop_request',{request:{action:'projects.list'}});
     if(deletedProjects.some(project=>project.id===pid)) throw new Error('Deleted project remained registered');
+    await progress('project_lifecycle');
     const createInline=async (name,useEnter)=>{
       await waitFor(()=>document.querySelector('.inline-project-create input') && !document.querySelector('.inline-project-create input').disabled,'Inline project entry is not ready');
       const form=document.querySelector('.inline-project-create'), input=form.querySelector('input');
@@ -250,8 +277,11 @@ const STARTUP_PROBE: &str = r#"
     if(libraryCreated.id===secondLibraryCreated.id || parent(libraryCreated.rootPath)!==parent(workspace.project.rootPath) || parent(secondLibraryCreated.rootPath)!==parent(workspace.project.rootPath)) throw new Error('Inline projects did not use independent directories under the same default root');
     const finalProjects=await invoke('desktop_request',{request:{action:'projects.list'}});
     if(finalProjects.length!==2 || document.querySelector('.inline-project-create')) throw new Error('Inline creation left duplicate projects or leaked the creation entry into Stage 1');
+    await progress('inline_create');
+    await progress('completed');
     await invoke('startup_verification_report', {report:{ok:true, frontendRendered:true, ipcRoundTrip:true, sqliteRead:true, assetProtocol:true, accountPanelRendered:true, stage1LockedSourceRendered:true, sourceStructureReviewRendered:true, backgroundSourceRendered:true, stage3OfflineCreationBlocked:true, rawIpcGenerationBlocked:true, textCliSettingsRendered:true, textExecutionSummaryRendered:true, assetUsageRoundTrip:true, assetDeleteRestoreRoundTrip:true, imageRetainedAfterRestore:true, nativeAssetEditorOpened:true, nativeUnitAssetEditorOpened:true, projectArchiveRestoreDeleteUiRoundTrip:true, unarchivedProjectDeleteRejected:true, archivedWorkspaceClosed:true, sourceAndMediaRetainedAfterRestore:true, projectFileRetentionDisclosed:true, projectRemovedFromRegistry:true, libraryInlineCreateRoundTrip:true, libraryInlineEnterCreateRoundTrip:true, stageOneCreationEntryAbsent:true, sharedDefaultRoot:true, createdProjectIds:[libraryCreated.id,secondLibraryCreated.id], projectRoot:workspace.project.rootPath, originalMediaPath:media.path, rules:workspace.rules.map(rule=>({id:rule.id,version:rule.version})), generationRequestsSent:0, projectId:pid, mediaSha256:media.sha256, generationJobs:finalWorkspace.jobs.length, width:innerWidth, height:innerHeight}});
   } catch (error) {
+    await progress('failed');
     await invoke('startup_verification_report', {report:{ok:false,error:String(error),pageTitle:document.querySelector('.topbar h1')?.textContent,assetControlsRendered:!!document.querySelector('.asset-management-actions'),unitControlsRendered:!!document.querySelector('.unit-reference-grid')}});
   }
 })();
@@ -282,12 +312,19 @@ async fn desktop_request(
 fn main() {
     let args: Vec<_> = std::env::args_os().collect();
     let verification = args.iter().position(|a| a == "--verify-startup").map(|i| {
-        let output = std::path::PathBuf::from(
-            args.get(i + 1)
-                .expect("--verify-startup requires an absolute report path"),
-        );
-        assert!(output.is_absolute(), "启动验证报告必须使用绝对路径");
+        let output = args.get(i + 1).map(std::path::PathBuf::from).unwrap_or_else(|| {
+            eprintln!("--verify-startup requires an absolute report file path");
+            std::process::exit(64);
+        });
+        let diagnostics = StartupDiagnostics::start(&output).unwrap_or_else(|error| {
+            // No requested path, argument values or environment are printed.
+            eprintln!("Startup diagnostics initialization failed: {:?}", error.kind());
+            std::process::exit(64);
+        });
+        diagnostics.install_panic_hook();
+        diagnostics.mark(DiagnosticStage::ArgumentsAccepted);
         StartupVerification {
+            diagnostics,
             home: output.parent().unwrap().join("startup-verification-home"),
             output,
             finished: Arc::new(std::sync::atomic::AtomicBool::new(false)),
@@ -301,11 +338,15 @@ fn main() {
     });
     let setup_verification = verification.clone();
     let page_verification = verification.clone();
+    let run_verification = verification.clone();
+    let build_verification = verification.clone();
     let closing = Arc::new(std::sync::atomic::AtomicBool::new(false));
     let force_exit = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    if let Some(v) = &verification { v.diagnostics.mark(DiagnosticStage::DesktopBuildStarted); }
     tauri::Builder::default()
         .manage(verification)
         .setup(move |app| {
+            if let Some(v) = &setup_verification { v.diagnostics.mark(DiagnosticStage::SetupEntered); }
             let home = match &setup_verification { Some(v) => v.home.clone(), None => app.path().app_data_dir()? };
             // Diagnostic projects have no channel account configured. Disable live-account
             // lookup so automatic Stage 4 preflight fails locally without touching a user session.
@@ -314,6 +355,7 @@ fn main() {
                 None => Engine::new(home),
             }.map_err(std::io::Error::other)?;
             if let Some(v) = &setup_verification {
+                v.diagnostics.mark(DiagnosticStage::EngineReady);
                 if engine.project_list().map_err(std::io::Error::other)?.is_empty() {
                     let project = engine.dispatch(serde_json::json!({"action":"projects.create","title":"桌面启动离线验证"})).map_err(std::io::Error::other)?;
                     let pid = project["id"].as_str().unwrap();
@@ -322,12 +364,16 @@ fn main() {
                     image::RgbImage::from_pixel(32, 24, image::Rgb([42, 73, 104])).save(&png)?;
                     engine.store(pid).map_err(std::io::Error::other)?.import_media(&png, "image", None, None).map_err(std::io::Error::other)?;
                 }
+                v.diagnostics.mark(DiagnosticStage::FixtureSeeded);
                 let handle = app.handle().clone();
                 let v = v.clone();
                 std::thread::spawn(move || {
                     std::thread::sleep(std::time::Duration::from_secs(30));
                     if !v.finished.load(std::sync::atomic::Ordering::SeqCst) {
-                        let _ = director_core::store::atomic_json(&v.output, &serde_json::json!({"ok":false,"error":"Desktop startup probe timed out"}));
+                        v.diagnostics.mark(DiagnosticStage::WatchdogTimeout);
+                        if director_core::store::atomic_json(&v.output, &serde_json::json!({"ok":false,"error":"Desktop startup probe timed out","diagnosticPid":std::process::id(),"diagnosticSchema":"startup-diagnostics/v1"})).is_ok() {
+                            v.diagnostics.mark(DiagnosticStage::ReportPersisted);
+                        }
                         handle.exit(3);
                     }
                 });
@@ -339,22 +385,31 @@ fn main() {
                     }
                 }
             }
+            if let Some(v) = &setup_verification { v.diagnostics.mark(DiagnosticStage::MediaScopeReady); }
             if setup_verification.is_none() {
                 engine.start();
             }
             app.manage(engine);
+            if let Some(v) = &setup_verification { v.diagnostics.mark(DiagnosticStage::SetupComplete); }
             Ok(())
         })
         .on_page_load(move |webview, payload| {
-            if page_verification.is_some() && payload.event() == tauri::webview::PageLoadEvent::Finished {
-                let _ = webview.eval(STARTUP_PROBE);
+            if let Some(v) = &page_verification {
+                if payload.event() == tauri::webview::PageLoadEvent::Finished {
+                    v.diagnostics.mark(DiagnosticStage::PageLoaded);
+                    v.diagnostics.mark(if webview.eval(STARTUP_PROBE).is_ok() {
+                        DiagnosticStage::ProbeInjected
+                    } else { DiagnosticStage::ProbeInjectionFailed });
+                }
             }
         })
-        .invoke_handler(tauri::generate_handler![desktop_request, startup_verification_report])
+        .invoke_handler(tauri::generate_handler![desktop_request, startup_verification_report, startup_verification_progress])
         .build(tauri::generate_context!())
+        .inspect_err(|_| { if let Some(v) = &build_verification { v.diagnostics.mark(DiagnosticStage::DesktopBuildFailed); } })
         .expect("无法启动制作工作台")
         .run(move |app, event| {
             if let tauri::RunEvent::ExitRequested { api, code, .. } = event {
+                if let Some(v) = &run_verification { v.diagnostics.mark(DiagnosticStage::ExitRequested); }
                 if force_exit.load(std::sync::atomic::Ordering::SeqCst) {
                     return;
                 }
@@ -373,6 +428,7 @@ fn main() {
                 if closing.swap(true, std::sync::atomic::Ordering::SeqCst) {
                     return;
                 }
+                if let Some(v) = &run_verification { v.diagnostics.mark(DiagnosticStage::ShutdownStarted); }
                 engine.stop.store(true, std::sync::atomic::Ordering::SeqCst);
                 for window in app.webview_windows().values() {
                     let _ = window.hide();
@@ -380,11 +436,14 @@ fn main() {
                 let handle = app.clone();
                 let deadline_handle = handle.clone();
                 let force_exit = force_exit.clone();
+                let shutdown_verification = run_verification.clone();
+                let deadline_verification = run_verification.clone();
                 // Independent of potentially blocked OS/helper/file I/O below.
                 // Normal completion exits first and terminates this watchdog.
                 std::thread::spawn(move || {
                     std::thread::sleep(std::time::Duration::from_secs(60));
                     force_exit.store(true, std::sync::atomic::Ordering::SeqCst);
+                    if let Some(v) = &deadline_verification { v.diagnostics.mark(DiagnosticStage::NativeExitIssued); }
                     deadline_handle.exit(code.unwrap_or(0));
                 });
                 std::thread::spawn(move || {
@@ -402,6 +461,10 @@ fn main() {
                         let media_done = director_core::media_probe::await_local_shutdown(1);
                         let workers_done = engine.await_worker_shutdown(1);
                         if providers_done && text_done && media_done && workers_done {
+                            if let Some(v) = &shutdown_verification {
+                                v.diagnostics.mark(DiagnosticStage::ShutdownFinished);
+                                v.diagnostics.mark(DiagnosticStage::NativeExitIssued);
+                            }
                             handle.exit(code.unwrap_or(0));
                             break;
                         }

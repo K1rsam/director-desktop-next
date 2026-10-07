@@ -1,0 +1,186 @@
+{
+  "schema": "director-next-diagnostics-verification/v1",
+  "checkpoint": "M3",
+  "date": "2026-10-07",
+  "baseCommit": "41887d1c19fe547d1c75ebc7bc0beb5dc9f5a4a2",
+  "restoration": {
+    "files": 266,
+    "treeSha1": "8fc362fbaa816e83be03271573b2e5a031f077dc",
+    "allOriginalBytesVerifiedBeforeChanges": true
+  },
+  "scope": "Opt-in isolated startup observability and single-launch diagnostic runner; no claimed SIGABRT cause or fix",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "rustc": "1.99.0 (b940084d7 2026-09-28)"
+  },
+  "rustDiagnostics": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "command": "cargo test --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features --lib startup_diagnostics::tests -- --test-threads=1"
+  },
+  "rustExistingBoundaries": {
+    "passed": 15,
+    "failed": 0,
+    "ignored": 0,
+    "suites": [
+      "m2_execution_boundaries",
+      "next_isolation"
+    ]
+  },
+  "runner": {
+    "passed": 17,
+    "failed": 0,
+    "syntheticProcessesOnly": true,
+    "command": "python3 -m unittest discover -s scripts -p 'test_diagnose_native_startup.py' -v",
+    "pyCompile": "passed",
+    "cliHelp": "passed"
+  },
+  "coreTypecheck": "passed --no-default-features",
+  "rustEntrySyntax": "passed rustfmt parser; not native type checking",
+  "probeJavascriptSyntax": "passed node --check",
+  "desktopFeatureCheck": {
+    "status": "BLOCKED_ENVIRONMENT",
+    "missing": "gobject-2.0.pc",
+    "nativeShellTypecheckClaimed": false
+  },
+  "probePreservation": {
+    "status": "passed",
+    "baseCommit": "41887d1c19fe547d1c75ebc7bc0beb5dc9f5a4a2",
+    "originalProbeSha256": "ac786c5be18171d506e7a3db3e9d4eb7b5731dff0a8a19132eea14781a936a43",
+    "originalProbeBytes": 20057,
+    "onlyProbeChanges": "13 fixed best-effort progress IPC checkpoints and their helper",
+    "generationGatesTouched": false
+  },
+  "sourceLock": {
+    "status": "passed",
+    "frozenCandidates": 22,
+    "pinnedSourceFiles": 144,
+    "candidateRuntimeActive": false,
+    "checks": [
+      "candidate bytes",
+      "pinned migration index",
+      "private fixture exclusion",
+      "new app identity",
+      "empty default asset scope"
+    ]
+  },
+  "coreSmoke": {
+    "status": "passed",
+    "separateProcessCalls": 11,
+    "sourceEpisodes": 2,
+    "sourcePreserved": true,
+    "restartPreserved": true,
+    "externalActionsBlocked": 6,
+    "generationJobs": 0
+  },
+  "journal": {
+    "optIn": "--verify-startup only",
+    "maximumRecords": 144,
+    "maximumRecordBytes": 1024,
+    "normalRecordLimit": 128,
+    "panicPayloadRecorded": false,
+    "dynamicEnvironmentRecorded": false,
+    "privateBodyRecorded": false,
+    "firstRecord": "main_entered before Tauri construction"
+  },
+  "launchPolicy": {
+    "directAttempts": 1,
+    "launchservicesAttempts": "at most one explicit comparison, only after matching completed direct failure without any Rust/report/home evidence",
+    "timeoutMayAuthorizeComparison": false,
+    "launchservicesWaiterIsApp": false,
+    "appExitStatusFromOpenClaimed": false
+  },
+  "unchangedBusinessFiles": true,
+  "m2Full775TestsRerun": false,
+  "uiOrSdkSuitesRerun": false,
+  "realModelCalls": 0,
+  "accountCalls": 0,
+  "imageVideoGenerationCalls": 0,
+  "nativeMacForM3": "NOT_RUN",
+  "nativeWindowsForM3": "NOT_RUN",
+  "crashCause": "UNKNOWN",
+  "privateNativeLogsIncluded": false,
+  "review": {
+    "codeFindings": "NO_BLOCKER_FOUND",
+    "independentChecks": [
+      "17 Python tests",
+      "5 standalone Rust tests",
+      "source lock",
+      "original probe preservation"
+    ],
+    "manifestBinding": "parent must receive independent final hash verification before publication",
+    "scope": "diagnostic/offline only, not native or creative acceptance"
+  },
+  "reviewedExecutableFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/lib.rs",
+      "sha256": "f8f0d5d114b5c9161edc70cd60ce88d367f4fceb65364a925ccfead5513f83fe",
+      "bytes": 444
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/main.rs",
+      "sha256": "072c4c3fac05a527ce009e968aa53277e0ca3c325005aff92836005f598c2fe3",
+      "bytes": 35274
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/startup_diagnostics.rs",
+      "sha256": "a058d5bc36b4164ec493ef52d724f8d3294cd9b45f91db70c891e15382b77fbf",
+      "bytes": 13322
+    },
+    {
+      "path": "scripts/diagnose_native_startup.py",
+      "sha256": "b83f6745cbb785c98a7d285de49f67c03b540870e06843e6136fa41823d24477",
+      "bytes": 22625
+    },
+    {
+      "path": "scripts/test_diagnose_native_startup.py",
+      "sha256": "f12e3ce96d756819519cb96e56718cf8a490173da40da14db07b0d84cb86242f",
+      "bytes": 18552
+    }
+  ],
+  "logs": [
+    {
+      "path": "docs/verification/m3/cargo-diagnostics-tests.log",
+      "sha256": "885bd2c2fb25b7a4ea67a28180fb19294bc59abcf80a957588c0bf874fbaf316",
+      "bytes": 1709
+    },
+    {
+      "path": "docs/verification/m3/isolation-boundaries-tests.log",
+      "sha256": "aa0e9c360ef35d091d4f5532143f95cbbf3dd3f0f670549640c55326f411351c",
+      "bytes": 3838
+    },
+    {
+      "path": "docs/verification/m3/core-check.log",
+      "sha256": "29d887f10b0bad706dd3214f2eeb6483f8ec9266aaa18d405786e68e1022cf6c",
+      "bytes": 2161
+    },
+    {
+      "path": "docs/verification/m3/desktop-check.log",
+      "sha256": "cbd9171254cd9987c77afea4dd9bb46f26af4a0758569a484f3b11b454ce5b33",
+      "bytes": 17860
+    },
+    {
+      "path": "docs/verification/m3/runner-tests.log",
+      "sha256": "9c77d76f9294dc8640624b5100469adb3e69bd845fb1e082e15e4e77e36e3797",
+      "bytes": 3121
+    },
+    {
+      "path": "docs/verification/m3/source-lock.json",
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52",
+      "bytes": 239
+    },
+    {
+      "path": "docs/verification/m3/offline-smoke.json",
+      "sha256": "e16ac189debb22289913b4b69de151046912a0641dd195ae4e5e7543c2159b33",
+      "bytes": 171
+    },
+    {
+      "path": "docs/verification/m3/probe-preservation.json",
+      "sha256": "0531c6ef9b328124478652b4ebd2773f8483102d810ea095e0acdcf4ead95247",
+      "bytes": 332
+    }
+  ],
+  "nextNativePlan": "docs/NATIVE_STARTUP_DIAGNOSTICS.md; exact reviewed commit build, direct once, optional evidence-gated LaunchServices once; no CUA dependency or sandbox/security override"
+}

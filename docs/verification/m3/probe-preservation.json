@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "baseCommit": "41887d1c19fe547d1c75ebc7bc0beb5dc9f5a4a2",
+  "originalProbeSha256": "ac786c5be18171d506e7a3db3e9d4eb7b5731dff0a8a19132eea14781a936a43",
+  "originalProbeBytes": 20057,
+  "onlyProbeChanges": "13 fixed best-effort progress IPC checkpoints and their helper",
+  "generationGatesTouched": false
+}
