@@ -263,6 +263,14 @@ pub fn dreamina_account(config: &ProviderConfig) -> ProviderResult<Value> {
 pub fn dreamina_readiness(config: &ProviderConfig) -> Value {
     dreamina::readiness(config)
 }
+/// Narrow reuse of the existing bounded, owned CLI supervisor. Caller cannot supply CLI args.
+pub(crate) fn canvas_readiness_command(
+    config: &ProviderConfig,
+    command: crate::readiness_canvas::ReadCommand,
+    deadline: std::time::Instant,
+) -> ProviderResult<Vec<u8>> {
+    dreamina::canvas_readiness_command(config, command, deadline)
+}
 /// User-triggered headless OAuth. Device material is for core memory only, never project state.
 pub fn dreamina_begin_login(config: &ProviderConfig) -> ProviderResult<Value> {
     if config.kind != "dreamina" {

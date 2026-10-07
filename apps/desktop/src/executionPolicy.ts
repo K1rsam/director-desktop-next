@@ -1,7 +1,7 @@
 /** The first independent build has no frontend switch that enables live execution.
  * Backend dispatch enforces the same boundary independently of these UI guards.
  */
-export const READINESS_PROVIDERS = ['codex_cli', 'dreamina', 'codex_sdk'] as const;
+export const READINESS_PROVIDERS = ['codex_cli', 'dreamina', 'dreamina_canvas', 'codex_sdk'] as const;
 export type ReadinessProvider = typeof READINESS_PROVIDERS[number];
 export type ReadinessCapability = { version: 'provider-readiness/v1'; enabled: boolean; providers: ReadinessProvider[]; generationAllowed: false };
 

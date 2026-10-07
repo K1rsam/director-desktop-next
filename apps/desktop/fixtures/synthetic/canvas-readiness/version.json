@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1",
+  "ok": true,
+  "data": {
+    "version": "1.0.2",
+    "commit": "09e50ac",
+    "buildTime": "2026-09-29T09:12:55Z",
+    "edition": "public",
+    "distribution": "cn"
+  }
+}

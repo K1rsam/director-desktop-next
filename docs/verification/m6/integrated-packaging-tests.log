@@ -1,0 +1,33 @@
+✔ development build is Mac-only, architecture-bound and rejects argument overrides (1.686314ms)
+✔ child environment removes all Apple credentials without changing caller environment (0.685013ms)
+✔ native command collector keeps success stderr and bounds captured output (63.404296ms)
+✔ native timeout returns even when the exact child ignores SIGTERM (152.713186ms)
+✔ build timeout stops its owned process group including compiler-like descendants (1165.197602ms)
+✔ synthetic strict verifier records complete inventory and genuine SDK bytes, without launching (36.443137ms)
+✔ missing resource seal fails even when executable or SDK resources exist (25.366316ms)
+✔ SDK resource tampering is rejected before signature acceptance (18.660724ms)
+✔ unexpected nested native binary requires a separate signing plan (11.181905ms)
+✔ bundle symlinks and wrong app identity are rejected (18.733281ms)
+✔ strict signature failure and unexpected certificate signature are not accepted (24.947941ms)
+✔ development signing uses fixed ad-hoc argv and preserves xattrs (33.664911ms)
+✔ changed root quarantine bytes fail with sanitized before/after proof and no retry (22.036265ms)
+✔ signing failure stops before verification or any retry (18.885577ms)
+✔ known core helper is signed first and verified separately, never deep-signed (32.174046ms)
+✔ ad-hoc signatures without hardened runtime do not pass (14.602122ms)
+✔ fresh attribute-free signing nodes are explicitly recorded (33.592153ms)
+✔ collection command failures, timeouts and overflow are distinct from actual diffs (54.312874ms)
+✔ before collection failure persists evidence without signing or invented after snapshot (16.950495ms)
+✔ attribute ordering is canonical and binary values after NUL remain significant (0.372331ms)
+✔ directory attributes and every existing key change block; no com.apple exemption (0.271021ms)
+✔ new signature nodes carrying any attributes and arbitrary new nodes remain blocked (0.163692ms)
+✔ malformed, duplicate and oversized collector records never become partial success (0.323098ms)
+✔ real native collector protocol integrates with Node hashing and root/directory inventory (146.519042ms)
+✔ collector compilation timeout stops linker-like descendants and persists failure proof (1168.285886ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3151.312673

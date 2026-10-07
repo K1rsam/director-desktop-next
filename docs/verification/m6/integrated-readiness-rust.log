@@ -1,0 +1,228 @@
+   Compiling director-desktop-next v0.1.0 (/workspace/scratch/a1e472763941/director-desktop-next-m6-integrated/apps/desktop/src-tauri)
+warning: unused imports: `CompiledStoryboardTransport` and `STORYBOARD_LOSSLESS_INPUT_RULE`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 |     STORYBOARD_LOSSLESS_INPUT_RULE, STORYBOARD_TRANSPORT_LIMIT,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `finish_transport_characters` is never used
+   --> src/pipeline/storyboard.rs:110:4
+    |
+110 | fn finish_transport_characters(request: &TextRequest) -> Result<usize, String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `expand_storyboard_schema` is never used
+   --> src/pipeline/storyboard_transport.rs:767:15
+    |
+767 | pub(super) fn expand_storyboard_schema(schema: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `expand_storyboard_input` is never used
+   --> src/pipeline/storyboard_transport.rs:771:15
+    |
+771 | pub(super) fn expand_storyboard_input(input: &Value) -> Result<Value, String> {
+    |               ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `safe_launch_fingerprint_for` is never used
+   --> src/providers/dreamina.rs:675:4
+    |
+675 | fn safe_launch_fingerprint_for(proxy: &ProxyEnvironment) -> String {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `CompiledStoryboardTransport`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `director-desktop-next` (lib) generated 6 warnings (run `cargo fix --lib -p director-desktop-next` to apply 2 suggestions)
+warning: `director-desktop-next` (lib test) generated 2 warnings (1 duplicate) (run `cargo fix --lib -p director-desktop-next --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.81s
+     Running unittests src/lib.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/director_core-dc1ee8b68b4e396e)
+
+running 31 tests
+test engine::readiness_engine_tests::canvas_oversize_version_stops_before_schema_or_account_and_missing_path_never_falls_back ... ok
+test engine::readiness_engine_tests::canvas_readiness_native_allowlist_preserves_legacy_jobs_settings_and_generation_gates ... ok
+test engine::readiness_engine_tests::canvas_selected_in_legacy_readiness_stops_before_any_legacy_account_or_help ... ok
+test engine::readiness_engine_tests::dreamina_check_does_not_poll_oauth_resume_tasks_cache_catalogs_or_claim_free_images ... ok
+test engine::readiness_engine_tests::dreamina_log_write_denial_stops_further_probes_and_does_not_claim_auth_failure ... ok
+test engine::readiness_engine_tests::explicit_codex_check_uses_only_read_rpc_preserves_settings_and_never_unlocks_generation ... ok
+test engine::readiness_engine_tests::failed_legacy_version_never_reaches_user_credit ... ok
+test engine::readiness_engine_tests::isolated_startup_and_unsupported_readiness_requests_fail_before_any_probe ... ok
+test engine::readiness_engine_tests::rpc_failure_keeps_verified_cli_version_and_does_not_claim_logged_out_or_model_access ... ok
+test engine::readiness_engine_tests::selected_cli_output_floods_fail_bounded_without_account_or_generation_claims ... ok
+test readiness_canvas::report_tests::catalog_failure_preserves_account_and_empty_catalog_is_valid ... ok
+test readiness_canvas::report_tests::complete_report_is_readonly_private_and_dynamic_with_no_quota_claim ... ok
+test readiness_canvas::report_tests::exact_schema_leaf_permission_preserves_readonly_auth_under_write_parent ... ok
+test readiness_canvas::report_tests::explicit_logged_out_and_context_mismatch_never_start_login ... ok
+test readiness_canvas::report_tests::failed_account_does_not_erase_local_login_or_independent_catalog ... ok
+test readiness_canvas::report_tests::protocol_or_auth_uncertainty_stops_without_remote_account_queries ... ok
+test readiness_canvas::report_tests::schema_shape_and_unknown_global_flags_fail_closed ... ok
+test readiness_canvas::report_tests::unsupported_account_or_catalog_leaf_skips_only_that_command ... ok
+test readiness_canvas::report_tests::unsupported_versions_stop_before_schema_or_account ... ok
+test readiness_canvas::tests::allowlist_contains_no_mutating_or_generation_commands ... ok
+test readiness_canvas::tests::compact_catalog_keeps_canonical_ids_and_absent_capabilities_unknown ... ok
+test readiness_canvas::tests::envelopes_fail_closed_and_never_retain_private_errors ... ok
+test readiness_canvas::tests::legacy_discriminator_never_treats_canvas_as_legacy ... ok
+test readiness_canvas::tests::model_details_shape_and_invalid_catalog_fail_closed ... ok
+test readiness_canvas::tests::numeric_flag_bounds_accept_negative_but_integer_counts_reject_fractions ... ok
+test readiness_sdk::tests::sdk_readiness_bounded_output_rejects_flood_and_truncated_protocol ... ok
+test readiness_sdk::tests::sdk_readiness_imports_genuine_sdk_and_closes_worker_without_execution ... ok
+test readiness_sdk::tests::sdk_readiness_never_accepts_fixture_or_bridge_settings ... ok
+test readiness_sdk::tests::sdk_readiness_rejects_relative_paths_and_shell_wrappers ... ok
+test readiness_sdk::tests::sdk_readiness_reports_missing_node_without_account_or_model_claims ... ok
+test readiness_sdk::tests::sdk_readiness_resolves_packaged_resources_and_rejects_tampered_sdk ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 631 filtered out; finished in 13.33s
+
+     Running unittests src/bin/core.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/director_next_core-db6674a25e973d68)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/acceptance.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/acceptance-23a9bcde573097ab)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+     Running tests/asset_design_publication.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/asset_design_publication-7f7ff9c962e7b489)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/asset_lifecycle.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/asset_lifecycle-b67130c1a00a61a8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/core.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/core-afe473eeed4a138f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/dreamina_auth_recovery.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/dreamina_auth_recovery-1bf8d760b17f25cc)
+
+running 1 test
+test readiness_identity_and_provider_all_gate_recovery ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.01s
+
+     Running tests/foundation_batch_planning.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/foundation_batch_planning-f45a55c221b2c7e2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/foundation_contracts.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/foundation_contracts-f330bc1166315d81)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.00s
+
+     Running tests/foundation_rejection_replay.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/foundation_rejection_replay-14ddefb850038d59)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/foundation_scene_publication.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/foundation_scene_publication-7d7373121743a04e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/foundation_transport_resume.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/foundation_transport_resume-6e9026b8458da9d0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+     Running tests/m2_execution_boundaries.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/m2_execution_boundaries-85117647cf5a1a9f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/migration.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/migration-ae6603b6a9ff372b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/next_isolation.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/next_isolation-b8b10ede10a0c097)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+     Running tests/scene_material_binding.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/scene_material_binding-92c59a91a04fa7ce)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+     Running tests/scheduler.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/scheduler-03e2ebb128922678)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+     Running tests/source_scope.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/source_scope-8a0bb20550555edc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/stage13_roundtrip.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/stage13_roundtrip-2efcfbeaaf4131cb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/stage2_contracts.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/stage2_contracts-de86bf07354ca6e1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/task_results.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/task_results-29b7eaa47bd64152)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s
+
+     Running tests/text_cache_contracts.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/text_cache_contracts-e3ef44cfcaea16b7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/video_preflight.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/video_preflight-f499d9829bf23af8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+

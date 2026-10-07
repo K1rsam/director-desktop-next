@@ -13,7 +13,7 @@ export type Job = { id: string; kind?: string; provider: string; model?: string;
 export type Model = { id?: string; name?: string; kind?: string; available?: boolean; adapted?: boolean; ratios?: string[]; resolutions?: string[]; price?: unknown; [key: string]: unknown };
 export type Provider = { id?: string; provider?: string; name?: string; available?: boolean; configured?: boolean; status?: string; message?: string; models?: (Model | string)[]; capabilities?: JsonObject; [key: string]: unknown };
 export type Rule = { id: string; version?: string; stage?: number; title?: string; sha256?: string; [key: string]: unknown };
-export type Settings = { projectVisualStyle?: string; visualStyle?: string; productionDirection?: string; productionDirectionConfirmed?: boolean; imagePresentation?: string | { composition?: string; ratio?: string }; textProvider?: string; textModel?: string; reasoning?: string; codexPath?: string; textSdkNodePath?: string; textEndpoint?: string; textApiKey?: string; dreaminaPath?: string; bhEndpoint?: string; bhToken?: string; chromeEndpoint?: string; chromeToken?: string; videoProvider?: string; imageProvider?: string; videoModel?: string; imageModel?: string; ratio?: string; [key: string]: unknown };
+export type Settings = { projectVisualStyle?: string; visualStyle?: string; productionDirection?: string; productionDirectionConfirmed?: boolean; imagePresentation?: string | { composition?: string; ratio?: string }; textProvider?: string; textModel?: string; reasoning?: string; codexPath?: string; textSdkNodePath?: string; textEndpoint?: string; textApiKey?: string; dreaminaPath?: string; dreaminaCanvasPath?: string; bhEndpoint?: string; bhToken?: string; chromeEndpoint?: string; chromeToken?: string; videoProvider?: string; imageProvider?: string; videoModel?: string; imageModel?: string; ratio?: string; [key: string]: unknown };
 export type TextCliLogin = { state: 'idle' | 'pending' | 'completed' | 'failed' | 'cancelled'; authUrl?: string; loginId?: string; error?: string };
 export type TextCliModel = { id: string; displayName: string; supportedReasoningEfforts: string[]; defaultReasoningEffort: string; isDefault: boolean };
 export type TextCliLimitWindow = { usedPercent?: number; remainingPercent?: number; windowDurationMins?: number; resetsAt?: string | number };
@@ -26,10 +26,10 @@ export type Mutation = (action: string, values?: JsonObject, message?: string) =
 
 export type ProviderReadinessReport = {
   schemaVersion: 'provider-readiness/v1';
-  provider: 'codex_cli' | 'dreamina' | 'codex_sdk';
+  provider: 'codex_cli' | 'dreamina' | 'dreamina_canvas' | 'codex_sdk';
   checkedAt: string;
   installation: { state: 'ready' | 'missing' | 'invalid' | 'not_checked'; version: string | null; executable: string | null };
-  protocol: { state: 'ready' | 'failed' | 'not_checked'; name: string | null };
+  protocol: { state: 'ready' | 'failed' | 'unsupported' | 'not_checked'; name: string | null };
   authentication: { state: 'authenticated' | 'not_logged_in' | 'unknown' | 'not_checked'; identityVerified: boolean };
   catalog: { state: 'available' | 'unavailable' | 'not_checked'; models: { id: string; name?: string; kind?: string; supportedReasoningEfforts?: string[] }[] };
   network: { state: 'verified_read_only' | 'not_tested' | 'failed'; proof: unknown[] };

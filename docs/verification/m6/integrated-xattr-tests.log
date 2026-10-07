@@ -1,0 +1,14 @@
+test_actual_attribute_count_limit_does_not_return_partial_snapshot (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_actual_attribute_count_limit_does_not_return_partial_snapshot) ... ok
+test_binary_and_empty_values_are_lossless_without_mutation (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_binary_and_empty_values_are_lossless_without_mutation) ... ok
+test_boundary_value_empty_value_and_order_independence (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_boundary_value_empty_value_and_order_independence) ... ok
+test_fifo_rejected_without_blocking (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_fifo_rejected_without_blocking) ... ok
+test_fixed_errors_limits_and_races_fail_closed (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_fixed_errors_limits_and_races_fail_closed) ... ok
+test_fresh_file_and_directory_preserve_baseline (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_fresh_file_and_directory_preserve_baseline) ... ok
+test_invalid_and_missing_paths_have_no_private_payload (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_invalid_and_missing_paths_have_no_private_payload) ... ok
+test_root_and_nested_directory_attributes_are_collected (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_root_and_nested_directory_attributes_are_collected) ... ok
+test_symlinks_are_rejected_at_leaf_ancestor_and_trailing_slash (test_macos_xattr_snapshot.NativeXattrSnapshotTests.test_symlinks_are_rejected_at_leaf_ancestor_and_trailing_slash) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.264s
+
+OK

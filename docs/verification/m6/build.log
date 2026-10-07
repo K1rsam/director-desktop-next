@@ -1,0 +1,20 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> director-desktop-next@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 51 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.60 kB │ gzip:   0.42 kB
+dist/assets/index-CVoce61s.css   60.37 kB │ gzip:  12.37 kB
+dist/assets/index-BgqP85dD.js   445.38 kB │ gzip: 135.53 kB │ map: 1,644.26 kB
+
+✓ built in 662ms
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

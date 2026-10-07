@@ -157,3 +157,24 @@ test('full native backend policy accepts readiness action without enlarging acco
     for (const action of ['dreamina.status', 'textCli.login', 'videos.submit']) assert.throws(() => validateExecutionPolicy({ ...scope, allowedActions: [...scope.allowedActions, action] }), 'native policy cannot whitelist unapproved actions');
   } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
 });
+
+test('Canvas readiness requires its explicit backend capability and never opens a generation or login route', async () => {
+  const { installExecutionPolicy } = await import('./executionPolicy.ts');
+  const capability = { version: 'provider-readiness/v1', enabled: true, providers: ['codex_cli', 'dreamina', 'codex_sdk'], generationAllowed: false };
+  const calls: PolicyRequest[] = [];
+  const request: PolicyRequest = { action: 'readiness.check', provider: 'dreamina_canvas', settings: { dreaminaCanvasPath: '/synthetic/canvas' } };
+  try {
+    installExecutionPolicy(validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, readiness: capability }));
+    await assert.rejects(dispatchOfflineRequest(request, async input => { calls.push(input); }));
+    installExecutionPolicy(validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, readiness: { ...capability, providers: [...capability.providers, 'dreamina_canvas'] } }));
+    await dispatchOfflineRequest(request, async input => { calls.push(input); });
+    assert.deepEqual(calls, [request]);
+    for (const action of ['dreamina_canvas.login', 'dreamina_canvas.generate', 'dreamina_canvas.submit', 'dreamina.login', 'providers.refresh', 'images.run', 'videos.submit']) {
+      await assert.rejects(dispatchOfflineRequest({ action }, async input => { calls.push(input); }));
+    }
+    assert.equal(calls.length, 1);
+    installExecutionPolicy(validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, readiness: { ...capability, enabled: false, providers: ['dreamina_canvas'] } }));
+    await assert.rejects(dispatchOfflineRequest(request, async input => { calls.push(input); }));
+    assert.equal(calls.length, 1, 'disabled startup policy remains fail closed');
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});

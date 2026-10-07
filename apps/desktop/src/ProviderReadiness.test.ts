@@ -60,16 +60,17 @@ function hookRenderer() {
 }
 function content(host: Host | string): string { return typeof host === 'string' ? host : host.children.map(content).join(''); }
 function result(provider: ProviderReadinessReport['provider'], model = 'synthetic-model'): ProviderReadinessReport {
-  return { schemaVersion: 'provider-readiness/v1', provider, checkedAt: '2026-10-07T00:00:00Z', installation: { state: 'ready', version: 'synthetic-1', executable: '/synthetic/program' }, protocol: { state: 'ready', name: 'synthetic/protocol' }, authentication: { state: provider === 'codex_sdk' ? 'not_checked' : 'authenticated', identityVerified: provider !== 'codex_sdk' }, catalog: { state: provider === 'codex_sdk' ? 'not_checked' : 'available', models: provider === 'codex_sdk' ? [] : [{ id: model, name: model, supportedReasoningEfforts: ['medium', 'high'] }] }, network: { state: 'not_tested', proof: [] }, generation: { enabled: false, testPerformed: false, calls: 0 }, messages: ['Synthetic read-only evidence'], details: provider === 'dreamina' ? { credits: { total: 50 }, freeImageEligibility: 'unverified' } : {} };
+  return { schemaVersion: 'provider-readiness/v1', provider, checkedAt: '2026-10-07T00:00:00Z', installation: { state: 'ready', version: 'synthetic-1', executable: '/synthetic/program' }, protocol: { state: 'ready', name: 'synthetic/protocol' }, authentication: { state: provider === 'codex_sdk' ? 'not_checked' : 'authenticated', identityVerified: provider !== 'codex_sdk' }, catalog: { state: provider === 'codex_sdk' ? 'not_checked' : 'available', models: provider === 'codex_sdk' ? [] : provider === 'dreamina_canvas' ? [{ id: model, name: 'Synthetic Canvas Image', kind: 'image' }] : [{ id: model, name: model, supportedReasoningEfforts: ['medium', 'high'] }] }, network: { state: 'not_tested', proof: [] }, generation: { enabled: false, testPerformed: false, calls: 0 }, messages: ['Synthetic read-only evidence'], details: provider === 'dreamina' ? { credits: { total: 50 }, freeImageEligibility: 'unverified' } : {} };
 }
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
 test('actual readiness controls and effects use only the explicit read-only IPC', async t => {
   const calls: PolicyRequest[] = [];
-  const readiness = { version: 'provider-readiness/v1', enabled: true, providers: ['codex_cli', 'dreamina', 'codex_sdk'], generationAllowed: false };
+  const readiness = { version: 'provider-readiness/v1', enabled: true, providers: ['codex_cli', 'dreamina', 'dreamina_canvas', 'codex_sdk'], generationAllowed: false };
   let capability = { mode: 'offline_prepare_only', liveExecutionAllowed: false, stage3CreativePackStatus: 'inactive', reasons: ['synthetic capability'], readiness };
   let respond = async (input: PolicyRequest): Promise<unknown> => result(input.provider as ProviderReadinessReport['provider']);
-  Object.assign(globalThis, { isTauri: true, location: { search: '' }, window: { __TAURI_INTERNALS__: { invoke: async (_command: string, args: { request: PolicyRequest }) => { calls.push(args.request); return args.request.action === 'getExecutionPolicy' ? capability : respond(args.request); } } } });
+  let pick = async (): Promise<string[]> => [];
+  Object.assign(globalThis, { isTauri: true, location: { search: '' }, window: { __TAURI_INTERNALS__: { invoke: async (_command: string, args: { request: PolicyRequest }) => { calls.push(args.request); return args.request.action === 'getExecutionPolicy' ? capability : args.request.action === 'files.choose' ? pick() : respond(args.request); } } } });
   const server = await createServer({ root: fileURLToPath(new URL('..', import.meta.url)), server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   try {
     const api = await server.ssrLoadModule('/src/api.ts');
@@ -78,9 +79,12 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
     const { SettingsPanel } = await server.ssrLoadModule('/src/Panels.tsx');
     const { validateProviderReadiness } = await server.ssrLoadModule('/src/ProviderReadiness.tsx');
     const { previewWorkspace } = await server.ssrLoadModule('/src/preview.ts');
-    const workspace = { ...structuredClone(previewWorkspace), project: { id: 'readiness-project', title: 'Synthetic' }, settings: { codexPath: '/saved/codex', dreaminaPath: '/saved/dreamina' } };
+    const workspace = { ...structuredClone(previewWorkspace), project: { id: 'readiness-project', title: 'Synthetic' }, settings: { codexPath: '/saved/codex', dreaminaPath: '/saved/dreamina', dreaminaCanvasPath: '/saved/canvas', imageProvider: 'dreamina', videoProvider: 'dreamina' } };
     const props = { workspace, settings: { textProvider: 'codex', codexPath: '/unsaved/CLI path' }, writable: true, update() {}, saveSettings: async () => { throw new Error('readiness must not save settings'); } };
     const button = (nodes: Host[], provider: string) => { const found = nodes.find(node => node.type === 'button' && node.props['data-readiness-provider'] === provider); assert.ok(found, `${provider} button exists`); return found; };
+    const canvasInput = (nodes: Host[]) => { const found = nodes.find(node => node.type === 'input' && node.props['data-canvas-path']); assert.ok(found, 'Canvas input exists'); return found; };
+    const picker = (nodes: Host[]) => { const found = nodes.find(node => node.type === 'button' && node.props['data-canvas-picker']); assert.ok(found, 'Canvas native picker exists'); return found; };
+    const tab = (nodes: Host[], label: string) => { const found = nodes.find(node => node.type === 'button' && content(node) === label); assert.ok(found, `${label} tab exists`); return found; };
     await t.test('default and startup-probe capabilities stay disabled and run no automatic checks', async () => {
       const view = hookRenderer();
       try {
@@ -94,6 +98,7 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
         await api.request({ action: 'getExecutionPolicy' }); calls.length = 0;
         const nodes = view.render(React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('unexpected mutation'); } }));
         assert.equal(button(nodes, 'dreamina').props.disabled, true);
+        assert.equal(button(nodes, 'dreamina_canvas').props.disabled, true); button(nodes, 'dreamina_canvas').props.onClick();
         await settle(); assert.equal(calls.length, 0);
       } finally { view.unmount(); }
     });
@@ -136,6 +141,171 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
         assert.deepEqual(calls, [{ action: 'readiness.check', projectId: workspace.project.id, provider: 'dreamina', settings: { dreaminaPath: '/unsaved/Jimeng path' } }]);
         assert.ok(nodes.map(content).join(' ').includes('图片免费资格尚未核验'));
         for (const action of ['dreamina.login', 'providers.refresh']) for (const node of nodes.filter(node => node.type === 'button' && node.props['data-execution-action'] === action)) assert.equal(node.props.disabled, true);
+      } finally { view.unmount(); }
+    });
+    await t.test('Canvas uses only its unsaved input and never mutates legacy settings, history, providers or selectors', async () => {
+      calls.length = 0; const view = hookRenderer(), before = structuredClone(workspace);
+      const element = React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('read-only Canvas must not mutate'); } });
+      try {
+        let nodes = view.render(element); await settle(); assert.equal(calls.length, 0, 'mount has no checks');
+        assert.equal(canvasInput(nodes).props.placeholder, '选择 dreamina-canvas，或填写可执行文件的完整路径');
+        assert.ok(nodes.map(content).join(' ').includes('检查范围：default 配置 / cn 区域'));
+        canvasInput(nodes).props.onChange({ target: { value: '/unsaved/Canvas CLI' } }); nodes = view.render(element);
+        const textProvider = nodes.find(node => node.type === 'select' && node.children.some(child => typeof child !== 'string' && child.props.value === 'codex_sdk')); assert.ok(textProvider);
+        textProvider.props.onChange({ target: { value: 'codex_sdk' } }); nodes = view.render(element);
+        await settle(); assert.equal(calls.length, 0, 'path edit and provider switch have no checks');
+        const check = button(nodes, 'dreamina_canvas'); assert.equal(check.props.disabled, false); check.props.onClick(); check.props.onClick();
+        assert.deepEqual(calls, [{ action: 'readiness.check', projectId: workspace.project.id, provider: 'dreamina_canvas', settings: { dreaminaCanvasPath: '/unsaved/Canvas CLI' } }]);
+        assert.equal(button(view.render(element), 'dreamina_canvas').props.disabled, true);
+        await settle(); nodes = view.render(element);
+        assert.equal(button(nodes, 'dreamina_canvas').props.disabled, false);
+        const text = nodes.map(content).join(' ');
+        for (const label of ['schema', 'auth status', 'account', 'image models', 'Synthetic Canvas Image', 'image', '积分 / 额度未知', '没有额度接口', '免费资格未核验', '尚未接入生成桥', '未测试 · 本次检查生成调用 0 次']) assert.ok(text.includes(label), label);
+        assert.ok(!nodes.some(node => node.type === 'option' && ['dreamina_canvas', 'synthetic-model'].includes(node.props.value)), 'Canvas catalog never becomes a generation option');
+        assert.ok(nodes.some(node => node.type === 'input' && node.props.value === '/saved/dreamina'), 'legacy path is unchanged');
+        assert.equal(nodes.filter(node => node.type === 'button' && node.props['data-readiness-provider'] === 'dreamina').length, 2, 'legacy checks remain');
+        assert.deepEqual(workspace, before, 'settings, saved account, history and capability cache are untouched');
+        tab(nodes, '执行与保存').props.onClick(); nodes = view.render(element);
+        assert.ok(!nodes.some(node => node.type === 'option' && ['dreamina_canvas', 'synthetic-model'].includes(node.props.value)));
+        const providerSelectors = nodes.filter(node => node.type === 'select' && node.children.some(child => typeof child !== 'string' && child.props.value === 'bh'));
+        assert.equal(providerSelectors.length, 2);
+        assert.deepEqual(providerSelectors.map(node => node.children.filter(child => typeof child !== 'string').map(child => (child as Host).props.value)), [['dreamina', 'bh', 'chrome'], ['dreamina', 'bh']]);
+        tab(nodes, '渠道').props.onClick(); nodes = view.render(element); await settle();
+        assert.equal(calls.length, 1, 'tab return does not check');
+        assert.equal(canvasInput(nodes).props.value, '/unsaved/Canvas CLI');
+        assert.ok(!nodes.some(node => node.props['data-readiness-result'] === 'dreamina_canvas'), 'tab return cannot revive results');
+      } finally { view.unmount(); }
+    });
+    await t.test('Canvas native picker handles repeated clicks, cancel, errors and successful selection without automatic checks', async () => {
+      calls.length = 0; const view = hookRenderer();
+      const element = React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('picker must not save'); } });
+      let resolvePick: (paths: string[]) => void = () => {};
+      try {
+        pick = () => new Promise(resolve => { resolvePick = resolve; });
+        let nodes = view.render(element); const chooseButton = picker(nodes); chooseButton.props.onClick(); chooseButton.props.onClick();
+        assert.deepEqual(calls, [{ action: 'files.choose', kind: 'file', multiple: false }]);
+        nodes = view.render(element); assert.equal(picker(nodes).props.disabled, true);
+        resolvePick([]); await settle(); nodes = view.render(element);
+        assert.equal(canvasInput(nodes).props.value, '/saved/canvas'); assert.equal(picker(nodes).props.disabled, false);
+        pick = async () => { throw new Error('synthetic picker failure'); }; picker(nodes).props.onClick(); await settle(); nodes = view.render(element);
+        assert.ok(nodes.some(node => node.props.role === 'alert' && content(node).includes('synthetic picker failure')));
+        assert.equal(canvasInput(nodes).props.value, '/saved/canvas'); assert.equal(picker(nodes).props.disabled, false);
+        pick = async () => ['/chosen/Canvas CLI']; picker(nodes).props.onClick(); await settle(); nodes = view.render(element);
+        assert.equal(canvasInput(nodes).props.value, '/chosen/Canvas CLI');
+        assert.ok(!nodes.some(node => node.props.role === 'alert'));
+        assert.ok(calls.every(call => call.action === 'files.choose'), 'picker completion never checks or saves');
+        button(nodes, 'dreamina_canvas').props.onClick(); await settle(); view.render(element);
+        assert.deepEqual(calls.at(-1), { action: 'readiness.check', projectId: workspace.project.id, provider: 'dreamina_canvas', settings: { dreaminaCanvasPath: '/chosen/Canvas CLI' } });
+      } finally { view.unmount(); pick = async () => []; }
+    });
+    await t.test('Canvas stale native picker cannot overwrite edits or a newer project, tab or unmounted screen', async () => {
+      let resolvePick: (paths: string[]) => void = () => {};
+      pick = () => new Promise(resolve => { resolvePick = resolve; });
+      try {
+        for (const change of ['path', 'project', 'tab', 'unmount']) {
+          calls.length = 0; const view = hookRenderer();
+          const props = { workspace, writable: true, mutate: async () => { throw new Error('picker must not mutate'); } };
+          let element: React.ReactElement = React.createElement(SettingsPanel, props);
+          try {
+            let nodes = view.render(element); picker(nodes).props.onClick();
+            if (change === 'path') canvasInput(nodes).props.onChange({ target: { value: '/newer/edit' } });
+            if (change === 'project') element = React.createElement(SettingsPanel, { ...props, workspace: { ...workspace, project: { id: 'newer-project' }, settings: { ...workspace.settings, dreaminaCanvasPath: '/newer/project' } } });
+            if (change === 'tab') tab(nodes, '执行与保存').props.onClick();
+            if (change === 'unmount') view.unmount(); else nodes = view.render(element);
+            resolvePick(['/stale/picker']); await settle(); nodes = view.render(element);
+            if (change === 'tab') { tab(nodes, '渠道').props.onClick(); nodes = view.render(element); }
+            assert.equal(canvasInput(nodes).props.value, change === 'path' ? '/newer/edit' : change === 'project' ? '/newer/project' : '/saved/canvas');
+            assert.equal(picker(nodes).props.disabled, false); assert.equal(calls.length, 1, 'stale completion makes no new IPC');
+          } finally { view.unmount(); }
+        }
+      } finally { pick = async () => []; }
+    });
+    await t.test('Canvas pending checks ignore old path, project, tab, and read-only mode responses and permit a newer check', async () => {
+      const pending: ((value: unknown) => void)[] = [];
+      respond = () => new Promise(resolve => { pending.push(resolve); });
+      try {
+        for (const change of ['path', 'project', 'tab', 'readonly']) {
+          calls.length = 0; const view = hookRenderer();
+          const props = { workspace, writable: true, mutate: async () => { throw new Error('check must not mutate'); } };
+          let element: React.ReactElement = React.createElement(SettingsPanel, props);
+          try {
+            let nodes = view.render(element); button(nodes, 'dreamina_canvas').props.onClick();
+            if (change === 'path') canvasInput(nodes).props.onChange({ target: { value: '/newer/check/path' } });
+            if (change === 'project') element = React.createElement(SettingsPanel, { ...props, workspace: { ...workspace, project: { id: 'newer-project' } } });
+            if (change === 'tab') tab(nodes, '执行与保存').props.onClick();
+            if (change === 'readonly') element = React.createElement(SettingsPanel, { ...props, writable: false });
+            nodes = view.render(element);
+            if (change === 'tab') { tab(nodes, '渠道').props.onClick(); nodes = view.render(element); }
+            if (change === 'readonly') {
+              assert.equal(button(nodes, 'dreamina_canvas').props.disabled, true);
+              button(nodes, 'dreamina_canvas').props.onClick(); assert.equal(calls.length, 1);
+              element = React.createElement(SettingsPanel, props); nodes = view.render(element);
+            }
+            assert.equal(calls.length, 1, 'navigation and edits do not start a check');
+            button(nodes, 'dreamina_canvas').props.onClick(); assert.equal(calls.length, 2);
+            const old = pending.shift()!, latest = pending.shift()!;
+            old({ ...result('dreamina_canvas'), messages: ['stale Canvas response'] }); await settle(); nodes = view.render(element);
+            assert.ok(!nodes.map(content).join(' ').includes('stale Canvas response'));
+            assert.equal(button(nodes, 'dreamina_canvas').props.disabled, true, 'old response cannot clear newer busy state');
+            latest({ ...result('dreamina_canvas'), messages: ['current Canvas response'] }); await settle(); nodes = view.render(element);
+            assert.ok(nodes.map(content).join(' ').includes('current Canvas response'));
+            assert.equal(button(nodes, 'dreamina_canvas').props.disabled, false);
+          } finally { view.unmount(); }
+        }
+      } finally { respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
+    });
+    await t.test('Canvas unsupported protocol and partial catalogs remain truthful, and mismatches permit explicit retry', async () => {
+      calls.length = 0; const view = hookRenderer();
+      const element = React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('must not mutate'); } });
+      try {
+        const unsupported = { ...result('dreamina_canvas'), protocol: { state: 'unsupported', name: 'unrecognized/schema' }, authentication: { state: 'not_checked', identityVerified: false }, catalog: { state: 'not_checked', models: [] } };
+        assert.equal(validateProviderReadiness(unsupported, 'dreamina_canvas'), unsupported);
+        respond = async () => unsupported; button(view.render(element), 'dreamina_canvas').props.onClick(); await settle();
+        let nodes = view.render(element); assert.ok(nodes.map(content).join(' ').includes('协议不受支持')); assert.equal(button(nodes, 'dreamina_canvas').props.disabled, false);
+        for (const state of ['available', 'unavailable', 'not_checked']) assert.doesNotThrow(() => validateProviderReadiness({ ...result('dreamina_canvas'), catalog: { state, models: [] } }, 'dreamina_canvas'));
+        respond = async () => result('dreamina'); button(nodes, 'dreamina_canvas').props.onClick(); await settle(); nodes = view.render(element);
+        assert.ok(nodes.some(node => node.props.role === 'alert' && content(node).includes('只读检查结果无效')));
+        respond = async () => result('dreamina_canvas'); button(nodes, 'dreamina_canvas').props.onClick(); await settle(); nodes = view.render(element);
+        assert.ok(!nodes.some(node => node.props.role === 'alert')); assert.equal(calls.length, 3);
+        for (const invalid of [
+          { ...result('dreamina_canvas'), protocol: { state: 'compatible', name: null } },
+          { ...result('dreamina_canvas'), catalog: { state: 'available', models: [{ name: 'no id' }] } },
+          { ...result('dreamina_canvas'), generation: { enabled: true, testPerformed: false, calls: 0 } },
+        ]) assert.throws(() => validateProviderReadiness(invalid, 'dreamina_canvas'));
+      } finally { view.unmount(); respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
+    });
+    await t.test('Canvas catalog shows canonical IDs and optional model modes without inferring missing capabilities', async () => {
+      calls.length = 0; const view = hookRenderer();
+      const element = React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('catalog is display only'); } });
+      const report = { ...result('dreamina_canvas', 'canonical-image-id'), details: { accountQuery: { state: 'unavailable' }, quota: { state: 'unsupported', remaining: null }, freeImageEligibility: 'unverified', modelSpecifications: [
+        { model: 'canonical-image-id', modes: [{ name: 'synthetic-text-to-image', flags: [{ flag: '--ratio', values: ['1:1', '3:2'] }] }], vipRequired: false },
+        { model: 'unreported-modes' }, { model: 'empty-modes', modes: [] },
+        { model: 'bad-modes', modes: [null, 'ignored', { name: 42 }] }, null, { wrong: 'ignored' },
+      ] } };
+      const before = structuredClone(report);
+      try {
+        respond = async () => report; button(view.render(element), 'dreamina_canvas').props.onClick(); await settle();
+        const nodes = view.render(element), text = nodes.map(content).join(' ');
+        for (const label of ['canonical-image-id', 'Synthetic Canvas Image', 'synthetic-text-to-image', '模式未提供', '无模式记录', '缺少的能力仍未知', 'Canvas account 查询', '读取未完成', '已登录', '积分 / 额度未知']) assert.ok(text.includes(label), label);
+        assert.deepEqual(report, before, 'rendering does not annotate or mutate backend evidence');
+        assert.ok(!nodes.some(node => node.type === 'option' && node.props.value === 'canonical-image-id'));
+        assert.equal(calls.length, 1);
+        respond = async () => ({ ...report, details: { ...report.details, accountQuery: { state: 'unsupported' } } });
+        button(nodes, 'dreamina_canvas').props.onClick(); await settle();
+        assert.ok(view.render(element).map(content).join(' ').includes('当前协议未提供只读账户查询'));
+        assert.equal(calls.length, 2);
+      } finally { view.unmount(); respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
+    });
+    await t.test('Canvas path is saved only on explicit save, preserving legacy and generation settings', async () => {
+      calls.length = 0; const view = hookRenderer(), writes: { action: string; settings: Record<string, unknown> }[] = [];
+      const element = React.createElement(SettingsPanel, { workspace, writable: true, mutate: async (action: string, values: { settings: Record<string, unknown> }) => { writes.push({ action, settings: values.settings }); return { ...workspace, settings: values.settings }; } });
+      try {
+        let nodes = view.render(element); canvasInput(nodes).props.onChange({ target: { value: '/saved-after-click/canvas' } }); nodes = view.render(element);
+        button(nodes, 'dreamina_canvas').props.onClick(); await settle(); nodes = view.render(element); assert.deepEqual(writes, []);
+        const form = nodes.find(node => node.type === 'form'); assert.ok(form); form.props.onSubmit({ preventDefault() {} }); await settle(); nodes = view.render(element);
+        assert.deepEqual(writes, [{ action: 'settings.save', settings: { ...workspace.settings, dreaminaCanvasPath: '/saved-after-click/canvas' } }]);
+        assert.equal(canvasInput(nodes).props.value, '/saved-after-click/canvas');
+        assert.equal(calls.length, 1, 'saving does not run another check');
       } finally { view.unmount(); }
     });
     await t.test('path, provider and project changes discard pending responses and clear busy', async () => {

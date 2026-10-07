@@ -1231,21 +1231,35 @@ pub(super) fn readiness(config: &ProviderConfig) -> Value {
     };
     result["installation"]=json!({"state":"ready","version":null,"executable":identity["path"]});
     result["details"]=json!({"binarySha256":identity["sha256"],"freeImageEligibility":"unverified","accountIdentityNotExported":true});
+    let mut verified_legacy_version = None;
     let inspected=capabilities_with_runner(config,Instant::now,|config,args,deadline| {
         let output=execute_until(config,args,false,Some(deadline))?;
         if readiness_log_write_restricted(&output) {return Err(ProviderError::new("CLI_LOCAL_LOG_WRITE_RESTRICTED","官方 CLI 本地日志初始化受限；未继续账户检查。"));}
-        if !output.success {return Err(output_error(&output,false));}Ok(output.stdout)
+        if !output.success {return Err(output_error(&output,false));}
+        if args == ["version"] {
+            verified_legacy_version = crate::readiness_canvas::legacy_version_label(&output.stdout);
+            if verified_legacy_version.is_none() {
+                return Err(ProviderError::new("DREAMINA_PROTOCOL_UNSUPPORTED", "此文件不是已适配的旧版 Dreamina 1.4.x 协议。"));
+            }
+        }
+        Ok(output.stdout)
     });
+    result["installation"]["version"] = json!(verified_legacy_version);
     let mut messages=vec!["只读取官方 CLI 版本/帮助目录与账户积分；没有图片或视频生成。".to_string(),"积分余额和模型目录不能证明当前账户免费资格；免费出图尚未核验。".to_string()];
     match inspected {
         Ok(caps)=>{
-            result["installation"]["version"]=json!(caps.version.chars().take(128).collect::<String>());
             result["protocol"]=json!({"state":"ready","name":"Official Dreamina CLI help + user_credit"});
             let models:Vec<_>=caps.models.iter().map(|m|json!({"id":m.id,"name":m.id,"kind":m.kind})).collect();
             result["catalog"]=json!({"state":if models.is_empty(){"unavailable"}else{"available"},"models":models});
         },
         Err(error)=>{
             result["protocol"]["state"]=json!("failed");result["catalog"]["state"]=json!("unavailable");
+            if error.code=="DREAMINA_PROTOCOL_UNSUPPORTED" {
+                result["protocol"]=json!({"state":"unsupported","name":"Legacy Dreamina 1.4.x"});
+                result["details"]["detectedProtocol"]=json!("unsupported_for_legacy");
+                messages.push("所选程序与旧版 Dreamina 1.4.x 不兼容，已停止账户检查；新版 dreamina-canvas 请使用独立 Canvas CLI 路径与检查按钮。旧任务和账户记录保持原样。".into());
+                result["messages"]=json!(messages);return result;
+            }
             if error.code=="CLI_LOCAL_LOG_WRITE_RESTRICTED" {
                 result["details"]["localEnvironmentIssue"]=json!(error.code);
                 messages.push("官方 CLI 本地日志写入受限，已停止后续账户检查；这不代表账号失效，未尝试改目录或安全权限。".into());
@@ -1253,6 +1267,10 @@ pub(super) fn readiness(config: &ProviderConfig) -> Value {
             }
             messages.push(format!("CLI 帮助/目录检查失败（{}），未推断可生成模型。",error.code));
         }
+    }
+    if verified_legacy_version.is_none() {
+        messages.push("未能核验旧版 CLI 协议，未继续 user_credit 账户检查；没有发起登录或生成。".into());
+        result["messages"] = json!(messages); return result;
     }
     let account_result=(|| {
         let output=execute(config,&["user_credit".into()],false)?;
@@ -1276,6 +1294,28 @@ pub(super) fn readiness(config: &ProviderConfig) -> Value {
         }
     }
     result["messages"]=json!(messages);result
+}
+
+/// Shares owned pipes, deadlines, shutdown accounting and child cleanup with legacy readiness.
+/// Static Canvas read commands only; no caller-controlled flags, login or node mutations.
+pub(super) fn canvas_readiness_command(
+    config: &ProviderConfig,
+    command: crate::readiness_canvas::ReadCommand,
+    deadline: Instant,
+) -> ProviderResult<Vec<u8>> {
+    let args = command.args().iter().map(|s| (*s).to_string()).collect::<Vec<_>>();
+    let output = execute_until(config, &args, false, Some(deadline))?;
+    if readiness_log_write_restricted(&output) {
+        return Err(ProviderError::new("CLI_LOCAL_LOG_WRITE_RESTRICTED", "CLI 本地日志写入受限，未尝试修改权限或目录。"));
+    }
+    if output.stdout.len() > command.output_limit() {
+        return Err(ProviderError::new("CANVAS_OUTPUT_LIMIT", "Canvas 只读输出超过检查限制。"));
+    }
+    // Structured failure envelopes are parsed without retaining/logging stderr or raw account output.
+    if !output.success && !serde_json::from_slice::<Value>(&output.stdout).is_ok_and(|body| body["schemaVersion"] == "1" && body["ok"] == false) {
+        return Err(ProviderError::new("CANVAS_COMMAND_FAILED", "Canvas 只读命令未完成。"));
+    }
+    Ok(output.stdout)
 }
 
 fn login_material(body: &Value) -> ProviderResult<Value> {

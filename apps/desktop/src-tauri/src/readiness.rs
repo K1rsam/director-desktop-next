@@ -6,7 +6,7 @@ use crate::{
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 pub const VERSION: &str = "provider-readiness/v1";
-pub const PROVIDERS: &[&str] = &["codex_cli", "dreamina", "codex_sdk"];
+pub const PROVIDERS: &[&str] = &["codex_cli", "dreamina", "dreamina_canvas", "codex_sdk"];
 
 pub fn capability(enabled: bool) -> Value {
     json!({"version":VERSION,"enabled":enabled,"providers":PROVIDERS,"generationAllowed":false})
@@ -16,6 +16,7 @@ pub fn request_settings(request: &Value, saved: &Value) -> Result<(String, Value
     let key = match provider {
         "codex_cli" => "codexPath",
         "dreamina" => "dreaminaPath",
+        "dreamina_canvas" => "dreaminaCanvasPath",
         "codex_sdk" => "textSdkNodePath",
         _ => {
             return Err(
@@ -114,6 +115,14 @@ pub async fn check(provider: &str, settings: &Value, resource_root: Option<&Path
     match provider {
         "codex_cli" => codex_report(&crate::text_cli::readiness_status(settings).await, settings),
         "codex_sdk" => crate::readiness_sdk::check(settings, resource_root).await,
+        "dreamina_canvas" => {
+            let settings = settings.clone();
+            tokio::task::spawn_blocking(move || crate::readiness_canvas::check(&settings)).await.unwrap_or_else(|_| {
+                let mut report = empty("dreamina_canvas");
+                report["messages"] = json!(["Canvas 只读检查未完成；没有发起生成。"]);
+                report
+            })
+        },
         "dreamina" => {
             let path = discover_dreamina(settings, resource_root);
             let config: ProviderConfig = serde_json::from_value(

@@ -1,0 +1,1 @@
+{"schemaVersion": "1", "ok": true, "data": {"loggedIn": true, "profile": "default", "region": "cn", "environment": "production", "authMode": "oauth", "distribution": "cn", "version": "1.0.2", "edition": "public", "expiresAt": "PRIVATE_EXPIRY_SENTINEL", "credentialStorage": "PRIVATE_CREDENTIAL_SENTINEL"}}

@@ -1,0 +1,280 @@
+{
+  "schema": "director-next-canvas-readiness-verification/v1",
+  "checkpoint": "M6",
+  "date": "2026-10-07",
+  "baseCommit": "1b31de0d4715873d0eda7739b1666268c3f649f5",
+  "integrationTargetCommit": "1b31de0d4715873d0eda7739b1666268c3f649f5",
+  "scope": "Canvas read-only readiness integrated with published M5.1; packaging and attribute gates retained",
+  "status": "integrated_offline_verified_native_pending",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/fixtures/synthetic/canvas-readiness/account.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 147,
+      "sha256": "b0bda8173c689acf006a46ce9c51353f1c26f6dc887d92916c3d6a21b4c60f80"
+    },
+    {
+      "path": "apps/desktop/fixtures/synthetic/canvas-readiness/auth-status.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 306,
+      "sha256": "cbe9bbe670ed6c2a7d64c89d5bcc489405a7cb4fea24f87cb77b44ebf3c388ba"
+    },
+    {
+      "path": "apps/desktop/fixtures/synthetic/canvas-readiness/models.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 796,
+      "sha256": "64c95e3b3f721ec959b01393b1761a88308377496fecd0bd61bd575a6e3d321b"
+    },
+    {
+      "path": "apps/desktop/fixtures/synthetic/canvas-readiness/schema.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 4681,
+      "sha256": "2dbf8302decac15f8c905206306f08bec22c61055da0609b6c55aa8e1765ac7b"
+    },
+    {
+      "path": "apps/desktop/fixtures/synthetic/canvas-readiness/version.json",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 198,
+      "sha256": "a9b6a067865a94503557f23d25f4db66c0a42a18f43639774ddd30e6edc49d40"
+    },
+    {
+      "path": "apps/desktop/src/DreaminaCanvasReadiness.tsx",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 3482,
+      "sha256": "0c4930597440ac2cb52b62125d82094002d08f5bcbc037fe4dd74c22e9326e1d"
+    },
+    {
+      "path": "apps/desktop/src/Panels.tsx",
+      "operation": "modify",
+      "baseSha256": "828a7a6d4a5b859e032d7273dfb4f7fe02fec99b868c99089968d508cb80c43d",
+      "bytes": 27202,
+      "sha256": "fe7775bf39442d5fa702636a9912e44a189aa058c8c84b36daf532c02500aff4"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.test.ts",
+      "operation": "modify",
+      "baseSha256": "ad7000b7575b44de1c40e5557f08a35e89670d4cbe475bb6a8a45e26d9cf5d4b",
+      "bytes": 34059,
+      "sha256": "24905566fedad4e70650b33a17c7f700301418d6f7d237bca3e752da50412520"
+    },
+    {
+      "path": "apps/desktop/src/ProviderReadiness.tsx",
+      "operation": "modify",
+      "baseSha256": "3c7b2a75366c9b469c19a4d73847f7761a650638c01eb4980491d2249c87a316",
+      "bytes": 10670,
+      "sha256": "c7482725580d57257689ddb31e69b6a8493c255693eae13cf693149ca107eb3c"
+    },
+    {
+      "path": "apps/desktop/src/executionPolicy.test.ts",
+      "operation": "modify",
+      "baseSha256": "b0030c0eeb1cd1d571ad801cf5682fd0d278304631c037f89369f627d9cb784d",
+      "bytes": 15586,
+      "sha256": "1e34add5c847a381e6e430da74c335c588f6e2dfaaf3d8fc61642d49f976a90f"
+    },
+    {
+      "path": "apps/desktop/src/executionPolicy.ts",
+      "operation": "modify",
+      "baseSha256": "5fa65b26e9a46139d71090a1cb448112487eff2a985f6e4df4cb2bc763a19305",
+      "bytes": 10055,
+      "sha256": "3f6527732a12c4d57610403317e0b14ee8478c27662b2ad4452ef95c3c30d6b6"
+    },
+    {
+      "path": "apps/desktop/src/types.ts",
+      "operation": "modify",
+      "baseSha256": "ddc325105ac583a4e76d66926dcf9aac2a90e39054851e7a6edfc1bec5c38842",
+      "bytes": 8712,
+      "sha256": "9f21408b7029aacfad04608d30ee5461d781b6b9142d4148c69788d2f6b3ece3"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/lib.rs",
+      "operation": "modify",
+      "baseSha256": "cd49d783dd114139e6611af9904feaefc01dd88536633f8319daee6892a67f30",
+      "bytes": 513,
+      "sha256": "cdbe5f14437a26ad8b2d0e67211ec29748377fd39b3f7d20ef69c637db06cd28"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "operation": "modify",
+      "baseSha256": "dbb9b21ad75faf9a4be852dd986a978d01a85721f240476811f35854e069c675",
+      "bytes": 198947,
+      "sha256": "c9001f9b99cd17fcfd5b206db5c57b63a14849a5fe85d771988d018f0b62f012"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/mod.rs",
+      "operation": "modify",
+      "baseSha256": "3843973313a7ebd1a5f0ddbf66d51c00f989c1216d6f30debfff9ac78f8c725e",
+      "bytes": 18528,
+      "sha256": "6aafe9520182ed887deb24ef9364c370c2475c37082e9505feee64e906746666"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness.rs",
+      "operation": "modify",
+      "baseSha256": "c88279d35625238af3072f3eee1f430723710847ad07aa3828a2bd65636eb6b1",
+      "bytes": 8678,
+      "sha256": "0322beb920eac3d1fc4179bf9042d7480559cc86e15c633676bafb43fa899bc0"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 41385,
+      "sha256": "f284a0309d2409ef7bdc6993ef179b9d0d8e08ff3ba9a72a6e3d59353ef0bf22",
+      "reviewedComponentSha256": "2b7a3b1f1624da32528bc816bba75f9aea3baf8e7a8cabe4124d55676ff5e780",
+      "integrationChange": "Reviewed network-proof correction"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "operation": "modify",
+      "baseSha256": "4a10a69829812a05f71e332af9c0aa58e50b56ce54dae04731bf6dcd2fcb8a7c",
+      "bytes": 19805,
+      "sha256": "aca5e309ff2d4f229b0aa602d4de93615fe50cabc949a157c3a44c86fb424612"
+    },
+    {
+      "path": "docs/CANVAS_READINESS.md",
+      "operation": "add",
+      "baseSha256": null,
+      "bytes": 5395,
+      "sha256": "7333b72c84c4564e58e5c1faa2bf50031a043ef62edb1efcdfd11647069c027b",
+      "reviewedComponentSha256": "a8b861aa3def772ab89c989dd811c3a8927913b4a37fd2e23b572a7cf17a3ac3",
+      "integrationChange": "Integration documentation update"
+    }
+  ],
+  "tests": {
+    "fullReleaseRust": {
+      "passed": 811,
+      "failed": 0,
+      "ignored": 24,
+      "ignoredTestsRun": false,
+      "command": "cargo test --release --offline --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features -- --test-threads=1",
+      "log": "docs/verification/m6/integrated-r2-full-rust.log",
+      "runContext": "Final integrated r2 source, exit0; 811 passed/0 failed/24 ignored"
+    },
+    "focusedReadinessRust": {
+      "passed": 31,
+      "failed": 0
+    },
+    "selectedRustIntegrations": {
+      "passed": 28,
+      "failed": 0,
+      "targets": [
+        "core",
+        "next_isolation",
+        "dreamina_auth_recovery",
+        "m2_execution_boundaries"
+      ]
+    },
+    "frontend": {
+      "passed": 101,
+      "failed": 0
+    },
+    "typecheck": {
+      "passed": true
+    },
+    "productionUiBuild": {
+      "passed": true
+    },
+    "sourceLock": {
+      "passed": true,
+      "frozenCandidates": 22,
+      "candidateRuntimeActive": false
+    }
+  },
+  "independentReview": {
+    "status": "passed_after_fixes",
+    "fixes": [
+      "Legacy version failure now stops before user_credit and preserves verified version after later help failure",
+      "Dynamic schema integer fields and numeric bounds distinguished",
+      "Documentation accurately describes compact display-only UI"
+    ],
+    "finalIntegrationCorrection": "Network remains not_tested for catalog-only success when account check failed or unsupported; four partial-success assertions strengthened"
+  },
+  "protocol": {
+    "version": "1.0.2",
+    "commit": "09e50ac",
+    "edition": "public",
+    "distribution": "cn",
+    "envelopeSchemaVersion": "1",
+    "schemaCommandTreeKey": "subcommands",
+    "accountScope": {
+      "profile": "default",
+      "region": "cn"
+    },
+    "allowedCommands": [
+      "version",
+      "schema",
+      "auth status",
+      "auth account",
+      "model list --type image"
+    ],
+    "mutatingCommands": []
+  },
+  "realProviderAccountCalls": 0,
+  "realModelCalls": 0,
+  "sdkLiveCalls": 0,
+  "externalPublicationPerformed": false,
+  "nativeMacVerified": false,
+  "nativeWindowsVerified": false,
+  "canvasGenerationBridgeImplemented": false,
+  "canvasFreeEligibility": "unverified",
+  "quota": "unknown_no_adapted_readonly_api",
+  "supersededOrInterruptedChecks": [
+    {
+      "description": "Pre-final debug aggregate interrupted while running existing expensive 80-episode fixture; not counted as passing",
+      "supersededBy": "fullReleaseRust"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/verification/m6/readiness-rust-final.log",
+      "bytes": 4558,
+      "sha256": "75aa711ab91eb344c987a3749c103f4e0342285c06f7b684575b5f8e9a07fa4f"
+    },
+    {
+      "path": "docs/verification/m6/integration-rust-final.log",
+      "bytes": 5063,
+      "sha256": "95baf75c54dd2f53c0e1176f3e7d6d44e5b3b2cd59d61a9ec4fe62f59df6ee86"
+    },
+    {
+      "path": "docs/verification/m6/all-rust-release-final.log",
+      "bytes": 105811,
+      "sha256": "e505128ad98692dc0e3ab88218c7b54908f5e7e4f1e97f841124fcac51441c9a"
+    },
+    {
+      "path": "docs/verification/m6/frontend-tests.log",
+      "bytes": 10938,
+      "sha256": "60af92dc78bf0b2afcdf348cd45627d3f81e9525e38077b343b005fa7cd30c3e"
+    },
+    {
+      "path": "docs/verification/m6/typecheck.log",
+      "bytes": 373,
+      "sha256": "56c365d0e23fdf812d63b9beae19b81e2daa91494d1616a19a7fa3e9010b2e5b"
+    },
+    {
+      "path": "docs/verification/m6/build.log",
+      "bytes": 740,
+      "sha256": "456865a0e867de1e33894e05bba8fcfa794f67651c38775364d859fab4eaef2c"
+    },
+    {
+      "path": "docs/verification/m6/source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    },
+    {
+      "path": "docs/verification/m6/integrated-r2-full-rust.log",
+      "bytes": 101685,
+      "sha256": "751eede7f103dd235bbcea5ffd07eba646af4c5434ee5734280c96903e6f1a60"
+    }
+  ],
+  "canvasComponentBaseCommit": "423b1a9ff0154e258d8197c6be8e82a23206ed01",
+  "integrationEvidence": "docs/verification/M6-integration.json"
+}

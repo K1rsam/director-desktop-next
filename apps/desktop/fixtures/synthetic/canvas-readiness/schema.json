@@ -1,0 +1,209 @@
+{
+  "schemaVersion": "1",
+  "ok": true,
+  "data": {
+    "schemaVersion": "1",
+    "command": "dreamina-canvas",
+    "edition": "public",
+    "distribution": "cn",
+    "locale": "zh-CN",
+    "globalFlags": [
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "default": "auto",
+        "constraints": "json|table"
+      },
+      {
+        "name": "non-interactive",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "profile",
+        "type": "string",
+        "required": false,
+        "default": "default"
+      },
+      {
+        "name": "region",
+        "type": "string",
+        "required": false,
+        "default": "cn",
+        "constraints": "cn"
+      }
+    ],
+    "subcommands": [
+      {
+        "name": "model",
+        "subcommands": [
+          {
+            "name": "list",
+            "reads": true,
+            "writes": false,
+            "formats": [
+              "json",
+              "table"
+            ],
+            "confirmation": false,
+            "declaredExitCodes": [
+              0,
+              2,
+              1
+            ],
+            "flags": [
+              {
+                "name": "type",
+                "type": "string",
+                "required": true,
+                "constraints": "image|video|audio"
+              }
+            ],
+            "successData": {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "items",
+                  "type": "array<object>",
+                  "fields": [
+                    {
+                      "name": "type",
+                      "type": "string"
+                    },
+                    {
+                      "name": "model",
+                      "type": "string"
+                    },
+                    {
+                      "name": "modes",
+                      "type": "array<object>"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "auth",
+        "reads": true,
+        "writes": true,
+        "subcommands": [
+          {
+            "name": "account",
+            "reads": true,
+            "writes": false,
+            "formats": [
+              "json",
+              "table"
+            ],
+            "confirmation": false,
+            "declaredExitCodes": [
+              0,
+              2,
+              1
+            ],
+            "flags": [],
+            "successData": {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "userId",
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "reads": true,
+            "writes": false,
+            "formats": [
+              "json",
+              "table"
+            ],
+            "confirmation": false,
+            "declaredExitCodes": [
+              0,
+              2,
+              1
+            ],
+            "flags": [],
+            "successData": {
+              "type": "object",
+              "fields": [
+                {
+                  "name": "loggedIn",
+                  "type": "boolean"
+                },
+                {
+                  "name": "profile",
+                  "type": "string"
+                },
+                {
+                  "name": "region",
+                  "type": "string"
+                },
+                {
+                  "name": "version",
+                  "type": "string"
+                },
+                {
+                  "name": "edition",
+                  "type": "string"
+                },
+                {
+                  "name": "distribution",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "schema",
+        "reads": true,
+        "writes": false,
+        "formats": [
+          "json",
+          "table"
+        ],
+        "confirmation": false,
+        "declaredExitCodes": [
+          0,
+          2,
+          1
+        ],
+        "flags": [],
+        "successData": {
+          "type": "object",
+          "fields": []
+        }
+      },
+      {
+        "name": "version",
+        "reads": true,
+        "writes": false,
+        "formats": [
+          "json",
+          "table"
+        ],
+        "confirmation": false,
+        "declaredExitCodes": [
+          0,
+          2,
+          1
+        ],
+        "flags": [],
+        "successData": {
+          "type": "object",
+          "fields": []
+        }
+      }
+    ]
+  }
+}

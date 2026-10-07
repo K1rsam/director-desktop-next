@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M6 — Independent Canvas readiness, integrated with M5.1
+
+Adds an explicit Canvas executable picker and read-only version/schema/account/image-catalog check, while preserving legacy Dreamina routing and every M5.1 signing/attribute gate. Unsupported legacy versions stop before legacy account commands. Installation, protocol, account, catalog, quota and generation evidence remain separate; no account result unlocks generation or proves free eligibility.
+
+The final integrated revision's release Rust aggregate passed 811 tests with zero failures and 24 deliberately ignored, including the reviewed correction that catalog-only success does not establish network access. Its partial-success assertions preserve server-authenticated account proof while leaving network untested when that account check fails or is unsupported. Integration checks also cover 31 readiness tests, 101 frontend tests plus typecheck/build, 25 Mac packaging/process tests, 9 native collector tests, 17 startup-runner tests and source locks. The first integrated readiness invocation omitted Node from its test PATH and produced two prerequisite failures; the corrected invocation passed without source changes. See [combined evidence](verification/M6-integration.json). Actual native CLI compatibility and provider readiness remain pending.
+
 ## M5.1 — Structured attribute evidence
 
 Replaces the formatted recursive attribute-listing comparison with bounded descriptor-based raw-byte collection and deterministic path/name/hash records, including directories and the app root. Sanitized before/after and decision files survive collection or signing failures. Existing attributes remain strict; any attributes on the two exact new signature nodes require separate review. The missing historical M5 before-snapshot is not reconstructed, and its failure cause remains unknown. No Canvas/provider or shared runtime changes are included.

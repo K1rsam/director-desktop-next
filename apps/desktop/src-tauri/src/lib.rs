@@ -26,3 +26,4 @@ pub mod startup_diagnostics;
 
 pub mod readiness;
 pub mod readiness_sdk;
+pub mod readiness_canvas;

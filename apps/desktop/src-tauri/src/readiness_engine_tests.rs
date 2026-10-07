@@ -14,7 +14,7 @@ fn note(value:&str) {std::fs::OpenOptions::new().create(true).append(true).open(
 fn main() {
  let a:Vec<String>=std::env::args().skip(1).collect();
  if __KIND__.starts_with("dreamina") {
-  if a==["version"] {note("version");if __KIND__=="dreamina-log-denied" {eprintln!("initialize logs failed: initialize file logger: open /PRIVATE_SENTINEL/.dreamina_cli/logs: operation not permitted");}println!("1.4.19");return;}
+  if a==["version"] {note("version");if __KIND__=="dreamina-version-failure" {std::process::exit(2);}if __KIND__=="dreamina-log-denied" {eprintln!("initialize logs failed: initialize file logger: open /PRIVATE_SENTINEL/.dreamina_cli/logs: operation not permitted");}println!("1.4.19");return;}
   if a.len()==2 && a[1]=="-h" && ["multimodal2video","text2video","text2image","image2image"].contains(&a[0].as_str()) {note(&format!("{} -h",a[0]));println!("official synthetic help only --model_version 5.0Pro --ratio 16:9 --resolution_type 2k");return;}
   if a==["user_credit"] {note("user_credit");println!("{{\"data\":{{\"user_id\":\"PRIVATE_SENTINEL\",\"total_credit\":42,\"gift_credit\":7}}}}");return;}
  } else {
@@ -259,4 +259,80 @@ fn dreamina_log_write_denial_stops_further_probes_and_does_not_claim_auth_failur
  assert_eq!(r["details"]["localEnvironmentIssue"],"CLI_LOCAL_LOG_WRITE_RESTRICTED");assert_eq!(r["authentication"]["state"],"not_checked");assert_eq!(r["protocol"]["state"],"failed");assert!(!r.to_string().contains("PRIVATE_SENTINEL"));
  assert_eq!(fs::read_to_string(dir.path().join("dreamina-log-denied-calls.txt")).unwrap(),"version\n");
  assert!(engine.store(s(&p,"id")).unwrap().jobs().unwrap().is_empty());
+}
+
+fn canvas_native_fixture(dir: &Path, kind: &str) -> PathBuf {
+    use crate::readiness_canvas::ReadCommand;
+    let path=dir.join(if cfg!(windows) {format!("{kind}.exe")} else {kind.into()});
+    let mut arms=String::new();
+    for (command, response) in [
+        (ReadCommand::Version,include_str!("../../fixtures/synthetic/canvas-readiness/version.json")),
+        (ReadCommand::Schema,include_str!("../../fixtures/synthetic/canvas-readiness/schema.json")),
+        (ReadCommand::AuthStatus,include_str!("../../fixtures/synthetic/canvas-readiness/auth-status.json")),
+        (ReadCommand::AuthAccount,include_str!("../../fixtures/synthetic/canvas-readiness/account.json")),
+        (ReadCommand::ImageModels,include_str!("../../fixtures/synthetic/canvas-readiness/models.json")),
+    ] {
+        let response=if kind=="canvas-output-flood" && command==ReadCommand::Version {"x".repeat(70_000)} else {response.into()};
+        arms.push_str(&format!("{} => println!(\"{{}}\", {}),\n",json!(command.args().join(" ")),json!(response)));
+    }
+    // The old readiness path invokes `version` without globals; emit public Canvas JSON
+    // so the discriminator can stop before any legacy helper or account command.
+    arms.push_str(&format!("\"version\" => println!(\"{{}}\", {}),\n",json!(include_str!("../../fixtures/synthetic/canvas-readiness/version.json"))));
+    let code=format!(r#"use std::io::Write;
+fn main() {{ let args=std::env::args().skip(1).collect::<Vec<_>>().join(" ");
+let mut log=std::fs::OpenOptions::new().create(true).append(true).open({}).unwrap(); writeln!(log,"{{}}",args).unwrap();
+match args.as_str() {{ {} _ => {{ writeln!(log,"FORBIDDEN").unwrap(); std::process::exit(91); }} }} }}"#,json!(dir.join(format!("{kind}-calls.txt"))),arms);
+    let source=dir.join(format!("{kind}.rs"));fs::write(&source,code).unwrap();
+    let compiler=std::env::var_os("RUSTC").map(PathBuf::from).or_else(||std::env::var_os("CARGO_HOME").map(PathBuf::from).map(|home|home.join("bin").join(if cfg!(windows){"rustc.exe"}else{"rustc"}))).unwrap_or_else(||PathBuf::from("rustc"));
+    let output=Command::new(compiler).args(["--edition=2021","--crate-name","canvas_readiness_fixture"]).arg(&source).arg("-o").arg(&path).output().unwrap();
+    assert!(output.status.success(),"{}",String::from_utf8_lossy(&output.stderr));path
+}
+
+#[test]
+fn canvas_readiness_native_allowlist_preserves_legacy_jobs_settings_and_generation_gates() {
+    let dir=tempfile::tempdir().unwrap();let path=canvas_native_fixture(dir.path(),"canvas-success");let engine=enabled_engine(dir.path().join("home"));
+    let project=engine.dispatch(json!({"action":"projects.create","title":"Synthetic Canvas readiness"})).unwrap();let store=engine.store(s(&project,"id")).unwrap();
+    store.save_settings(&json!({"dreaminaPath":"/legacy/unchanged","imageProvider":"dreamina","imageModel":"5.0"})).unwrap();
+    let job=store.add_job("image","synthetic","dreamina","original-account",&json!({"prompt":"synthetic"}),"auth_required").unwrap();
+    let settings=store.settings().unwrap();let before=store.job(&job).unwrap();
+    let report=engine.dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"dreamina_canvas","settings":{"dreaminaCanvasPath":path}})).unwrap();
+    assert_eq!(report["installation"]["version"],"1.0.2");assert_eq!(report["protocol"]["state"],"ready");assert_eq!(report["authentication"]["identityVerified"],true);assert_eq!(report["catalog"]["models"].as_array().unwrap().len(),3);
+    assert_eq!(report["generation"]["calls"],0);assert_eq!(report["details"]["quota"]["remaining"],Value::Null);assert!(!report.to_string().contains("PRIVATE_"));assert!(!report.to_string().contains("123456789"));
+    assert_eq!(store.settings().unwrap(),settings);assert_eq!(store.job(&job).unwrap(),before);
+    let log=fs::read_to_string(dir.path().join("canvas-success-calls.txt")).unwrap();assert_eq!(log.lines().count(),5);assert!(!log.contains("FORBIDDEN"));
+    for forbidden in ["login","logout","user_credit","--yes","node","create","quote","run"] {assert!(!log.split_whitespace().any(|arg|arg==forbidden));}
+    assert!(engine.dispatch(json!({"action":"images.run","projectId":project["id"]})).unwrap_err().contains("OFFLINE_EXECUTION_BLOCKED"));
+    assert_eq!(fs::read_to_string(dir.path().join("canvas-success-calls.txt")).unwrap(),log);
+    for field in ["dreaminaPath","login","command","profile","region","authToken","sdkOfflineFixture"] {
+        assert!(crate::readiness::request_settings(&json!({"provider":"dreamina_canvas","settings":{field:"forbidden"}}),&json!({})).is_err());
+    }
+}
+
+#[test]
+fn canvas_selected_in_legacy_readiness_stops_before_any_legacy_account_or_help() {
+    let dir=tempfile::tempdir().unwrap();let path=canvas_native_fixture(dir.path(),"canvas-as-legacy");let engine=enabled_engine(dir.path().join("home"));
+    let p=engine.dispatch(json!({"action":"projects.create","title":"Synthetic wrong protocol"})).unwrap();
+    let report=engine.dispatch(json!({"action":"readiness.check","projectId":p["id"],"provider":"dreamina","settings":{"dreaminaPath":path}})).unwrap();
+    assert_eq!(report["protocol"]["state"],"unsupported");assert_eq!(report["authentication"]["state"],"not_checked");
+    assert_eq!(fs::read_to_string(dir.path().join("canvas-as-legacy-calls.txt")).unwrap(),"version\n");
+}
+
+#[test]
+fn canvas_oversize_version_stops_before_schema_or_account_and_missing_path_never_falls_back() {
+    let dir=tempfile::tempdir().unwrap();let path=canvas_native_fixture(dir.path(),"canvas-output-flood");let engine=enabled_engine(dir.path().join("home"));
+    let p=engine.dispatch(json!({"action":"projects.create","title":"Synthetic bounded Canvas"})).unwrap();
+    let report=engine.dispatch(json!({"action":"readiness.check","projectId":p["id"],"provider":"dreamina_canvas","settings":{"dreaminaCanvasPath":path}})).unwrap();
+    assert_eq!(report["protocol"]["state"],"failed");assert!(report.to_string().contains("CANVAS_OUTPUT_LIMIT"));assert!(report.to_string().len()<8192);
+    assert_eq!(fs::read_to_string(dir.path().join("canvas-output-flood-calls.txt")).unwrap(),"--format json version\n");
+    let missing=crate::readiness_canvas::check(&json!({"dreaminaPath":path}));assert_eq!(missing["installation"]["state"],"missing");
+    assert_eq!(fs::read_to_string(dir.path().join("canvas-output-flood-calls.txt")).unwrap(),"--format json version\n");
+}
+
+#[test]
+fn failed_legacy_version_never_reaches_user_credit() {
+    let dir=tempfile::tempdir().unwrap();let path=native_fixture(dir.path(),"dreamina-version-failure");
+    let engine=enabled_engine(dir.path().join("home"));let project=engine.dispatch(json!({"action":"projects.create","title":"Synthetic legacy version failure"})).unwrap();
+    let report=engine.dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"dreamina","settings":{"dreaminaPath":path}})).unwrap();
+    assert_eq!(report["protocol"]["state"],"failed");assert_eq!(report["authentication"]["state"],"not_checked");
+    assert_eq!(fs::read_to_string(dir.path().join("dreamina-version-failure-calls.txt")).unwrap(),"version\n");
 }

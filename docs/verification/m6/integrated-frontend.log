@@ -1,0 +1,133 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> director-desktop-next@0.1.0 test:frontend
+> node --experimental-strip-types --test src/*.test.ts
+
+▶ actual readiness controls and effects use only the explicit read-only IPC
+  ✔ default and startup-probe capabilities stay disabled and run no automatic checks (12.814639ms)
+  ✔ generation-off capability enables actual CLI and SDK click handlers using unsaved paths (13.554684ms)
+  ✔ Jimeng account and provider buttons use readiness with the current unsaved path (15.474232ms)
+  ✔ Canvas uses only its unsaved input and never mutates legacy settings, history, providers or selectors (24.734175ms)
+  ✔ Canvas native picker handles repeated clicks, cancel, errors and successful selection without automatic checks (21.78937ms)
+  ✔ Canvas stale native picker cannot overwrite edits or a newer project, tab or unmounted screen (42.530281ms)
+  ✔ Canvas pending checks ignore old path, project, tab, and read-only mode responses and permit a newer check (40.715186ms)
+  ✔ Canvas unsupported protocol and partial catalogs remain truthful, and mismatches permit explicit retry (4.05051ms)
+  ✔ Canvas catalog shows canonical IDs and optional model modes without inferring missing capabilities (3.490171ms)
+  ✔ Canvas path is saved only on explicit save, preserving legacy and generation settings (4.592871ms)
+  ✔ path, provider and project changes discard pending responses and clear busy (3.612772ms)
+  ✔ failed and mismatched checks clear busy and allow an explicit retry (1.576501ms)
+  ✔ invalid readiness and model-generation claims are rejected; other live actions remain closed (0.550363ms)
+✔ actual readiness controls and effects use only the explicit read-only IPC (714.515312ms)
+✔ 编辑名称分类范围保留固定绑定身份、当前图、历史图和结构化原文引用 (2.175066ms)
+✔ 修改来源绑定对应形象身份，清除来源时同步清除版本；失效旧来源不静默换绑 (0.248208ms)
+✔ 删除操作必须绑定当前资产身份和版本；检查回来后版本漂移不能继续删 (0.198614ms)
+✔ 删除列表只显示真实删除标记；选择集场去重而不修改原数组 (0.256529ms)
+✔ 编辑原 UNRESOLVED 形象可明确 GLOBAL，程序提供理由，无原文测试资产也可确认 (0.228408ms)
+✔ 只选集数展开所属全部场景，变更 SCENES 不沿用旧范围 (0.24353ms)
+✔ 场景必须属于所选集，未知场景和未识别场景集不能标记已核对 (4.739147ms)
+✔ 只有 SCENES 存储范围的导入资产仍显示原集场，打开编辑不误变全剧通用 (0.232254ms)
+✔ Rust任务摘要投影保留云端结果、身份与费用 (2.44791ms)
+✔ 准备包精确匹配渠道模型、版本、比例尺寸、时长与编译提示词，并保留零费用 (0.774555ms)
+✔ 核心原提示词证明支持人名模板、INLINE文字与祖先共图，同时不放开冻结参数 (0.902664ms)
+✔ 原提示词证明逐字绑定冻结文本与任务身份，缺失或伪证明不能回退放行 (0.613297ms)
+✔ 所有集数就绪数接受11个核心编译证明而保留8个真实阻塞，不使用额外UI编译猜测 (1.184902ms)
+✔ 冻结配图不依赖UI一基序号，视频保留旧采用与新候选 (0.389416ms)
+✔ 共用图片、设计阻塞与计划可读取，未知参考时长必须阻止提交 (0.465218ms)
+✔ 引用重排改变提交顺序并保留完整身份字段 (0.267035ms)
+✔ 图片计划使用最新相关任务而不会被旧设计结果遮蔽 (0.355275ms)
+✔ 分镜与制作基础文字任务不阻塞图片设计，相关图片流程保留执行所有权 (0.741186ms)
+✔ 图片一键制作保留同一资产未决提交阻塞，其他资产及已终态任务互不遮蔽 (0.35832ms)
+✔ 图片只采用已适配单图报价，未知计价与缺图依赖不会伪造总费用 (0.907542ms)
+✔ 视频采用要求可信运动视频容器与当前生成版本，历史成品仍可预览 (0.359011ms)
+✔ 模型、比例与尺寸只来自对应类型能力，非法旧值不会自动替换或提交 (0.565376ms)
+✔ 迟到的真实目录只初始化即梦5.0空模型，保留有效比例尺寸，不猜未知或其他渠道模型 (0.75043ms)
+✔ 已保存图片模型优先，非法旧模型和用户当前参数不会被默认值悄悄替换 (0.242449ms)
+✔ 缺目录发现合并图片视频渠道，字符串与错误类型目录不能冒充核实能力 (0.572256ms)
+✔ 目录自动读取失败只执行一次，项目与稳定配置变更可独立检查，预览不访问渠道 (0.880913ms)
+✔ 目录读取在新操作期间等待，恢复只补读项目，不重复检查渠道或覆盖新操作 (0.403767ms)
+✔ 打开其他项目时丢弃旧目录读结果并继续新项目，空结果不自动循环重试 (0.431839ms)
+✔ 分镜文字创作从当前锁定原文选择制作集，零单元和未配置视频模型也可启动 (0.414212ms)
+✔ 视频尺寸随核实的型号改变，VIP多尺寸与普通固定尺寸不会串用 (0.200406ms)
+✔ 图片当前与历史使用精确形象关联，历史从新到旧且排除当前图 (0.830618ms)
+✔ 共用原图只通过当前形象明确关联显示，全局采用标记不推断当前图 (0.230992ms)
+✔ 全选意图从零单元及旧10单元跟随发布后的当前19单元，不提交retired (0.326323ms)
+✔ 切换制作集时计数、就绪候选和请求ID来自同一范围，隐藏集ID不混入 (0.19602ms)
+✔ 手动取消后保留精确筛选，不自动选新稿；再次全选恢复跟随 (0.280435ms)
+✔ offline build preserves explicit local reads and editing actions (4.330114ms)
+✔ model, image, video and resume routes are generation actions (0.468853ms)
+✔ prepare is not mislabeled local while it depends on channel and account checks (0.435184ms)
+✔ CLI probes, login, status and logout remain inactive (0.27767ms)
+✔ credential payloads are denied without blocking ordinary local settings (0.824849ms)
+✔ unknown operations and near-match names fail closed (0.294806ms)
+✔ blocked operations make zero IPC calls, including repeated attempts (2.963792ms)
+✔ guard does not alter local data, identities, raw dialogue or history (3.650168ms)
+✔ autoSubmit setting cannot turn preparation or resumed tasks into live dispatch (0.870968ms)
+✔ policy response must independently prove offline mode and inactive creative pack (1.323787ms)
+✔ automatic catalog discovery does not read providers in offline mode (0.483215ms)
+✔ operator native scope only opens approved CLI actions and never SDK or media (0.680737ms)
+✔ validated readiness capability opens only explicit provider checks with generation off (0.925308ms)
+✔ full native backend policy accepts readiness action without enlarging account or generation gates (0.700676ms)
+✔ Canvas readiness requires its explicit backend capability and never opens a generation or login route (0.56822ms)
+WebSocket server error: Port 24678 is already in use
+✔ rendered four-stage controls and real frontend API enforce the offline boundary (742.841494ms)
+✔ browser preview stays read-only at the real API boundary (49.759094ms)
+✔ only explicitly manual-ready videos are idle; unknown or submitted identities stay conservative (1.067038ms)
+✔ preparation, paused recovery and unknown submission retain asset generation ownership (0.174708ms)
+✔ asset status prioritizes unresolved ownership and isolates other assets (0.345811ms)
+WebSocket server error: Port 24678 is already in use
+✔ zero-unit scope excludes any existing units, updates with source and retains navigation (386.961284ms)
+WebSocket server error: Port 24678 is already in use
+✔ duplicate confirmation binds exact current version hash parser row and diagnostic (154.023023ms)
+✔ Changing one identity updates the exact placeholder, not matching names or unrelated markers (1.019948ms)
+✔ A duplicated identity retained by another reference is not globally replaced (0.19606ms)
+✔ Deleted identity can be replaced precisely and current pictures resolve automatically (1.288795ms)
+✔ Removing a reference requires fixing its remaining placeholder and out-of-range channel marker (0.155209ms)
+✔ Wrong appearance, wrong scope and historical media cannot silently prepare (0.316428ms)
+✔ 后台活跃工作流继续只读刷新，旧Plan切换为真实已完成批次与当前B02 (4.690375ms)
+✔ 没有活跃任务才暂停后台轮询，回到前台强制立即读取 (0.35828ms)
+✔ CLI诊断只使用固定分类，旧心跳和不可信分类不作为当前网络状态 (0.369637ms)
+✔ 文本恢复仅凭核心的完整绑定证明移出当前失败，不能掩盖未采用或跨岗结果 (0.509584ms)
+✔ 后台活跃媒体任务也更新，未知提交不能被当成待执行任务 (0.312712ms)
+✔ 读取失败明确保留上次状态，成功后清除过期警告而不改任务 (0.65597ms)
+✔ 同一只读请求未返回时不会再启动另一轮 (0.377769ms)
+✔ 后台取得最后一批准备结果后停止空闲读取，37条等待提交不再算活跃 (0.819231ms)
+✔ 恢复前台合并一次后续读取，旧22/37响应不能覆盖最新37/37且始终单读 (13.390371ms)
+✔ 排队的前台读取随写revision、项目切换或卸载失效，不串读新scope (0.951607ms)
+✔ 不同revision的前台事件不能借旧请求排队，保留更新操作的结果 (0.368325ms)
+✔ 旧读取失败后合并的前台读取仍执行，成功清除失败提示 (0.343738ms)
+✔ 前台事件不能让未返回读请求堆积，超时只提示一次并等原请求结束 (20.591179ms)
+✔ 未返回的本地读取有超时提示，仍只持有原读请求并在完成后恢复 (20.284415ms)
+✔ 写操作或项目切换期间旧轮询返回不能覆盖新结果 (0.589171ms)
+✔ 忙于前端操作或卸载后不启动进度请求 (0.150433ms)
+✔ 投影顺序混杂仍按最新workflow身份绑定，不串用旧心跳 (0.327174ms)
+✔ 新流程尚无投影时不借用旧流程完成数或执行状态 (0.150803ms)
+✔ 只有已正式采用的步骤计入完成批次，未收到未来批次不猜总量 (0.141058ms)
+✔ Plan从精确集身份回读名称，整编哈希不伪造成主创批次号 (0.194748ms)
+✔ 过期心跳不外推用时或伪称当前进程存活，完成步骤不显示旧CLI (0.159295ms)
+✔ 已采用范围修订只消除绑定原节点的当前警告，保留原rejected及错误记录 (0.395435ms)
+✔ 修订证明逐项绑定workflow及原节点/修订节点哈希，缺字段或非accepted仍需要处理 (0.348846ms)
+✔ 同标题、相似修订键和流程completed不能替代修订证明，也不能借其他workflow的采用节点 (0.295357ms)
+✔ 只有正式末态变化证明才将旧分支移出当前计数，后续未采用不掩盖当前失败 (0.285842ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 101
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1252.014966
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> director-desktop-next@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 51 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.60 kB │ gzip:   0.42 kB
+dist/assets/index-CVoce61s.css   60.37 kB │ gzip:  12.37 kB
+dist/assets/index-BgqP85dD.js   445.38 kB │ gzip: 135.53 kB │ map: 1,644.26 kB
+
+✓ built in 203ms

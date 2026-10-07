@@ -5,7 +5,7 @@ import type { ReadinessProvider } from './executionPolicy';
 import { Button, formatDate, messageOf } from './components';
 import type { ProviderReadinessReport } from './types';
 
-const pathKeys = { codex_cli: 'codexPath', dreamina: 'dreaminaPath', codex_sdk: 'textSdkNodePath' } as const;
+const pathKeys = { codex_cli: 'codexPath', dreamina: 'dreaminaPath', dreamina_canvas: 'dreaminaCanvasPath', codex_sdk: 'textSdkNodePath' } as const;
 
 /** Reject mismatched or contradictory results instead of displaying an execution claim. */
 export function validateProviderReadiness(value: unknown, provider: ReadinessProvider): ProviderReadinessReport {
@@ -15,7 +15,7 @@ export function validateProviderReadiness(value: unknown, provider: ReadinessPro
       || typeof report.checkedAt !== 'string'
       || !['ready', 'missing', 'invalid', 'not_checked'].includes(report.installation?.state)
       || !nullableText(report.installation.version) || !nullableText(report.installation.executable)
-      || !['ready', 'failed', 'not_checked'].includes(report.protocol?.state) || !nullableText(report.protocol.name)
+      || !['ready', 'failed', 'unsupported', 'not_checked'].includes(report.protocol?.state) || !nullableText(report.protocol.name)
       || !['authenticated', 'not_logged_in', 'unknown', 'not_checked'].includes(report.authentication?.state)
       || typeof report.authentication.identityVerified !== 'boolean'
       || !['available', 'unavailable', 'not_checked'].includes(report.catalog?.state)
@@ -64,20 +64,34 @@ export function ReadinessButton({ check, writable, children }: { check: Readines
   return <Button executionAction="readiness.check" data-readiness-provider={check.provider} icon="refresh" disabled={!writable || check.busy || !!check.blocked} title={check.blocked || undefined} onClick={() => void check.check()}>{check.busy ? '正在只读检查…' : children}</Button>;
 }
 
+function CanvasModelSpecifications({ value }: { value: unknown }) {
+  if (!Array.isArray(value)) return null;
+  const records = value.filter(item => item && typeof item === 'object' && typeof item.model === 'string').slice(0, 100);
+  if (!records.length) return null;
+  return <details className="details"><summary>查看 Canvas 只读模型模式</summary><ul className="model-list">{records.map((item, index) => {
+    const modes = Array.isArray(item.modes) ? item.modes.filter((mode: unknown): mode is { name: string } => !!mode && typeof mode === 'object' && 'name' in mode && typeof mode.name === 'string').slice(0, 100).map((mode: { name: string }) => mode.name) : null;
+    return <li key={`${item.model}:${index}`}>{item.model}<small>{modes === null ? '模式未提供' : modes.length ? `模式：${modes.join(' / ')}` : '无模式记录'}</small></li>;
+  })}</ul><p className="control-hint">仅展示 CLI 返回的目录与模式；缺少的能力仍未知，不推断模型映射、账户资格、免费额度或生成已适配。</p></details>;
+}
+
 export function ProviderReadinessResult({ check }: { check: ReadinessCheck }) {
   const result = check.result;
   if (check.error) return <p className="warning" role="alert">{check.error}</p>;
   if (!result) return <p className="control-hint">{check.busy ? '正在读取程序与连接状态，不发起生成。' : check.blocked || '点击检查后读取当前程序路径；打开页面和切换渠道不会访问账户。'}</p>;
   const installed = { ready: '已找到', missing: '未找到', invalid: '路径或程序无效', not_checked: '未检查' };
-  const protocol = { ready: '握手通过', failed: '握手失败', not_checked: '未检查' };
+  const protocol = { ready: '握手通过', failed: '握手失败', unsupported: '协议不受支持', not_checked: '未检查' };
   const authentication = { authenticated: '已登录', not_logged_in: '未登录', unknown: '状态未知', not_checked: '未检查' };
   const catalog = { available: '已读取', unavailable: '读取未完成', not_checked: '未检查' };
   const network = { verified_read_only: '只读接口已验证', not_tested: '未测试', failed: '只读接口检查失败' };
+  const canvasAccount = result.details.accountQuery;
+  const canvasAccountState = canvasAccount && typeof canvasAccount === 'object' && 'state' in canvasAccount ? canvasAccount.state : undefined;
+  const canvasAccountLabel = canvasAccountState === 'available' ? '已读取' : canvasAccountState === 'unavailable' ? '读取未完成' : canvasAccountState === 'unsupported' ? '当前协议未提供只读账户查询' : canvasAccountState === 'not_checked' ? '未检查' : '状态未知';
   return <div className="provider-readiness-result" role="status" data-readiness-result={result.provider}>
     <p className="control-hint">最近只读检查：{formatDate(result.checkedAt)}</p>
     <dl><div><dt>程序安装</dt><dd>{installed[result.installation.state]}{result.installation.version ? ` · ${result.installation.version}` : ''}</dd></div>
       <div><dt>协议 / 环境</dt><dd>{protocol[result.protocol.state]}{result.protocol.name ? ` · ${result.protocol.name}` : ''}</dd></div>
       <div><dt>账户</dt><dd>{authentication[result.authentication.state]} · {result.authentication.identityVerified ? '身份已核验' : '身份未核验'}</dd></div>
+      {result.provider === 'dreamina_canvas' && <div><dt>Canvas account 查询</dt><dd>{canvasAccountLabel}</dd></div>}
       <div><dt>模型目录</dt><dd>{catalog[result.catalog.state]}{result.catalog.state === 'available' ? ` · ${result.catalog.models.length} 个模型` : ''}</dd></div>
       <div><dt>网络</dt><dd>{network[result.network.state]}</dd></div>
       <div><dt>真实模型生成</dt><dd>未测试 · 本次检查生成调用 0 次</dd></div></dl>
@@ -85,7 +99,9 @@ export function ProviderReadinessResult({ check }: { check: ReadinessCheck }) {
     {result.messages.map((message, index) => <p className="control-hint" key={index}>{message}</p>)}
     {result.provider === 'codex_sdk' && <p className="control-hint">SDK 包导入和 worker 握手仅证明环境与协议；真实模型未测试，SDK 真实生成保持关闭。</p>}
     {result.provider === 'dreamina' && <p className="control-hint">图片免费资格尚未核验；积分余额和模型目录不能证明本次生成免费。</p>}
+    {result.provider === 'dreamina_canvas' && <p className="control-hint">Canvas CLI 仅核验版本、schema、auth status、account 与 image models。积分 / 额度未知：当前适配的只读协议没有额度接口；免费资格未核验。尚未接入生成桥，模型目录不会写入图片或视频生成选项。</p>}
     {result.provider === 'codex_cli' && <p className="control-hint">账户与模型目录读取不代表真实模型生成已通过。</p>}
-    {result.catalog.models.length > 0 && <details className="details"><summary>查看本次模型目录</summary><ul className="model-list">{result.catalog.models.map(model => <li key={model.id}>{model.name || model.id}{model.kind ? ` · ${model.kind}` : ''}</li>)}</ul></details>}
+    {result.catalog.models.length > 0 && <details className="details"><summary>查看本次模型目录</summary><ul className="model-list">{result.catalog.models.map(model => <li key={model.id}>{model.name || model.id}{result.provider === 'dreamina_canvas' && model.name && model.name !== model.id ? ` · ${model.id}` : ''}{model.kind ? ` · ${model.kind}` : ''}</li>)}</ul></details>}
+    {result.provider === 'dreamina_canvas' && <CanvasModelSpecifications value={result.details.modelSpecifications}/>}
   </div>;
 }

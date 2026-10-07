@@ -1,0 +1,148 @@
+{
+  "schema": "director-next-m6-integration-verification/v1",
+  "checkpoint": "M6 integrated",
+  "date": "2026-10-07",
+  "baseCommit": "1b31de0d4715873d0eda7739b1666268c3f649f5",
+  "canvasComponentBaseCommit": "423b1a9ff0154e258d8197c6be8e82a23206ed01",
+  "scope": "19 reviewed Canvas paths applied to frozen M5.1, with integration documentation and combined checks",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "reviewedSourceDeltaManifestSha256": "02be9195798773c62a275f9edde99a576ae8f26123b6b1debe426b842da76f32",
+  "componentDeliveryManifestSha256": "b21100e65a2224ad7c9def200b2264d4ae007a7e4f86194774f5a1f8b26601ee",
+  "sourceDelta": {
+    "files": 19,
+    "modified": 11,
+    "added": 8,
+    "baseHashesMatched": true,
+    "extraCodeChanges": true,
+    "documentationOnlyAdjustments": [
+      "README.md",
+      "docs/IMPLEMENTATION_PROGRESS.md",
+      "docs/CANVAS_READINESS.md"
+    ],
+    "reviewedPostIntegrationCorrection": {
+      "path": "apps/desktop/src-tauri/src/readiness_canvas.rs",
+      "sha256": "f284a0309d2409ef7bdc6993ef179b9d0d8e08ff3ba9a72a6e3d59353ef0bf22",
+      "reason": "Catalog success alone does not establish network access; only successful server-authenticated auth account does"
+    }
+  },
+  "fullReleaseRust": {
+    "passed": 811,
+    "failed": 0,
+    "ignored": 24,
+    "runOn": "final integrated r2 tree",
+    "log": "docs/verification/m6/integrated-r2-full-rust.log",
+    "inputFiles": 153,
+    "inputSetSha256": "78dc924629f1e12c41a7e300dd13eea722326a17c7e379797210d8fb75dee8b0",
+    "exitCode": 0
+  },
+  "integratedChecks": {
+    "readinessRust": {
+      "passed": 31,
+      "failed": 0,
+      "finalRevisionVerification": "All 31 readiness cases are also in the final release aggregate; earlier focused log retained"
+    },
+    "frontend": {
+      "passed": 101,
+      "failed": 0,
+      "typecheck": true,
+      "productionBuild": true
+    },
+    "packagingAndProcess": {
+      "passed": 25,
+      "failed": 0
+    },
+    "nativeCollector": {
+      "passed": 9,
+      "failed": 0,
+      "platform": "Linux"
+    },
+    "startupRunner": {
+      "passed": 17,
+      "failed": 0
+    },
+    "sourceLock": {
+      "passed": true,
+      "frozenCandidates": 22,
+      "pinnedSourceFiles": 144,
+      "candidateRuntimeActive": false
+    }
+  },
+  "initialReadinessAttempt": {
+    "passed": 29,
+    "failed": 2,
+    "cause": "Integrator test PATH omitted installed Node directory; SDK prerequisite tests failed before SDK execution",
+    "resolution": "Corrected test PATH and explicit DIRECTOR_TEST_NODE, no code changes; final 31-pass rerun retained",
+    "log": "docs/verification/m6/integrated-readiness-rust-initial.log"
+  },
+  "m5_1PackagingAndPolicyFilesVerifiedExact": 14,
+  "nativeMacVerified": false,
+  "nativeWindowsVerified": false,
+  "attributeGateRelaxed": false,
+  "canvasGenerationImplemented": false,
+  "canvasFreeEligibility": "unverified",
+  "realProviderCalls": 0,
+  "modelCalls": 0,
+  "sdkLiveCalls": 0,
+  "reviewStatus": "Final network-proof correction reviewed; exact r2 manifest binding required",
+  "evidence": [
+    {
+      "path": "docs/verification/m6/integrated-packaging-tests.log",
+      "bytes": 2438,
+      "sha256": "9b44abd90d65f5a14017e7870ea6566d50938deb7b042f9c2f55924e90e32dc2"
+    },
+    {
+      "path": "docs/verification/m6/integrated-xattr-tests.log",
+      "bytes": 1610,
+      "sha256": "516470638933ade5a0744e2dea9aa4f7328fae53d6bcb7d9ca176b7ffca5383d"
+    },
+    {
+      "path": "docs/verification/m6/integrated-startup-tests.log",
+      "bytes": 3121,
+      "sha256": "0fce9f21f9c384ba57cc9760f039c61cddc754ca9a9b5a2e4aee27b1d7c64354"
+    },
+    {
+      "path": "docs/verification/m6/integrated-source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    },
+    {
+      "path": "docs/verification/m6/integrated-frontend.log",
+      "bytes": 11514,
+      "sha256": "c9188f60a60b49a0f28694cb25892c53d7099189d0afcbe0fafe223145b1de88"
+    },
+    {
+      "path": "docs/verification/m6/integrated-readiness-rust.log",
+      "bytes": 12031,
+      "sha256": "94ff334dab58e98bfa9e28b5dfaa73e1619c79c7a952f4c40b101f351b55b07b"
+    },
+    {
+      "path": "docs/verification/m6/integrated-readiness-rust-initial.log",
+      "bytes": 7356,
+      "sha256": "322406720f8233ca6e84cae9097f5ba8abb4a66e9e479a2b1b83bba696044409"
+    },
+    {
+      "path": "docs/verification/m6/integration-proof.json",
+      "bytes": 59254,
+      "sha256": "1629042be5be54adb7b10194d07f88ac76f83012e2d11770804a2d10ba98088f"
+    },
+    {
+      "path": "docs/verification/M6.json",
+      "bytes": 10047,
+      "sha256": "f51540809af7f9775cf1b1af34793586e709e4d2091d789586e28b818bf8a8e7"
+    },
+    {
+      "path": "docs/verification/m6/all-rust-release-final.log",
+      "bytes": 105811,
+      "sha256": "e505128ad98692dc0e3ab88218c7b54908f5e7e4f1e97f841124fcac51441c9a"
+    },
+    {
+      "path": "docs/verification/m6/integrated-r2-full-rust.log",
+      "bytes": 101685,
+      "sha256": "751eede7f103dd235bbcea5ffd07eba646af4c5434ee5734280c96903e6f1a60"
+    }
+  ],
+  "revision": "r2"
+}
