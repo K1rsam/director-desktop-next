@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { inspectMacosBundle, boundedNativeCommand, verifyMacosBundle } from './verify_macos_bundle.mjs';
+import { compileAttributeCollector, captureAttributeSnapshot, compareAttributeSnapshots, writeProof } from './macos_xattr_proof.mjs';
 
 export const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -73,23 +74,39 @@ export async function runDevelopmentBuild(plan) {
   });
 }
 
-export async function signDevelopmentBundle(app, { platform = process.platform, command = boundedNativeCommand } = {}) {
+export async function signDevelopmentBundle(app, { platform = process.platform, command = boundedNativeCommand, collector, proofDirectory } = {}) {
   // Tauri's own signing branch clears xattrs. --no-sign above bypasses it;
-  // direct codesign here leaves existing quarantine and all other xattrs alone.
+  // direct codesign avoids that clearing step. Structured evidence determines
+  // whether existing attributes actually remained unchanged.
   const inspection = await inspectMacosBundle(app, { platform, command });
-  const before = command('/usr/bin/xattr', ['-lr', app]);
-  if (before.status !== 0) throw new Error('MAC_DEV_XATTR_INSPECTION_FAILED');
+  if (!collector || !proofDirectory) throw new Error('MAC_DEV_XATTR_PROOF_REQUIRED');
+  const proofRoot = await fs.realpath(proofDirectory);
+  if (proofRoot === inspection.root || proofRoot.startsWith(inspection.root + path.sep)) throw new Error('MAC_DEV_XATTR_PROOF_INSIDE_APP');
+  const before = await captureAttributeSnapshot(inspection.root, { collector, command });
+  const beforeSha256 = await writeProof(proofRoot, 'xattrs-before.json', before);
+  if (!before.complete) {
+    await writeProof(proofRoot, 'xattrs-decision.json', { schema: 'macos-xattr-decision/v1', allowed: false,
+      error: before.error, signingAttempted: false, beforeSha256, afterSnapshotAvailable: false });
+    throw new Error(before.error);
+  }
   const targets = inspection.nativeFiles.filter(name => name !== 'Contents/MacOS/director-desktop-next')
     .map(name => path.join(inspection.root, name));
   targets.push(inspection.root);
+  let signingFailed = false;
   for (const target of targets) {
     const signed = command('/usr/bin/codesign', ['--force', '--sign', '-', '--options', 'runtime', target]);
-    if (signed.status !== 0) throw new Error('MAC_DEV_ADHOC_SIGNATURE_FAILED');
+    if (signed.status !== 0) { signingFailed = true; break; }
   }
-  const after = command('/usr/bin/xattr', ['-lr', app]);
-  if (after.status !== 0 || before.stdout !== after.stdout) throw new Error('MAC_DEV_XATTR_CHANGED');
+  const after = await captureAttributeSnapshot(inspection.root, { collector, command });
+  const afterSha256 = await writeProof(proofRoot, 'xattrs-after.json', after);
+  const decision = compareAttributeSnapshots(before, after);
+  await writeProof(proofRoot, 'xattrs-decision.json', { schema: 'macos-xattr-decision/v1', ...decision,
+    signingAttempted: true, signingSucceeded: !signingFailed, beforeSha256, afterSha256 });
+  if (signingFailed) throw new Error('MAC_DEV_ADHOC_SIGNATURE_FAILED');
+  if (!decision.allowed) throw new Error(decision.error);
   const report = await verifyMacosBundle(app, { platform, command });
   report.extendedAttributesPreserved = true;
+  report.attributeProof = { beforeSha256, afterSha256, allowedNewSignatureNodes: decision.allowedNewSignatureNodes };
   return report;
 }
 
@@ -112,8 +129,10 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       process.exitCode = Number.isInteger(result.status) && result.status > 0 ? result.status : 1;
     } else {
       if (!(await fs.realpath(plan.app)).startsWith((await fs.realpath(target)) + path.sep)) throw new Error('MAC_DEV_TARGET_ESCAPED');
-      const report = await signDevelopmentBundle(plan.app);
       const directory = await fs.mkdtemp(path.join(repositoryRoot, '.local/macos-dev-evidence-'));
+      console.log(`Signature/resource evidence directory: ${directory}`);
+      const collector = await compileAttributeCollector(directory, runDevelopmentBuild);
+      const report = await signDevelopmentBundle(plan.app, { collector, proofDirectory: directory });
       await fs.writeFile(path.join(directory, 'bundle.json'), JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
       console.log(`Verified development bundle: ${plan.app}`);
       console.log(`Signature/resource evidence: ${path.join(directory, 'bundle.json')}`);

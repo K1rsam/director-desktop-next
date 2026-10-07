@@ -2,6 +2,12 @@
 
 This document records implementation evidence, not native-platform or creative-quality acceptance.
 
+## M5.1 — Structured attribute evidence
+
+Replaces the formatted recursive attribute-listing comparison with bounded descriptor-based raw-byte collection and deterministic path/name/hash records, including directories and the app root. Sanitized before/after and decision files survive collection or signing failures. Existing attributes remain strict; any attributes on the two exact new signature nodes require separate review. The missing historical M5 before-snapshot is not reconstructed, and its failure cause remains unknown. No Canvas/provider or shared runtime changes are included.
+
+Cloud evidence: 25 Node tests, 9 compiled collector tests and the existing 17 startup-runner tests. Mac collector execution, the next complete attribute gate and startup remain pending. See [attribute policy and native evidence handoff](MACOS_XATTR_EVIDENCE.md).
+
 ## M5 — Explicit Mac development bundle signing
 
 Adds `desktop:build:mac-dev` and a read-only bundle verifier after M4 native evidence showed the same missing resource seal in raw and copied artifacts. The helper builds into a fresh target, bypasses Tauri's attribute-clearing signing branch, applies credential-free Apple ad-hoc signing to the known helper and app, preserves extended attributes, and requires strict signatures, hardened runtime and exact SDK resources. It does not change shared product runtime code or diagnose the separate NSApplication abort.

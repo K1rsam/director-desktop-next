@@ -44,6 +44,9 @@ jobs:
       - name: Test Mac development bundle tooling offline (synthetic native responses)
         if: runner.os == 'macOS'
         run: node --test scripts/test_macos_dev_bundle.mjs
+      - name: Test bounded native attribute collector
+        if: runner.os == 'macOS'
+        run: python3 -m unittest discover -s scripts -p 'test_macos_xattr_snapshot.py' -v
       - name: Test shared Rust core (never run ignored live tests)
         run: cargo test --release --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --no-default-features -- --test-threads=1
       - name: Compile native shell

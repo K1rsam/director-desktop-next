@@ -1,0 +1,105 @@
+{
+  "schema": "director-next-macos-xattr-verification/v1",
+  "checkpoint": "M5.1",
+  "date": "2026-10-07",
+  "baseCommit": "423b1a9ff0154e258d8197c6be8e82a23206ed01",
+  "scope": "Deterministic byte-hash attribute evidence and failure diagnostics; existing security gates remain strict",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64"
+  },
+  "tests": {
+    "macosBundleTooling": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "nativeSigningCommands": "stubbed; actual Linux collector-to-Node protocol and subprocess/group lifecycle tested"
+    },
+    "nativeAttributeCollector": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "host": "Linux",
+      "coverage": "actual binary/empty/root/directory attrs; injected errors/limits/races; strict C compilation"
+    },
+    "startupRunner": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sourceLock": {
+      "passed": true,
+      "frozenCandidates": 22,
+      "pinnedSourceFiles": 144,
+      "candidateRuntimeActive": false
+    }
+  },
+  "nativeMacCollectorVerified": false,
+  "nativeMacAttributeGateVerified": false,
+  "nativeMacStartupVerified": false,
+  "nativeWindowsVerified": false,
+  "historicalM5BeforeSnapshotAvailable": false,
+  "historicalM5AttributeFailureCauseEstablished": false,
+  "sigabrtCauseEstablished": false,
+  "newSignatureNodeAttributesAllowed": false,
+  "blanketComAppleException": false,
+  "modelCalls": 0,
+  "providerAccountCalls": 0,
+  "sdkLiveCalls": 0,
+  "fullRustOrFrontendRerun": false,
+  "sharedRuntimeChanges": false,
+  "canvasAdapterIncluded": false,
+  "reviewStatus": "independent_code_review_passed; publication requires exact manifest binding",
+  "evidence": [
+    {
+      "path": "scripts/build_macos_dev.mjs",
+      "bytes": 8830,
+      "sha256": "d8072e80f44ceef3751f7631287e807e906986c57c4d22381f145692afe53eeb"
+    },
+    {
+      "path": "scripts/verify_macos_bundle.mjs",
+      "bytes": 9493,
+      "sha256": "4561495fe6b8b4a635f7caeeb5e20b65a0507ff8b2a9993a7db351dc6c3516cb"
+    },
+    {
+      "path": "scripts/macos_xattr_proof.mjs",
+      "bytes": 8771,
+      "sha256": "3b63d2b1f1f1b3568f6732ed3343ac2fbbb9769097e54773ce9c9d6cf0ddc56f"
+    },
+    {
+      "path": "scripts/macos_xattr_snapshot.c",
+      "bytes": 13397,
+      "sha256": "70e552315e80bc0a0fcafbe514454bf9f5c8f1ad9ae2dac08f76a3ffdc259425"
+    },
+    {
+      "path": "scripts/test_macos_dev_bundle.mjs",
+      "bytes": 20306,
+      "sha256": "c82ac70196549f281d546cb894bc90d9be356810ba6261b4bdf3d581169a4fe1"
+    },
+    {
+      "path": "scripts/test_macos_xattr_snapshot.py",
+      "bytes": 15980,
+      "sha256": "805f2943d3305323276889672f93e34a3cb3fb01e6a077027a888216070d252a"
+    },
+    {
+      "path": "docs/verification/m5-1/macos-bundle-tests.log",
+      "bytes": 2436,
+      "sha256": "032f522aa76927ad168b7a3e65464d22abb21a7d90b3ba3be73c26892a6cced9"
+    },
+    {
+      "path": "docs/verification/m5-1/xattr-collector-tests.log",
+      "bytes": 1610,
+      "sha256": "1f699cb466c43fc7459e79d7394fb888ede374e0806a988afc1fad77199547f3"
+    },
+    {
+      "path": "docs/verification/m5-1/startup-runner-tests.log",
+      "bytes": 3121,
+      "sha256": "1530f4f9f8287637706a25f3ac660437d43b5d9074d6396ce8600d9829862bc5"
+    },
+    {
+      "path": "docs/verification/m5-1/source-lock.json",
+      "bytes": 239,
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    }
+  ]
+}

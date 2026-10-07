@@ -11,10 +11,10 @@ From `apps/desktop`, use `npm run desktop:build:mac-dev` for the approved local 
 3. Runs the pinned Tauri CLI with `desktop,custom-protocol`, the explicit native target, app-only bundle, `--no-sign`, and `--ci`
 4. Removes all `APPLE_*` variables from the child build environment, without changing the caller's environment or printing their values
 5. Checks the new app's identity, executable inventory and exact seven SDK resources. Only the declared `director-desktop-next` main binary and optional `director-next-core` helper are supported. Unexpected native code, symlinks or frameworks stop the step
-6. Reads extended attributes, signs the known helper first when present, then signs the outer app using fixed `/usr/bin/codesign --force --sign - --options runtime` arguments. It does not use deep signing or any certificate
-7. Requires identical extended-attribute observations before and after signing, then verifies the signature and resources. A signature or attribute error stops the command; there is no automatic repair or retry
+6. Compiles the bounded descriptor-based attribute collector, records byte-hash observations for files/directories/root, signs the known helper first when present, then signs the outer app using fixed `/usr/bin/codesign --force --sign - --options runtime` arguments. It does not use deep signing or any certificate
+7. Compares deterministic attribute records under the [strict M5.1 policy](MACOS_XATTR_EVIDENCE.md), persisting sanitized evidence even on failure, then verifies the signature and resources. A signature or attribute error stops the command; there is no automatic repair or retry
 
-Why `--no-sign`: Tauri's built-in signing branch clears extended attributes before signing. The approved scope excludes removing quarantine. Its pinned `--no-sign` branch skips keychain handling, xattr removal, signing and notarization. The wrapper applies the ad-hoc signature directly, without changing attributes or operating-system security settings. Hardened runtime remains required. Apple ad-hoc signing needs no account or timestamp service; this command supplies no timestamp option.
+Why `--no-sign`: Tauri's built-in signing branch clears extended attributes before signing. The approved scope excludes removing quarantine. Its pinned `--no-sign` branch skips keychain handling, xattr removal, signing and notarization. The wrapper applies the ad-hoc signature directly without an attribute-clearing command or operating-system security change; structured snapshots determine whether existing attributes actually remained unchanged. Hardened runtime remains required. Apple ad-hoc signing needs no account or timestamp service; this command supplies no timestamp option.
 
 The result is a development artifact, not a Developer ID/notarized distribution. No Gatekeeper assessment or security override is performed. It does not grant provider generation, log into an account, or launch the app.
 
@@ -36,7 +36,7 @@ The command prints the exact built app path and a new `.local/macos-dev-evidence
 - Signature metadata says ad-hoc and includes the hardened-runtime flag, with no certificate authority or team identity
 - All seven bundled SDK files match the approved source and upstream package hashes
 - A complete file/hash/permission inventory is unchanged during read-only verification
-- Extended attributes compare identically before and after signing
+- Every existing attribute compares identically before and after signing; only the exact attribute-free new signature nodes are admitted. Attributes on new signature nodes require review
 
 After an approved copy to a separate app location, verify the copy without signing or launching it:
 

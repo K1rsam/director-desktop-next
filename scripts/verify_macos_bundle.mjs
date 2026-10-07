@@ -42,16 +42,19 @@ export async function inventoryBundle(root) {
 
 // Tools are fixed system binaries. spawnSync bounds retained output and
 // execution time; no shell, injected command, or caller-selected verifier exists.
-export function boundedNativeCommand(executable, args, timeout = 30_000) {
+export function boundedNativeCommand(executable, args, timeout = 30_000, maxBuffer = 128 * 1024) {
   try {
     const output = spawnSync(executable, args, { encoding: 'utf8', timeout, killSignal: 'SIGKILL',
-      maxBuffer: 128 * 1024, shell: false, stdio: ['ignore', 'pipe', 'pipe'],
+      maxBuffer, shell: false, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: '/usr/bin:/bin:/usr/sbin:/sbin', LANG: 'C', LC_ALL: 'C' } });
     return { status: output.error || output.signal ? -1 : output.status,
-      stdout: output.stdout || '', stderr: output.stderr || '' };
+      stdout: output.stdout || '', stderr: output.stderr || '',
+      ...(output.error || output.signal || output.status !== 0 ? { failure: {
+        kind: output.error?.code === 'ETIMEDOUT' ? 'timeout' : output.error?.code === 'ENOBUFS' ? 'output_limit'
+          : output.error ? 'spawn' : output.signal ? 'signal' : 'command_exit' } } : {}) };
   } catch (error) {
     return { status: Number.isInteger(error.status) ? error.status : -1,
-      stdout: String(error.stdout || ''), stderr: String(error.stderr || '') };
+      stdout: String(error.stdout || ''), stderr: String(error.stderr || ''), failure: { kind: 'spawn' } };
   }
 }
 
