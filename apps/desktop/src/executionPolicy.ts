@@ -1,6 +1,10 @@
 /** The first independent build has no frontend switch that enables live execution.
  * Backend dispatch enforces the same boundary independently of these UI guards.
  */
+export const READINESS_PROVIDERS = ['codex_cli', 'dreamina', 'codex_sdk'] as const;
+export type ReadinessProvider = typeof READINESS_PROVIDERS[number];
+export type ReadinessCapability = { version: 'provider-readiness/v1'; enabled: boolean; providers: ReadinessProvider[]; generationAllowed: false };
+
 export type ExecutionPolicy = {
   mode: 'offline_prepare_only' | 'native_cli_acceptance';
   liveExecutionAllowed: boolean;
@@ -8,9 +12,10 @@ export type ExecutionPolicy = {
   allowedActions?: string[];
   acceptance?: Record<string, unknown>;
   reasons: string[];
+  readiness?: ReadinessCapability;
 };
 export type PolicyRequest = { action: string; [key: string]: unknown };
-export type ActionCategory = 'local_read' | 'local_write' | 'generation' | 'provider' | 'credentials' | 'unknown';
+export type ActionCategory = 'local_read' | 'local_write' | 'generation' | 'readiness' | 'provider' | 'credentials' | 'unknown';
 
 export const OFFLINE_EXECUTION_POLICY: ExecutionPolicy = {
   mode: 'offline_prepare_only',
@@ -30,7 +35,7 @@ export function subscribeExecutionPolicy(listener: () => void): () => void {
   policyListeners.add(listener); return () => { policyListeners.delete(listener); };
 }
 export function installExecutionPolicy(policy: ExecutionPolicy): void {
-  activePolicy = { ...policy, reasons: [...policy.reasons], allowedActions: policy.allowedActions ? [...policy.allowedActions] : undefined };
+  activePolicy = { ...policy, readiness: validateReadinessCapability(policy.readiness), reasons: [...policy.reasons], allowedActions: policy.allowedActions ? [...policy.allowedActions] : undefined };
   for (const listener of policyListeners) listener();
 }
 const NATIVE_EXTRA_ACTIONS = new Set(['foundation.run', 'images.design', 'workflows.resume', 'textCli.status', 'storyboard.run', 'storyboard.decision.resolve']);
@@ -66,6 +71,7 @@ export function classifyAction(input: PolicyRequest | string): ActionCategory {
     const settings = request.settings as Record<string, unknown>;
     if (CREDENTIAL_SETTING_KEYS.some(key => settings[key] != null && settings[key] !== '')) return 'credentials';
   }
+  if (request.action === 'readiness.check') return 'readiness';
   if (LOCAL_READ_ACTIONS.has(request.action)) return 'local_read';
   if (LOCAL_WRITE_ACTIONS.has(request.action)) return 'local_write';
   if (GENERATION_ACTIONS.has(request.action)) return 'generation';
@@ -80,6 +86,13 @@ export function actionBlockReason(input: PolicyRequest | string): string | null 
   if (activePolicy.mode === 'native_cli_acceptance' && NATIVE_EXTRA_ACTIONS.has(action) && activePolicy.allowedActions?.includes(action)) return null;
   switch (category) {
     case 'local_read': case 'local_write': return null;
+    case 'readiness': {
+      const capability = activePolicy.readiness;
+      const provider = typeof input === 'string' ? undefined : input.provider;
+      if (capability?.enabled && capability.providers.length > 0
+          && (typeof input === 'string' || capability.providers.includes(provider as ReadinessProvider))) return null;
+      return '离线准备模式：当前环境未开放手动只读连接检查；真实生成与登录操作保持关闭。';
+    }
     case 'generation': return '离线准备模式：产品端真实文本、图片与视频生成尚未开放。';
     case 'provider': return '离线准备模式：渠道访问、远端查询与渠道素材准备尚未开放。';
     case 'credentials': return '离线准备模式：CLI、账户登录与凭据读写尚未开放。';
@@ -92,15 +105,27 @@ export function assertOfflineAction(input: PolicyRequest): void {
   if (reason) throw new Error(`${reason}（${input.action}）`);
 }
 
+function validateReadinessCapability(value: unknown): ReadinessCapability | undefined {
+  if (value === undefined) return;
+  if (!value || typeof value !== 'object') throw new Error('只读检查策略无效。');
+  const capability = value as Record<string, unknown>;
+  if (capability.version !== 'provider-readiness/v1' || typeof capability.enabled !== 'boolean'
+      || capability.generationAllowed !== false || !Array.isArray(capability.providers)
+      || !capability.providers.every(provider => READINESS_PROVIDERS.includes(provider as ReadinessProvider))
+      || new Set(capability.providers).size !== capability.providers.length) throw new Error('只读检查策略无效；外部执行保持关闭。');
+  return { version: 'provider-readiness/v1', enabled: capability.enabled, providers: [...capability.providers] as ReadinessProvider[], generationAllowed: false };
+}
+
 export function validateExecutionPolicy(value: unknown): ExecutionPolicy {
   if (!value || typeof value !== 'object') throw new Error('本地核心未返回有效的执行策略。');
   const policy = value as Record<string, unknown>;
   if (!Array.isArray(policy.reasons) || !policy.reasons.every(reason => typeof reason === 'string')) throw new Error('执行策略缺少说明，外部执行保持关闭。');
+  const readiness = validateReadinessCapability(policy.readiness);
   if (policy.mode === 'offline_prepare_only' && policy.liveExecutionAllowed === false && policy.stage3CreativePackStatus === 'inactive') {
-    return { mode: 'offline_prepare_only', liveExecutionAllowed: false, stage3CreativePackStatus: 'inactive', reasons: [...policy.reasons] };
+    return { mode: 'offline_prepare_only', liveExecutionAllowed: false, stage3CreativePackStatus: 'inactive', reasons: [...policy.reasons], ...(readiness ? { readiness } : {}) };
   }
   const scope = policy.acceptance && typeof policy.acceptance === 'object' ? policy.acceptance as Record<string, unknown> : {};
-  const safeActions = new Set([...LOCAL_READ_ACTIONS, ...LOCAL_WRITE_ACTIONS, ...NATIVE_EXTRA_ACTIONS]);
+  const safeActions = new Set([...LOCAL_READ_ACTIONS, ...LOCAL_WRITE_ACTIONS, ...NATIVE_EXTRA_ACTIONS, 'readiness.check']);
   const actions = policy.allowedActions;
   const stage3 = scope.stage3AdapterVerified === true;
   if (policy.version !== 'execution-policy/v2' || policy.mode !== 'native_cli_acceptance' || policy.liveExecutionAllowed !== true
@@ -113,7 +138,7 @@ export function validateExecutionPolicy(value: unknown): ExecutionPolicy {
       || (!stage3 && actions.some(action => ['storyboard.run', 'storyboard.decision.resolve'].includes(action)))) {
     throw new Error('本地核心执行策略与有界验收合同不一致；外部执行保持关闭。');
   }
-  return { mode: 'native_cli_acceptance', liveExecutionAllowed: true, stage3CreativePackStatus: stage3 ? 'verified_active' : 'inactive', reasons: [...policy.reasons], allowedActions: [...actions], acceptance: { ...scope } };
+  return { mode: 'native_cli_acceptance', liveExecutionAllowed: true, stage3CreativePackStatus: stage3 ? 'verified_active' : 'inactive', reasons: [...policy.reasons], allowedActions: [...actions], acceptance: { ...scope }, ...(readiness ? { readiness } : {}) };
 }
 
 /** Keep the guard ahead of IPC, including direct callers that bypass a disabled button. */

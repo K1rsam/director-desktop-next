@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "sdk-readiness-offline-proof/v1",
+  "verifiedAt": "2026-10-07T00:37:47Z",
+  "platform": "linux",
+  "node": "v24.19.0",
+  "officialSdk": "@openai/codex-sdk@0.160.1",
+  "officialSdkImplementationSha256": "d62ed107033bdba802b283c77d875e4bec3deb2704a910bb7e3f95059473b16f",
+  "sdkBridgeTests": {
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0
+  },
+  "rustReadinessTests": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  "packagedReadinessResources": 7,
+  "generationEnabled": false,
+  "modelCalls": 0,
+  "accountCalls": 0,
+  "officialRuntimeCalls": 0,
+  "readinessNetworkAttempts": 0,
+  "nativeMacVerified": false,
+  "nativeWindowsVerified": false,
+  "evidence": [
+    "Actual pinned package import using hello/inspect/shutdown in relocated app resources",
+    "Test-only instrumentation rejects child-process, socket, HTTP, HTTP/2 and fetch attempts",
+    "Rust child environment allowlist and empty isolated home/state verified",
+    "Fixture arguments, execute/resume, framing faults, tampered SDK and unexpected bundle files rejected",
+    "Missing Node outcome preserves not-checked account/model and not-tested network",
+    "Rust worker termination and temporary-directory cleanup verified",
+    "Release-profile packaged health and missing-Node checks passed; absent app resource root remains SDK_BUNDLED_RESOURCES_MISSING"
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_sdk.rs",
+      "bytes": 27459,
+      "sha256": "de185cef0f347d343dc1f873526f6e53e120c6cc4b90d2842280a17ccd176867"
+    },
+    {
+      "path": "apps/desktop/src-tauri/tauri.conf.json",
+      "bytes": 1424,
+      "sha256": "1683dbf3f40637d71aba5f8eb4c5b31b234c89fd69286ba02619a48db0b1e944"
+    },
+    {
+      "path": "apps/desktop/src-tauri/resources/sdk-readiness/.gitignore",
+      "bytes": 14,
+      "sha256": "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d"
+    },
+    {
+      "path": "sdk-bridge/src/health.mjs",
+      "bytes": 3202,
+      "sha256": "c15060c18e3b9854727fe49cd5be321ee03b28b537eeeb7003469c9f1c11d697"
+    },
+    {
+      "path": "sdk-bridge/scripts/package-readiness.mjs",
+      "bytes": 5164,
+      "sha256": "3e2dc0fe19c90275de56e9d424c3c1c463be005817051972bbf636a1db9e66d2"
+    },
+    {
+      "path": "sdk-bridge/test/health-no-effects.mjs",
+      "bytes": 1026,
+      "sha256": "4bd3147e88d1baaedea02b34e35ed66454ccc8524516825da2525bf44566b4ba"
+    },
+    {
+      "path": "sdk-bridge/test/health.test.mjs",
+      "bytes": 5268,
+      "sha256": "bb8d446ab3bc95ed8900758c9dd69a342d41e92223c5af40b3ac38040139962f"
+    },
+    {
+      "path": "sdk-bridge/package.json",
+      "bytes": 649,
+      "sha256": "5a62b063cf8c83b9a1e510dc72c601ea2987ef5dee94c4b0082c4200b9be6b4e"
+    },
+    {
+      "path": "sdk-bridge/THIRD_PARTY_NOTICES.md",
+      "bytes": 1665,
+      "sha256": "ca21ee1c9eff817aea1f4b5d2c3683bcae026eff415fcec7fe0057e64beec5ba"
+    },
+    {
+      "path": "docs/SDK_READINESS.md",
+      "bytes": 4787,
+      "sha256": "a55c2215041fb94b1baa9765b52d80e7729ba3dde6e1aa76dc910309a64f6ce5"
+    }
+  ],
+  "rustReleaseReadinessTests": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "productionResourceFallbackDisabled": true
+  }
+}

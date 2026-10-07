@@ -1,0 +1,77 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 verify
+> npm run check && npm test
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 check
+> node --check src/bridge.mjs && node --check src/main.mjs && node --check src/health.mjs && node --check scripts/package-readiness.mjs && node --check test/bridge.test.mjs && node --check test/health.test.mjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @director-desktop-next/codex-sdk-bridge@0.1.0 test
+> node --test --test-concurrency=1 test/*.test.mjs
+
+✔ hello/inspect/execute default stays disabled and starts zero runtime processes (12.603476ms)
+✔ actual SDK preserves frozen model/reasoning/prompt/schema and uses no inherited credentials (63.065886ms)
+✔ local observe/replay uses no new SDK call, duplicate attempt rejected, next new attempt allowed after completion (98.099401ms)
+✔ identical duplicates are durable and do not overwrite or double-complete (51.879407ms)
+✔ out-of-order fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (40.152407ms)
+✔ early-complete fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (53.561935ms)
+✔ changed-thread fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (44.655264ms)
+✔ policy-violation fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (43.838556ms)
+✔ failed-after-text fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (51.203687ms)
+✔ same-item-mutated fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (51.596829ms)
+✔ oversized-event fails closed, persists evidence, blocks retry/fallback and reserves unknown capacity (66.439712ms)
+✔ malformed runtime JSON remains raw error evidence and is never repaired/resubmitted (47.296898ms)
+✔ invalid final domain JSON is preserved verbatim with parse error; transport completion is not acceptance (45.128399ms)
+✔ hash mismatch, backend change, identity mismatch and reasoning fallback are rejected before SDK start (2.158914ms)
+✔ one active attempt, bounded AbortSignal cancel, no process-tree success claim (4.779601ms)
+✔ restart recovers in-flight receipt as unknown; observe never creates a new turn (5.686122ms)
+✔ second worker cannot own same state directory (2.100918ms)
+✔ stdio fragmented UTF-8, malformed JSON, request version and duplicate IDs are bounded and deterministic (97.504811ms)
+✔ stdio fixture uses actual official SDK and cleanly returns a transport observation (168.033407ms)
+✔ cancel after runtime starts is bounded even when synthetic child ignores SIGTERM (1645.518058ms)
+✔ hard worker crash preserves unknown attempt and passive restart starts zero new runtimes (183.595776ms)
+✔ input frame bound closes stdio without creating an attempt (101.586063ms)
+✔ partial durable attempt directory blocks initialization rather than silently resetting intent (1.687346ms)
+✔ torn event journal cannot retain a trusted completed state after restart (39.602659ms)
+✔ installed official SDK version and executable implementation match pinned provenance (1.119576ms)
+✔ bounded disconnect retains directory ownership until the synthetic task actually settles (1642.023424ms)
+✔ persisted model tampering fails closed before local replay (46.138734ms)
+✔ persisted compiledPrompt tampering fails closed before local replay (51.36442ms)
+✔ persisted compiledSchema tampering fails closed before local replay (43.165901ms)
+✔ persisted semanticRequestHash tampering fails closed before local replay (40.449371ms)
+✔ persisted executionFingerprint tampering fails closed before local replay (43.092082ms)
+✔ persisted rawResult tampering fails closed before local replay (38.63668ms)
+✔ parallel stale-lock contenders cannot both own the worker (61.421018ms)
+✔ stranded recovery guard fails closed and is never auto-reclaimed (58.463702ms)
+✔ unknown persisted state cannot release a worker budget (46.833246ms)
+✔ persisted threadId metadata is bound by the full receipt envelope checksum (48.673333ms)
+✔ persisted state metadata is bound by the full receipt envelope checksum (43.608441ms)
+✔ persisted usage metadata is bound by the full receipt envelope checksum (47.056266ms)
+✔ persisted error metadata is bound by the full receipt envelope checksum (36.98423ms)
+✔ persisted lastSequence metadata is bound by the full receipt envelope checksum (38.992085ms)
+✔ persisted domainAccepted metadata is bound by the full receipt envelope checksum (39.732231ms)
+✔ packaged genuine SDK hello/inspect/shutdown needs no runtime, account, network, or source checkout (87.186915ms)
+✔ production health rejects execute, resume, fixture args, malformed/out-of-order and oversized requests (476.850181ms)
+✔ packaging refuses unexpected files instead of shipping stale runtimes or fixtures (2.431502ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5984.099426
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

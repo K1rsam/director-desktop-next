@@ -23,3 +23,6 @@ pub mod text_sdk;
 pub mod native_acceptance;
 
 pub mod startup_diagnostics;
+
+pub mod readiness;
+pub mod readiness_sdk;

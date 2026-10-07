@@ -1,0 +1,181 @@
+{
+  "schema": "director-next-readiness-verification/v1",
+  "checkpoint": "M4",
+  "date": "2026-10-07",
+  "baseCommit": "09c8d58f369fad90819b1852e1d5d3c3ca2683d3",
+  "scope": "Explicit non-generating native connection checks; truthful layered evidence and genuine packaged SDK health",
+  "environment": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "rustc": "1.99.0 (b940084d7 2026-09-28)"
+  },
+  "rustRelevantRegression": {
+    "passed": 43,
+    "failed": 0,
+    "ignored": 2,
+    "suites": 6,
+    "includes": [
+      "6 engine readiness cases with real synthetic native executables",
+      "6 genuine SDK readiness cases",
+      "7 CLI regression cases",
+      "5 foundation rejection-replay cases",
+      "5 execution-boundary cases",
+      "10 isolation cases",
+      "4 text-cache cases"
+    ],
+    "note": "Targeted relevant regression; not a claim that the unchanged entire 775-case M2 matrix was rerun"
+  },
+  "frontend": {
+    "passed": 93,
+    "failed": 0,
+    "skipped": 0,
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "actualHandlerAndEffectTests": "synthetic IPC; all three explicit buttons, unsaved paths, stale/duplicate/error handling, native readiness-on with generation-off"
+  },
+  "sdkBridge": {
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "officialPackage": "@openai/codex-sdk@0.160.1",
+    "packagedResources": 7,
+    "workerMethods": [
+      "hello",
+      "inspect",
+      "shutdown"
+    ],
+    "accountCalls": 0,
+    "modelCalls": 0,
+    "officialRuntimeCalls": 0,
+    "networkAttemptsInInstrumentedHealth": 0,
+    "separateReleaseReadinessTestsPassed": 6
+  },
+  "sourceLock": {
+    "status": "passed",
+    "frozenCandidates": 22,
+    "pinnedSourceFiles": 144,
+    "candidateRuntimeActive": false,
+    "checks": [
+      "candidate bytes",
+      "pinned migration index",
+      "private fixture exclusion",
+      "new app identity",
+      "empty default asset scope"
+    ]
+  },
+  "coreSmoke": {
+    "status": "passed",
+    "separateProcessCalls": 11,
+    "sourceEpisodes": 2,
+    "sourcePreserved": true,
+    "restartPreserved": true,
+    "externalActionsBlocked": 6,
+    "generationJobs": 0
+  },
+  "readinessPolicy": {
+    "nativeExplicitClick": true,
+    "automaticallyChecksOnMountOrSwitch": false,
+    "isolatedStartupEnabled": false,
+    "linuxHostAccountsEnabled": false,
+    "generationEnabledByCheck": false,
+    "loginOrCredentialWriteEnabledByCheck": false,
+    "freeImageEligibility": "unverified",
+    "stage3Active": false,
+    "sdkLive": false
+  },
+  "reviewFixes": [
+    "Bounded CLI stdout/stderr and incremental RPC lines before complete allocation, plus cumulative frame/byte budgets",
+    "Rust compiler fixture supports RUSTC/CARGO_HOME absent using PATH",
+    "CLI RPC failure preserves independently verified version and returns authentication unknown with visible safe error",
+    "Exact Dreamina logger-write restriction stops before additional probes; no path redirection, security change, account-invalid inference or private path export",
+    "Native frontend policy accepts the readiness action without enlarging generation or login scope"
+  ],
+  "independentReview": {
+    "codeFindings": "NO_REMAINING_MUST_FIX",
+    "confirmed": [
+      "6 readiness engine tests with RUSTC/CARGO_HOME unset",
+      "6 genuine SDK Rust readiness tests",
+      "23 focused frontend tests",
+      "bounded reader source and privacy/gate/package inspection"
+    ],
+    "finalManifestBinding": "required before parent publication"
+  },
+  "nativeMacForM4": "NOT_RUN",
+  "nativeWindowsForM4": "NOT_RUN",
+  "nativeDesktopCompilationForM4": "NOT_RUN; cloud environment lacks gobject-2.0 development dependency as established during M3",
+  "actualCodexModelConnectivity": "UNVERIFIED",
+  "actualDreaminaAuthenticationAndModelEligibility": "UNVERIFIED",
+  "actualSdkModelConnectivity": "NOT_TESTED_AND_LIVE_DISABLED",
+  "realModelCallsInCloud": 0,
+  "privateNativeReportsIncluded": false,
+  "nextLocalTask": "Build the exact published M4 once with both locked dependency sets, inspect ordinary native Settings, explicitly click each readiness button once and preserve separate installation/protocol/account/catalog/network/generation results. Keep existing host-state write restrictions and unknown SQLite cause distinct from authentication failures. No model generation, login changes, permission overrides or retries hidden in a check.",
+  "reviewedSourceFiles": [
+    {
+      "path": "apps/desktop/src-tauri/src/text_cli.rs",
+      "sha256": "f1500b15329e61c542c8510813aefdce8155ecfb4f6aced6efd7b5b415a700cd",
+      "bytes": 46603
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness.rs",
+      "sha256": "c88279d35625238af3072f3eee1f430723710847ad07aa3828a2bd65636eb6b1",
+      "bytes": 8204
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_engine_tests.rs",
+      "sha256": "4a10a69829812a05f71e332af9c0aa58e50b56ce54dae04731bf6dcd2fcb8a7c",
+      "bytes": 12596
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/providers/dreamina.rs",
+      "sha256": "dbb9b21ad75faf9a4be852dd986a978d01a85721f240476811f35854e069c675",
+      "bytes": 196517
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/readiness_sdk.rs",
+      "sha256": "de185cef0f347d343dc1f873526f6e53e120c6cc4b90d2842280a17ccd176867",
+      "bytes": 27459
+    }
+  ],
+  "logs": [
+    {
+      "path": "docs/verification/m4/readiness-final-tests.log",
+      "sha256": "2e747f5ec69fe23d30a7860d1a3366627887992e2e145d04792e1236d318c22c",
+      "bytes": 2586
+    },
+    {
+      "path": "docs/verification/m4/cli-regression-tests.log",
+      "sha256": "7b8a11a17a2aa091c2633486806078af774caf7b11f573f1fbcbb325c8c89a1d",
+      "bytes": 1942
+    },
+    {
+      "path": "docs/verification/m4/integration-regression-tests.log",
+      "sha256": "180f08247abd22174923b3de4c49311328eb16d80c10a364adaff656b1e1d4f2",
+      "bytes": 5346
+    },
+    {
+      "path": "docs/verification/m4/frontend-final.log",
+      "sha256": "32bb975464da745be90f78fd89d5713bad8c7d66c637921a8f1b2153d6779490",
+      "bytes": 10559
+    },
+    {
+      "path": "docs/verification/m4/sdk-final.log",
+      "sha256": "c908ccf9d164de371e0fb78131dafd1242a68a54ad67cfc903bbc3fb97bb3671",
+      "bytes": 5712
+    },
+    {
+      "path": "docs/verification/m4/sdk-packaging.log",
+      "sha256": "0c3bd9ae1e071ce515a80f1d1b09e053d2da6655c4bc8a0a9b49bdd0914cb82f",
+      "bytes": 76
+    },
+    {
+      "path": "docs/verification/m4/source-lock.json",
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52",
+      "bytes": 239
+    },
+    {
+      "path": "docs/verification/m4/offline-smoke.json",
+      "sha256": "e16ac189debb22289913b4b69de151046912a0641dd195ae4e5e7543c2159b33",
+      "bytes": 171
+    }
+  ]
+}

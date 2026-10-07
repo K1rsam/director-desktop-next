@@ -1,0 +1,34 @@
+warning: unused import: `CompiledStoryboardTransport`
+  --> src/pipeline/mod.rs:28:62
+   |
+28 |     compile_storyboard_transport, storyboard_transport_rule, CompiledStoryboardTransport,
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/providers/dreamina.rs:508:9
+    |
+508 |     let mut command = command;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `director-desktop-next` (lib test) generated 2 warnings (run `cargo fix --lib -p director-desktop-next --tests` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.13s
+     Running unittests src/lib.rs (/workspace/scratch/a1e472763941/director-next-m4-target/debug/deps/director_core-dc1ee8b68b4e396e)
+
+running 8 tests
+test text_cli::tests::invalid_explicit_path_does_not_silently_fallback_to_a_different_cli ... ok
+test text_cli::tests::local_status_is_read_only_and_bounded ... ignored, reads native local CLI version/login/catalog/limits; sends no model generation
+test text_cli::tests::managed_installation_rejects_reparse_root_and_binary ... ok
+test text_cli::tests::managed_installation_relocation_only_uses_complete_native_versions ... ok
+test text_cli::tests::model_capabilities_preserve_each_models_efforts_and_hide_internal_entries ... ok
+test text_cli::tests::owned_login_continues_after_dispatch_returns_and_cancel_is_final ... ok
+test text_cli::tests::quota_summary_contains_display_fields_but_no_account_identity_or_unknown_secrets ... ok
+test text_cli::tests::untrusted_login_url_is_rejected_before_starting_browser ... ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 635 filtered out; finished in 0.31s
+

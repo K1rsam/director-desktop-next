@@ -48,6 +48,16 @@ Based on published M2 `41887d1c19fe547d1c75ebc7bc0beb5dc9f5a4a2`. The prior isol
 
 See [commands and result meanings](NATIVE_STARTUP_DIAGNOSTICS.md) and [M3 evidence](verification/M3.json). Product execution policy, SDK live closure, Stage3 inactive rules, credentials and workflow recovery code are unchanged.
 
+## M4 — Usable explicit provider readiness
+
+Based on published M3 `09c8d58f369fad90819b1852e1d5d3c3ca2683d3`. Native Settings now permits explicit non-generating checks for Codex CLI, official Dreamina CLI and the actual packaged Codex SDK worker, independently of the generation gate. Opening Settings no longer automatically reads accounts. Results keep binary/package installation, protocol, account, catalog, network and real generation separate.
+
+The check route never invokes Dreamina OAuth polling/job resumption, login/logout, credential writes or generation. The isolated startup probe explicitly disables host readiness. CLI output is bounded before complete line allocation, and a failed app-server preserves the independently read CLI version without claiming the account is logged out. Observed Dreamina logger-write restrictions halt further checks without changing paths or security settings.
+
+The SDK bundle contains the genuine pinned package and a health-only worker; hello/inspect/shutdown is verified without constructing the inference runtime, account calls or network. Native application resources are used in release builds. Model generation remains untested and disabled for SDK this round.
+
+[Final relevant checks](verification/M4.json) cover the real frontend handlers, synthetic native CLI side effects and overlong outputs, genuine SDK resources, existing cache/recovery/isolation contracts and clean packaging. This is not a repeated claim that every older creative fixture or native platform has run. The same M4 commit must now be built and tested in the native GUI; separately installed dependencies and host-state initialization issues are reported rather than guessed or bypassed. See [readiness contract](READINESS_CONTRACT.md).
+
 ## Verification commands
 
 From repository root:

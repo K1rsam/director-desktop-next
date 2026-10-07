@@ -6,6 +6,7 @@ use std::path::Path;
 
 pub const OFFLINE_ACTIONS: &[&str] = &[
     "getExecutionPolicy",
+    "readiness.check",
     "textSdk.status",
     "images.previewPrompt",
     "projects.list",
@@ -50,7 +51,7 @@ pub fn report() -> Value {
     json!({"version":"execution-policy/v1", "mode":"offline_prepare_only",
         "liveExecutionAllowed":false, "stage3CreativePackStatus":"inactive",
         "allowedActions":OFFLINE_ACTIONS,
-        "reasons":["云端离线工程验收不调用模型、渠道或宿主账户。", "第三阶段原件已核对一致，运行适配仍待验证。"],
+        "reasons":["真实生成保持关闭；本机只读连接检查须由用户单独点击，云端与隔离探针不读取宿主账户。", "第三阶段原件已核对一致，运行适配仍待验证。"],
         "textBackends":[{"id":"codex_cli","status":"preserved_not_enabled"},{"id":"codex_sdk","status":"offline_contract_only"}],
         "localAcceptance":{"backend":"codex_cli","model":"gpt-6.1-sol","reasoning":"medium"}})
 }

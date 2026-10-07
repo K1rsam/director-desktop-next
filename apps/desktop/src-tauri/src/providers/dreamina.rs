@@ -1217,6 +1217,67 @@ pub(super) fn account(config: &ProviderConfig) -> ProviderResult<Value> {
     Ok(account_snapshot(&auth_json(&output.stdout)?))
 }
 
+fn readiness_log_write_restricted(output:&CliOutput)->bool {
+    let message=String::from_utf8_lossy(&output.stderr).to_ascii_lowercase();
+    message.contains("initialize logs failed") && message.contains("initialize file logger")
+        && (message.contains("operation not permitted") || message.contains("permission denied"))
+}
+/// No DreaminaSessions polling, account mutation, generation or job-resume hooks.
+pub(super) fn readiness(config: &ProviderConfig) -> Value {
+    let mut result=crate::readiness::empty("dreamina");
+    let identity=match cli_identity(config) {
+        Ok(identity)=>identity,
+        Err(error)=>{result["installation"]["state"]=json!("missing");result["messages"]=json!([error.message]);return result;}
+    };
+    result["installation"]=json!({"state":"ready","version":null,"executable":identity["path"]});
+    result["details"]=json!({"binarySha256":identity["sha256"],"freeImageEligibility":"unverified","accountIdentityNotExported":true});
+    let inspected=capabilities_with_runner(config,Instant::now,|config,args,deadline| {
+        let output=execute_until(config,args,false,Some(deadline))?;
+        if readiness_log_write_restricted(&output) {return Err(ProviderError::new("CLI_LOCAL_LOG_WRITE_RESTRICTED","官方 CLI 本地日志初始化受限；未继续账户检查。"));}
+        if !output.success {return Err(output_error(&output,false));}Ok(output.stdout)
+    });
+    let mut messages=vec!["只读取官方 CLI 版本/帮助目录与账户积分；没有图片或视频生成。".to_string(),"积分余额和模型目录不能证明当前账户免费资格；免费出图尚未核验。".to_string()];
+    match inspected {
+        Ok(caps)=>{
+            result["installation"]["version"]=json!(caps.version.chars().take(128).collect::<String>());
+            result["protocol"]=json!({"state":"ready","name":"Official Dreamina CLI help + user_credit"});
+            let models:Vec<_>=caps.models.iter().map(|m|json!({"id":m.id,"name":m.id,"kind":m.kind})).collect();
+            result["catalog"]=json!({"state":if models.is_empty(){"unavailable"}else{"available"},"models":models});
+        },
+        Err(error)=>{
+            result["protocol"]["state"]=json!("failed");result["catalog"]["state"]=json!("unavailable");
+            if error.code=="CLI_LOCAL_LOG_WRITE_RESTRICTED" {
+                result["details"]["localEnvironmentIssue"]=json!(error.code);
+                messages.push("官方 CLI 本地日志写入受限，已停止后续账户检查；这不代表账号失效，未尝试改目录或安全权限。".into());
+                result["messages"]=json!(messages);return result;
+            }
+            messages.push(format!("CLI 帮助/目录检查失败（{}），未推断可生成模型。",error.code));
+        }
+    }
+    let account_result=(|| {
+        let output=execute(config,&["user_credit".into()],false)?;
+        if readiness_log_write_restricted(&output) {return Err(ProviderError::new("CLI_LOCAL_LOG_WRITE_RESTRICTED","官方 CLI 本地日志初始化受限。"));}
+        if !output.success {return Err(output_error(&output,false));}
+        Ok(account_snapshot(&auth_json(&output.stdout)?))
+    })();
+    match account_result {
+        Ok(account)=>{
+            result["authentication"]=json!({"state":if account["identityVerified"]==true{"authenticated"}else{"unknown"},"identityVerified":account["identityVerified"]==true});
+            result["details"]["credits"]=account["credits"].clone();
+            result["details"]["accountQueryCompleted"]=json!(true);
+            messages.push("user_credit 已返回；未进行独立网络探测或真实模型请求。".into());
+        },
+        Err(error)=>{
+            result["authentication"]["state"]=json!(if error.auth_required{"not_logged_in"}else{"unknown"});
+            result["details"]["accountQueryCompleted"]=json!(false);
+            if error.code=="CLI_LOCAL_LOG_WRITE_RESTRICTED" {result["details"]["localEnvironmentIssue"]=json!(error.code);}
+
+            messages.push(format!("账户只读检查未完成（{}）；检查不会发起登录、退出或重试生成。",error.code));
+        }
+    }
+    result["messages"]=json!(messages);result
+}
+
 fn login_material(body: &Value) -> ProviderResult<Value> {
     let data = task_object(body);
     let field = |keys: &[&str]| -> Option<String> {

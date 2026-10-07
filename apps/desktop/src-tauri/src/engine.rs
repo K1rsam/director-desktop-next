@@ -62,6 +62,8 @@ pub struct Engine {
     live_accounts: bool,
     offline_only: bool,
     native_acceptance: Option<Arc<crate::native_acceptance::NativeAcceptance>>,
+    readiness_enabled: bool,
+    readiness_resources: Option<PathBuf>,
     pub stop: AtomicBool,
 }
 struct VideoChannel {
@@ -287,7 +289,20 @@ fn prepared_source_prompt_provenance(
 impl Engine {
     pub fn new(home: PathBuf) -> Result<Arc<Self>> {
         crate::platform::ensure_isolated_home(&home)?;
-        Self::build(home, Arc::new(crate::execution_policy::OfflineChannels), false, true)
+        let mut engine=Self::build(home, Arc::new(crate::execution_policy::OfflineChannels), false, true)?;
+        Arc::get_mut(&mut engine).ok_or("初始化所有权无效")?.readiness_enabled=cfg!(any(target_os="macos",target_os="windows"));
+        Ok(engine)
+    }
+    /// Isolated startup acceptance must never read host accounts, even on a native OS.
+    pub fn new_offline_verification(home:PathBuf)->Result<Arc<Self>> {
+        crate::platform::ensure_isolated_home(&home)?;
+        Self::build(home,Arc::new(crate::execution_policy::OfflineChannels),false,true)
+    }
+    /// Resource paths come from Tauri, never from an IPC request or project settings.
+    pub fn with_native_resource_root(mut self:Arc<Self>,root:PathBuf)->Result<Arc<Self>> {
+        if !root.is_absolute() {return Err("桌面资源路径必须是绝对路径".into());}
+        Arc::get_mut(&mut self).ok_or("资源路径只能在启动前设置")?.readiness_resources=Some(root);
+        Ok(self)
     }
     pub fn with_native_acceptance(home:PathBuf, grant:crate::native_acceptance::AcceptanceGrant)->Result<Arc<Self>> {
         let acceptance=crate::native_acceptance::NativeAcceptance::open(&home,grant)?;
@@ -295,6 +310,7 @@ impl Engine {
         // explicit CLI text operations can cross this separate acceptance boundary.
         let mut engine=Self::build(home,Arc::new(crate::execution_policy::OfflineChannels),true,true)?;
         Arc::get_mut(&mut engine).ok_or("验收引擎初始化所有权无效")?.native_acceptance=Some(Arc::new(acceptance));
+        Arc::get_mut(&mut engine).ok_or("验收引擎初始化所有权无效")?.readiness_enabled=cfg!(any(target_os="macos",target_os="windows"));
         for project in engine.project_list()? {
             if let Ok(store)=engine.store(s(&project,"id")) {
                 if let Err(error)=engine.native_acceptance.as_ref().unwrap().reconcile_unbound(&store) {
@@ -333,6 +349,8 @@ impl Engine {
             live_accounts,
             offline_only,
             native_acceptance: None,
+            readiness_enabled: false,
+            readiness_resources: None,
             stop: AtomicBool::new(false),
         });
         for p in engine.project_list()? {
@@ -902,7 +920,12 @@ impl Engine {
     pub fn dispatch(self: &Arc<Self>, request: Value) -> Result<Value> {
         let action = s(&request, "action");
         if action == "getExecutionPolicy" {
-            return Ok(match &self.native_acceptance {Some(a)=>crate::execution_policy::native_report(a),None=>crate::execution_policy::report()});
+            let mut policy=match &self.native_acceptance {Some(a)=>crate::execution_policy::native_report(a),None=>crate::execution_policy::report()};
+            policy["readiness"]=crate::readiness::capability(self.readiness_enabled);
+            return Ok(policy);
+        }
+        if action=="readiness.check" && !self.readiness_enabled {
+            return Err("READINESS_NATIVE_ONLY: 只读连接检查仅由本机桌面显式触发；云端和隔离启动探针不读取宿主账户".into());
         }
         if self.native_acceptance.is_some() { crate::execution_policy::check_native_action(&request)?; }
         else if self.offline_only { crate::execution_policy::check(&request)?; }
@@ -1175,6 +1198,11 @@ impl Engine {
                 {
                     store.invalidate_unsubmitted_settings("生成设置已变化，请重新准备")?;
                 }
+            }
+            "readiness.check" => {
+                let (provider,settings)=crate::readiness::request_settings(&request,&store.settings()?)?;
+                let _readiness=self.acquire_keys(vec![format!("readiness:{provider}")])?;
+                return Ok(crate::text_cli::control_runtime()?.block_on(crate::readiness::check(&provider,&settings,self.readiness_resources.as_deref())));
             }
             "textSdk.status" => {
                 return Ok(crate::text_cli::control_runtime()?.block_on(crate::text_sdk::status(&store.settings()?)));
@@ -5503,3 +5531,7 @@ async fn resolve_text_execution_settings(settings:&Value)->Result<Value> {
         _ => Err("UNKNOWN_TEXT_BACKEND: 未知文本入口，不自动改用 CLI 或 API".into()),
     }
 }
+
+#[cfg(test)]
+#[path = "readiness_engine_tests.rs"]
+mod readiness_engine_tests;

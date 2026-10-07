@@ -11,7 +11,7 @@ use std::{
     },
     time::{Duration, Instant},
 };
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, Lines};
+use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncRead, AsyncReadExt, AsyncWriteExt, BufReader};
 
 const STATUS_TIMEOUT: Duration = Duration::from_secs(15);
 const CACHE_AGE: Duration = Duration::from_secs(45);
@@ -383,31 +383,58 @@ fn command(path: &Path) -> tokio::process::Command {
     command
 }
 
-async fn inspect_command(path: &Path, arguments: &[&str]) -> Result<String> {
-    let mut cmd = command(path);
-    cmd.args(arguments)
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped());
-    let (child, _registration) = crate::text_executor::spawn_cli_child(&mut cmd)?;
-    let output = tokio::time::timeout(Duration::from_secs(3), child.wait_with_output())
-        .await
-        .map_err(|_| "Codex CLI 本机检查超时".to_string())?
-        .map_err(|e| format!("Codex CLI 本机检查失败: {e}"))?;
-    if !output.status.success() {
-        return Err("Codex CLI 本机检查失败，请检查所选可执行文件".into());
+const INSPECTION_STDOUT_LIMIT:usize=262_144;
+const INSPECTION_STDERR_LIMIT:usize=65_536;
+const RPC_LINE_LIMIT:usize=1_048_576;
+const RPC_TOTAL_LIMIT:usize=16_777_216;
+const RPC_FRAME_LIMIT:usize=2048;
+async fn bounded_inspection_read(mut reader:impl AsyncRead+Unpin,limit:usize)->Result<Vec<u8>> {
+    let mut bytes=Vec::new();
+    (&mut reader).take(limit as u64+1).read_to_end(&mut bytes).await.map_err(|_|"CLI 检查输出读取失败".to_string())?;
+    if bytes.len()>limit {return Err("CLI_INSPECTION_OUTPUT_LIMIT: CLI 检查输出超过限制，未发起生成".into());}
+    Ok(bytes)
+}
+async fn bounded_rpc_line(reader:&mut (impl AsyncBufRead+Unpin))->Result<Option<Vec<u8>>> {
+    let mut line=Vec::new();
+    loop {
+        let buffer=reader.fill_buf().await.map_err(|_|"无法读取 CLI 状态".to_string())?;
+        if buffer.is_empty() {return if line.is_empty(){Ok(None)}else{Ok(Some(line))};}
+        let end=buffer.iter().position(|b|*b==b'\n').map(|i|i+1);
+        let length=end.unwrap_or(buffer.len());
+        if line.len()+length>RPC_LINE_LIMIT {return Err("CLI_RPC_LINE_LIMIT: CLI 状态行超过安全读取上限".into());}
+        line.extend_from_slice(&buffer[..length]);reader.consume(length);
+        if end.is_some() {return Ok(Some(line));}
     }
-    Ok(format!(
-        "{}\n{}",
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
-    ))
+}
+async fn inspect_command(path: &Path, arguments: &[&str]) -> Result<String> {
+    let mut cmd=command(path);
+    cmd.args(arguments).stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped());
+    let (mut child,_registration)=crate::text_executor::spawn_cli_child(&mut cmd)?;
+    let stdout=child.stdout.take().ok_or("CLI 检查输出不可用")?;
+    let stderr=child.stderr.take().ok_or("CLI 检查错误输出不可用")?;
+    let result=tokio::time::timeout(Duration::from_secs(3),async {
+        let (stdout,stderr,status)=tokio::try_join!(
+            bounded_inspection_read(stdout,INSPECTION_STDOUT_LIMIT),
+            bounded_inspection_read(stderr,INSPECTION_STDERR_LIMIT),
+            async {child.wait().await.map_err(|_|"CLI 检查进程状态不可用".to_string())})?;
+        if !status.success() {return Err("Codex CLI 本机检查失败，请检查所选可执行文件".into());}
+        Ok(format!("{}\n{}",String::from_utf8_lossy(&stdout),String::from_utf8_lossy(&stderr)))
+    }).await.unwrap_or_else(|_|Err("Codex CLI 本机检查超时；未发送生成请求".into()));
+    if child.id().is_some() {
+        let _=child.start_kill();
+        if !matches!(tokio::time::timeout(Duration::from_secs(2),child.wait()).await,Ok(Ok(_))) {
+            return Err("CLI_INSPECTION_STOP_UNKNOWN: 检查进程退出尚未确认".into());
+        }
+    }
+    result
 }
 
 struct RpcClient {
     child: tokio::process::Child,
     stdin: tokio::process::ChildStdin,
-    lines: Lines<BufReader<tokio::process::ChildStdout>>,
+    reader: BufReader<tokio::process::ChildStdout>,
+    received_bytes: usize,
+    received_frames: usize,
     _registration: crate::text_executor::ChildRegistration,
     login_notification: Option<Value>,
 }
@@ -441,7 +468,9 @@ impl RpcClient {
         let mut rpc = Self {
             child,
             stdin,
-            lines: BufReader::new(stdout).lines(),
+            reader: BufReader::new(stdout),
+            received_bytes: 0,
+            received_frames: 0,
             _registration: registration,
             login_notification: None,
         };
@@ -457,16 +486,18 @@ impl RpcClient {
             .map_err(|_| "无法发送 CLI 状态请求".to_string())
     }
     async fn next(&mut self) -> Result<Value> {
+        let result=self.next_bounded().await;
+        if result.is_err() {self.close().await?;}
+        result
+    }
+    async fn next_bounded(&mut self) -> Result<Value> {
         loop {
-            let line = self
-                .lines
-                .next_line()
-                .await
-                .map_err(|_| "无法读取 CLI 状态".to_string())?
-                .ok_or("Codex CLI 状态进程已退出")?;
-            if line.len() > 1024 * 1024 {
-                return Err("Codex CLI 返回的状态超过安全读取上限".into());
+            let bytes=bounded_rpc_line(&mut self.reader).await?.ok_or("Codex CLI 状态进程已退出")?;
+            self.received_bytes+=bytes.len();self.received_frames+=1;
+            if self.received_bytes>RPC_TOTAL_LIMIT || self.received_frames>RPC_FRAME_LIMIT {
+                return Err("CLI_RPC_OUTPUT_LIMIT: CLI 状态累计输出超过安全上限".into());
             }
+            let line=String::from_utf8(bytes).map_err(|_|"CLI 状态包含无效 UTF-8".to_string())?;
             if let Ok(value) = serde_json::from_str(&line) {
                 return Ok(value);
             }
@@ -491,9 +522,12 @@ impl RpcClient {
             .await?;
         self.response(id).await
     }
-    async fn close(&mut self) {
-        let _ = self.child.kill().await;
-        let _ = self.child.wait().await;
+    async fn close(&mut self)->Result<()> {
+        if self.child.id().is_some() {let _=self.child.start_kill();}
+        match tokio::time::timeout(Duration::from_secs(2),self.child.wait()).await {
+            Ok(Ok(_))=>Ok(()),
+            _=>Err("CLI_RPC_STOP_UNKNOWN: CLI 状态进程退出尚未确认".into()),
+        }
     }
 }
 
@@ -593,7 +627,7 @@ async fn read_status(path: &Path) -> Result<Value> {
     } else {
         vec![]
     };
-    rpc.close().await;
+    rpc.close().await?;
     let account_summary = if logged_in {
         json!({"type":account["type"],"email":account["email"],"planType":account["planType"]})
     } else {
@@ -635,6 +669,23 @@ pub async fn status(settings: &Value, force: bool) -> Value {
         *cache = Some((path, Instant::now(), value.clone()));
     }
     value
+}
+
+/// User-triggered readiness preserves local installation evidence when the
+/// separate account/catalog RPC fails. It does not log in, refresh a token or exec.
+pub async fn readiness_status(settings:&Value)->Value {
+    let path=match resolve_executable(settings) {Ok(path)=>path,Err(_)=>return status(settings,true).await};
+    let local=match inspect_command(&path,&["--version"]).await {
+        Ok(text)=>match text.lines().find(|line|line.starts_with("codex-cli ")) {
+            Some(version)=>version.trim().to_owned(),
+            None=>return json!({"available":true,"ready":false,"loggedIn":false,"readinessRpcReady":false,"version":null,"executable":path,"models":[],"limits":[],"warnings":[],"error":"所选程序未返回 Codex CLI 版本，未检查账户或模型","generationRequestsSent":0}),
+        },
+        Err(error)=>return json!({"available":true,"ready":false,"loggedIn":false,"readinessRpcReady":false,"version":null,"executable":path,"models":[],"limits":[],"warnings":[],"error":error,"generationRequestsSent":0}),
+    };
+    let mut result=status(settings,true).await;
+    result["readinessRpcReady"]=json!(result["version"].as_str().is_some_and(|v|v.starts_with("codex-cli ")));
+    result["version"]=json!(local);
+    result
 }
 
 pub fn validate_selection(status: &Value, model: &str, reasoning: &str) -> Result<()> {
@@ -893,7 +944,7 @@ async fn begin_login(settings: &Value) -> Result<Value> {
                 _ => {}
             }
         }
-        rpc.close().await;
+        let _ = rpc.close().await;
     });
     Ok(login_status())
 }

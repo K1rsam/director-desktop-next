@@ -259,6 +259,10 @@ pub fn dreamina_account(config: &ProviderConfig) -> ProviderResult<Value> {
     }
     dreamina::account(config)
 }
+/// Explicit non-generating inspection, separate from OAuth and workflow recovery.
+pub fn dreamina_readiness(config: &ProviderConfig) -> Value {
+    dreamina::readiness(config)
+}
 /// User-triggered headless OAuth. Device material is for core memory only, never project state.
 pub fn dreamina_begin_login(config: &ProviderConfig) -> ProviderResult<Value> {
     if config.kind != "dreamina" {

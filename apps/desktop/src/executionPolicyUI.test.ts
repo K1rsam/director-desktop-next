@@ -62,10 +62,10 @@ test('rendered four-stage controls and real frontend API enforce the offline bou
         const credentials = [...html.matchAll(/<input\b([^>]*type="password"[^>]*)>/g)];
         assert.equal(credentials.length, 2);
         for (const [, attributes] of credentials) assert.match(attributes, /disabled=""/);
-        assert.ok(html.includes('离线准备 · 未启用'));
+        assert.ok(html.includes('只读检查未开放'));
       }
     }
-    for (const action of ['foundation.run', 'images.design', 'images.produce', 'images.run', 'storyboard.run', 'units.regenerate', 'videos.prepare', 'videos.submit', 'providers.refresh', 'textCli.status', 'textCli.login', 'dreamina.status', 'dreamina.login', 'jobs.query', 'jobs.download', 'jobs.reconcile']) assert.ok(blocked.has(action), `${action} is represented and blocked`);
+    for (const action of ['foundation.run', 'images.design', 'images.produce', 'images.run', 'storyboard.run', 'units.regenerate', 'videos.prepare', 'videos.submit', 'providers.refresh', 'readiness.check', 'textCli.login', 'dreamina.login', 'jobs.query', 'jobs.download', 'jobs.reconcile']) assert.ok(blocked.has(action), `${action} is represented and blocked`);
     const { TextExecutionSettings } = await server.ssrLoadModule('/src/TextExecutionSettings.tsx');
     const apiSettings = renderToStaticMarkup(createElement(TextExecutionSettings, { ...props, settings: { textProvider: 'api' }, update: () => {}, saveSettings: async () => true }));
     assert.match(apiSettings, /<input\b[^>]*disabled=""[^>]*type="password"/);

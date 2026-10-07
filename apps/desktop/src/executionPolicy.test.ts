@@ -109,3 +109,51 @@ test('operator native scope only opens approved CLI actions and never SDK or med
     for (const changed of [ { ...scope, allowedActions: [...scope.allowedActions, 'videos.submit'] }, { ...scope, allowedActions: [...scope.allowedActions, 'storyboard.run'] }, { ...scope, acceptance: { ...scope.acceptance, reasoning: 'max' } }, { ...scope, acceptance: { ...scope.acceptance, sdkLiveAllowed: true } } ]) assert.throws(() => validateExecutionPolicy(changed));
   } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
 });
+
+test('validated readiness capability opens only explicit provider checks with generation off', async () => {
+  const { installExecutionPolicy } = await import('./executionPolicy.ts');
+  const readiness = { version: 'provider-readiness/v1', enabled: true, providers: ['codex_cli', 'dreamina', 'codex_sdk'], generationAllowed: false };
+  const policy = { ...OFFLINE_EXECUTION_POLICY, readiness };
+  const calls: PolicyRequest[] = [];
+  try {
+    assert.equal(classifyAction('readiness.check'), 'readiness');
+    assert.ok(actionBlockReason('readiness.check'), 'initial state fails closed');
+    await dispatchOfflineRequest({ action: 'getExecutionPolicy' }, async () => policy);
+    for (const provider of readiness.providers) {
+      const input = { action: 'readiness.check', provider, settings: { codexPath: '/synthetic/unsaved path' } };
+      assert.equal(actionBlockReason(input), null);
+      await dispatchOfflineRequest(input, async request => { calls.push(request); return {}; });
+    }
+    for (const provider of [undefined, '', 'codex', 'bh', 'dreamina ', 'codex_sdk.execute']) {
+      await assert.rejects(dispatchOfflineRequest({ action: 'readiness.check', provider }, async request => { calls.push(request); return {}; }));
+    }
+    for (const action of [...generations, ...providers, ...accounts]) assert.ok(actionBlockReason(action));
+    assert.ok(actionBlockReason({ action: 'settings.save', settings: { textApiKey: 'synthetic' } }));
+    assert.equal(calls.length, 3);
+    for (const invalid of [null, {}, { ...readiness, version: 'unknown' }, { ...readiness, enabled: 'true' }, { ...readiness, generationAllowed: true }, { ...readiness, providers: ['codex_cli', 'codex_cli'] }, { ...readiness, providers: ['codex_cli', 'bh'] }]) {
+      await assert.rejects(dispatchOfflineRequest({ action: 'getExecutionPolicy' }, async () => ({ ...policy, readiness: invalid })), /策略/);
+      assert.ok(actionBlockReason('readiness.check'), 'invalid backend capability resets to fail closed');
+    }
+    installExecutionPolicy(validateExecutionPolicy({ ...policy, readiness: { ...readiness, enabled: false } }));
+    assert.ok(actionBlockReason('readiness.check'), 'isolated startup capability remains off');
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});
+
+
+test('full native backend policy accepts readiness action without enlarging account or generation gates', async () => {
+  const { installExecutionPolicy } = await import('./executionPolicy.ts');
+  const readiness = { version: 'provider-readiness/v1', enabled: true, providers: ['codex_cli', 'dreamina', 'codex_sdk'], generationAllowed: false };
+  const scope = { version: 'execution-policy/v2', mode: 'native_cli_acceptance', liveExecutionAllowed: true, stage3CreativePackStatus: 'inactive', reasons: ['Synthetic full backend native policy'], allowedActions: [...localReads, ...localWrites, 'textSdk.status', 'images.previewPrompt', 'readiness.check', 'foundation.run', 'images.design', 'workflows.resume', 'textCli.status'], readiness, acceptance: { sourceSha256: 'a'.repeat(64), backend: 'codex', model: 'gpt-6.1-sol', reasoning: 'medium', storyboardEpisodeNumbers: [1, 2], stage3AdapterVerified: false, sdkLiveAllowed: false, realVideoAllowed: false, newWorkflowsPerPhase: 1 } };
+  try {
+    const policy = await dispatchOfflineRequest({ action: 'getExecutionPolicy' }, async () => scope);
+    assert.ok(policy.allowedActions.includes('readiness.check'));
+    for (const provider of readiness.providers) assert.equal(actionBlockReason({ action: 'readiness.check', provider }), null);
+    for (const action of ['foundation.run', 'images.design', 'workflows.resume', 'textCli.status']) assert.equal(actionBlockReason(action), null, 'previous bounded native authorization is retained');
+    for (const action of ['storyboard.run', 'images.run', 'images.produce', 'videos.prepare', 'videos.submit', 'textCli.login', 'dreamina.login', 'dreamina.logout', 'providers.refresh']) assert.ok(actionBlockReason(action), action);
+    assert.ok(actionBlockReason({ action: 'settings.save', settings: { textApiKey: 'synthetic' } }));
+    assert.ok(actionBlockReason({ action: 'readiness.check', provider: 'bh' }));
+    installExecutionPolicy(validateExecutionPolicy({ ...scope, readiness: { ...readiness, enabled: false } }));
+    assert.ok(actionBlockReason({ action: 'readiness.check', provider: 'codex_cli' }), 'allowedActions cannot override the disabled readiness capability');
+    for (const action of ['dreamina.status', 'textCli.login', 'videos.submit']) assert.throws(() => validateExecutionPolicy({ ...scope, allowedActions: [...scope.allowedActions, action] }), 'native policy cannot whitelist unapproved actions');
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});

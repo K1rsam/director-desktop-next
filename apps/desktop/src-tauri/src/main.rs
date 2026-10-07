@@ -352,8 +352,10 @@ fn main() {
             // lookup so automatic Stage 4 preflight fails locally without touching a user session.
             let engine = match &acceptance_grant {
                 Some(grant) => Engine::with_native_acceptance(home,grant.clone()),
+                None if setup_verification.is_some() => Engine::new_offline_verification(home),
                 None => Engine::new(home),
             }.map_err(std::io::Error::other)?;
+            let engine=engine.with_native_resource_root(app.path().resource_dir()?).map_err(std::io::Error::other)?;
             if let Some(v) = &setup_verification {
                 v.diagnostics.mark(DiagnosticStage::EngineReady);
                 if engine.project_list().map_err(std::io::Error::other)?.is_empty() {
