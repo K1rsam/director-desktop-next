@@ -1,0 +1,972 @@
+{
+  "version": "skill-lineage/v2",
+  "activeRegistry": "apps/desktop/src-tauri/src/pipeline/mod.rs::rule_snapshots",
+  "stage3ActiveInNext": false,
+  "snapshots": [
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/asset-art-director/SKILL.md",
+      "sourcePath": "director-desktop/rules/asset-art-director/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "b73d4626ed1cd26eeba2b73539cb46d9e9c8e20236a9034baf91a95687ab7ece",
+      "bytes": 7603,
+      "version": "1.3.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/asset-image-production/SKILL.md",
+      "sourcePath": "director-desktop/rules/asset-image-production/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "96488c1f38f6552c9a4a5dd55f20777c0c2fb20b6cafd16af06c5092e5f48cf5",
+      "bytes": 2008,
+      "version": "1.1.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/asset-visual-facts-extractor/SKILL.md",
+      "sourcePath": "director-desktop/rules/asset-visual-facts-extractor/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "53d0e92ba99704ef7b51e465ad2590dc2676ed62c13b7bfb1daaa6d21f607b66",
+      "bytes": 4271,
+      "version": "1.1.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/episode-emotion-planner/SKILL.md",
+      "sourcePath": "director-desktop/rules/episode-emotion-planner/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "9d06e36572a9052cf9d72e0d9723db4f5adc39f44f7d56de8c3c403481ddef50",
+      "bytes": 13466,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/episode-finishing-editor/SKILL.md",
+      "sourcePath": "director-desktop/rules/episode-finishing-editor/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "64e13089d39f39b3eff099d0a610dd673cee37f77313514dc782d5226e797bcc",
+      "bytes": 26108,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/foundation-asset-catalog/SKILL.md",
+      "sourcePath": "director-desktop/rules/foundation-asset-catalog/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "569af266afa5197f6b219d356c87b0f3a04288fd8b986a3f87a37e287c0dd87b",
+      "bytes": 9107,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/foundation-finishing-editor/SKILL.md",
+      "sourcePath": "director-desktop/rules/foundation-finishing-editor/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "5f28919467dd4ea25bb84eac60d42aa8d314f750e97af28ca1557d85b14866e9",
+      "bytes": 9769,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/acting-blocking.md",
+      "sourcePath": "director-desktop/rules/methods/acting-blocking.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "c8f4543a559a0369766cd522946163adebac5dfe8bad78dbe39e493145d21067",
+      "bytes": 14069,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/camera-emotion.md",
+      "sourcePath": "director-desktop/rules/methods/camera-emotion.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "fa2804b8bd1e3e9b52cbd172b2f7b9dc2723024265f4457de25990513c944ca9",
+      "bytes": 18178,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/camera-path-repair.md",
+      "sourcePath": "director-desktop/rules/methods/cards/camera-path-repair.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/comic-contrast.md",
+      "sourcePath": "director-desktop/rules/methods/cards/comic-contrast.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/danger-rescue.md",
+      "sourcePath": "director-desktop/rules/methods/cards/danger-rescue.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/editing-integrity.md",
+      "sourcePath": "director-desktop/rules/methods/cards/editing-integrity.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/expressive-emphasis.md",
+      "sourcePath": "director-desktop/rules/methods/cards/expressive-emphasis.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "c8b8cc18adc85ac109a01fdaac9fdbeeeab337a8d0253cbda8d920caa0a17fe5",
+      "bytes": 2745,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/joy-acceptance.md",
+      "sourcePath": "director-desktop/rules/methods/cards/joy-acceptance.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/long-voice.md",
+      "sourcePath": "director-desktop/rules/methods/cards/long-voice.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "e0812d4cbaf7a40ff4b8655c4ebf68d8842cf221b8e4c695724712cd882001bf",
+      "bytes": 1831,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/quiet-nonhuman.md",
+      "sourcePath": "director-desktop/rules/methods/cards/quiet-nonhuman.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/scale-silence.md",
+      "sourcePath": "director-desktop/rules/methods/cards/scale-silence.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/spatial-contact.md",
+      "sourcePath": "director-desktop/rules/methods/cards/spatial-contact.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "60bc191d84e225a13283c652c16d226d7b0b09a1467332707d4d5032ef74ef7b",
+      "bytes": 1374,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/cards/status-conflict.md",
+      "sourcePath": "director-desktop/rules/methods/cards/status-conflict.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/fantasy-expression.md",
+      "sourcePath": "director-desktop/rules/methods/fantasy-expression.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "fdca3d4e23b4c61d2a485b9560042146f5c3a0587fd4f6e834cedbb1795c031f",
+      "bytes": 24814,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/lighting-space.md",
+      "sourcePath": "director-desktop/rules/methods/lighting-space.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "d12bd04c16d8ab0a1da5022beb9263731025927f8ea0dcb902ca0bf27f1306a3",
+      "bytes": 5050,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/sound-rhythm.md",
+      "sourcePath": "director-desktop/rules/methods/sound-rhythm.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "dd50cd16ee4430297ffdad330aa341426e65c4d6bdf09d46a7b39915a7ca41b6",
+      "bytes": 8389,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/storyboard-common.md",
+      "sourcePath": "director-desktop/rules/methods/storyboard-common.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "02a63823900e1a0858fab86d7bc6819e6622075b969d8e4b6d385df0d487552c",
+      "bytes": 13634,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/methods/storyboard-source-context.md",
+      "sourcePath": "director-desktop/rules/methods/storyboard-source-context.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "a5daaefd50b9d944c3f2a0432339d77512272b8f33433af398c4dda70b08f700",
+      "bytes": 2860,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/screenplay-fidelity/SKILL.md",
+      "sourcePath": "director-desktop/rules/screenplay-fidelity/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "8746ed7ee06be797c817d7f73e8e9b8f548ef0238e82ff9fd10bf9d08c027f0b",
+      "bytes": 2377,
+      "version": "1.1.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/story-foundation/SKILL.md",
+      "sourcePath": "director-desktop/rules/story-foundation/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "ff512dc45931daf82bebef6ec3b8c92c06d05cc27d4c6bd6676437718a13163d",
+      "bytes": 3402,
+      "version": "1.1.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/unit-performance-director/SKILL.md",
+      "sourcePath": "director-desktop/rules/unit-performance-director/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "70fba0987dda7804e7740dc6aaf4dd93262bb3d566ffec917214d1b17ef2557e",
+      "bytes": 21499,
+      "version": "2.0.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "desktop-original-2ac7c216",
+      "path": "reference-skills/desktop-original-2ac7c216/unit-video-production/SKILL.md",
+      "sourcePath": "director-desktop/rules/unit-video-production/SKILL.md",
+      "sourceRef": "2ac7c216183f936aa08f16a93b2a24130cf5ebcd",
+      "sha256": "6fbac2064e5f752ce90d55d6df36776b5b4b5ec18810dbc453939a1b65e33ab0",
+      "bytes": 2282,
+      "version": "1.1.0",
+      "runtimeRole": "reference_only_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/acting-blocking-methods/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/acting-blocking-methods/SKILL.md",
+      "sourceRef": null,
+      "sha256": "71453a6d95d9bfe0248144f249dc46d8672c6c261e3a83aee8cf6bd72172a9bf",
+      "bytes": 14054,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/acting-blocking-methods/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/acting-blocking-methods/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "71453a6d95d9bfe0248144f249dc46d8672c6c261e3a83aee8cf6bd72172a9bf",
+      "bytes": 14054,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/camera-emotion-methods/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/camera-emotion-methods/SKILL.md",
+      "sourceRef": null,
+      "sha256": "6c3630ff4d0ab654feda6072fca994d549640ed4fc68edf6351739ab4911b079",
+      "bytes": 18615,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/camera-emotion-methods/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/camera-emotion-methods/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "41aeb90de5f131b53779770298a98807b08f3ec76338dcd8c44005e7a24b9fa3",
+      "bytes": 18163,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/director-refinement/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/director-refinement/SKILL.md",
+      "sourceRef": null,
+      "sha256": "579e82ae4256cbc9e9af3bfdfd0a3ec3590b91f1af818b7a77611264ffd2c937",
+      "bytes": 6869,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/episode-emotion-planner/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/episode-emotion-planner/SKILL.md",
+      "sourceRef": null,
+      "sha256": "7d6da5154fbefe89490186f0c7905f7959ea6abe121b0c05ed73f21dc56deaa7",
+      "bytes": 14131,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/episode-emotion-planner/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/episode-emotion-planner/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "7f98bd45ee8e882457058a00c40dae2482bd2eb8ea1c6e80fbb15e7f939b245b",
+      "bytes": 12093,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/episode-finishing-editor/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/episode-finishing-editor/SKILL.md",
+      "sourceRef": null,
+      "sha256": "2083577fff437605cc0ff4f7d262786914f52f8427d636110b1e0a162855b465",
+      "bytes": 28735,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/episode-finishing-editor/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/episode-finishing-editor/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "0132965ae3ece77454b6aa6d4ecb0ebbb6ccfddf296357fd809016028f9d76b2",
+      "bytes": 24735,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/fantasy-expression-methods/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/fantasy-expression-methods/SKILL.md",
+      "sourceRef": null,
+      "sha256": "8c3d0c1eb38574de2c175c038935049d1f20efaf2aa4a054434936d56b709c3d",
+      "bytes": 26333,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/fantasy-expression-methods/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/fantasy-expression-methods/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "887e6fa1bab4b218e386c903777f95aedd4bb4035dfab2163f58990c0d7efc71",
+      "bytes": 24799,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/lighting-space-methods/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/lighting-space-methods/SKILL.md",
+      "sourceRef": null,
+      "sha256": "b97201cbbe4895bc0f5c3a6a3dfe4a16dfaebf9f84935a17b951d9f4ba01f614",
+      "bytes": 5035,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/lighting-space-methods/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/lighting-space-methods/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "b97201cbbe4895bc0f5c3a6a3dfe4a16dfaebf9f84935a17b951d9f4ba01f614",
+      "bytes": 5035,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/sound-rhythm-methods/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/sound-rhythm-methods/SKILL.md",
+      "sourceRef": null,
+      "sha256": "1000ea079ff9d4c42921fd5b0f058eb4b3a33ce01a3b5910f0c19f1b7bef1512",
+      "bytes": 9567,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/sound-rhythm-methods/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/sound-rhythm-methods/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "02d31e741a4cd299ac6906a8ceb3c743cd22743e389fdb3493da339f5e0b1ac0",
+      "bytes": 8374,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/source-context-preparer/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/source-context-preparer/SKILL.md",
+      "sourceRef": null,
+      "sha256": "f563acc7ef27d08e60fd596778e511d7132d4e62144d4cb75f6fee63a4a9d291",
+      "bytes": 3596,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/source-context-preparer/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/source-context-preparer/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "a5daaefd50b9d944c3f2a0432339d77512272b8f33433af398c4dda70b08f700",
+      "bytes": 2860,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/skills/unit-performance-director/SKILL.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/skills/unit-performance-director/SKILL.md",
+      "sourceRef": null,
+      "sha256": "8a627052a0cc80d409514a4da51b7edefbd5efa350ac8210f0e45f87dcbff578",
+      "bytes": 21902,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/skills/unit-performance-director/SKILL.md",
+      "sourcePath": "runtime/storyboard-v4/core/skills/unit-performance-director/SKILL.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "e53eb8621a3395c7029e811c2845469fe3a6a28af2616f4a2f7e257a2cdef6be",
+      "bytes": 20126,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/camera-path-repair.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/camera-path-repair.md",
+      "sourceRef": null,
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/camera-path-repair.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/camera-path-repair.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/comic-contrast.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/comic-contrast.md",
+      "sourceRef": null,
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/comic-contrast.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/comic-contrast.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/danger-rescue.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/danger-rescue.md",
+      "sourceRef": null,
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/danger-rescue.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/danger-rescue.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/editing-integrity.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/editing-integrity.md",
+      "sourceRef": null,
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/editing-integrity.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/editing-integrity.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/expressive-emphasis.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/expressive-emphasis.md",
+      "sourceRef": null,
+      "sha256": "859627f68e7067f79d57afc787fcc08f4904dbff2c7c3394e30e5e21ba0644a2",
+      "bytes": 2922,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/expressive-emphasis.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/expressive-emphasis.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "c8b8cc18adc85ac109a01fdaac9fdbeeeab337a8d0253cbda8d920caa0a17fe5",
+      "bytes": 2745,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/joy-acceptance.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/joy-acceptance.md",
+      "sourceRef": null,
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/joy-acceptance.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/joy-acceptance.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/long-voice.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/long-voice.md",
+      "sourceRef": null,
+      "sha256": "c917620f81197a0146fbca98750e4c679b08d4ca50f6847812faf1ff0bb7ac7b",
+      "bytes": 2299,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/long-voice.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/long-voice.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "e0812d4cbaf7a40ff4b8655c4ebf68d8842cf221b8e4c695724712cd882001bf",
+      "bytes": 1831,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/quiet-nonhuman.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/quiet-nonhuman.md",
+      "sourceRef": null,
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/quiet-nonhuman.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/quiet-nonhuman.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/scale-silence.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/scale-silence.md",
+      "sourceRef": null,
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/scale-silence.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/scale-silence.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/spatial-contact.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/spatial-contact.md",
+      "sourceRef": null,
+      "sha256": "2d2b7bd1a922cfc61f1de84aca4ad6087e9bdac3f85ca1e378d4a9f13e6c4c1d",
+      "bytes": 1823,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/spatial-contact.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/spatial-contact.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "60bc191d84e225a13283c652c16d226d7b0b09a1467332707d4d5032ef74ef7b",
+      "bytes": 1374,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/cards/status-conflict.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/cards/status-conflict.md",
+      "sourceRef": null,
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/cards/status-conflict.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/cards/status-conflict.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    },
+    {
+      "group": "mac-3008-production-20261005",
+      "path": "reference-skills/mac-3008-production-20261005/references/common-contract.md",
+      "sourcePath": "/Users/yue/Documents/ChatGPT/6-Astra/director-web-3008/runtime/storyboard-v4/core/references/common-contract.md",
+      "sourceRef": null,
+      "sha256": "f1a576d1bc232787a396a2be94748ca2c20a0a954b72929fce77ddec7c0dedb9",
+      "bytes": 16752,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "verified_legacy_production_not_loaded_by_next"
+    },
+    {
+      "group": "mac-3008-git-2511c56",
+      "path": "reference-skills/mac-3008-git-2511c56/references/common-contract.md",
+      "sourcePath": "runtime/storyboard-v4/core/references/common-contract.md",
+      "sourceRef": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+      "sha256": "02a63823900e1a0858fab86d7bc6819e6622075b969d8e4b6d385df0d487552c",
+      "bytes": 13634,
+      "version": "正文版本由来源清单锁定",
+      "runtimeRole": "earlier_git_reference_never_loaded"
+    }
+  ],
+  "missingInEarlierMacGit": [
+    "runtime/storyboard-v4/core/skills/director-refinement/SKILL.md"
+  ],
+  "groupRoots": {
+    "desktop-original-2ac7c216": "reference-skills/desktop-original-2ac7c216",
+    "mac-3008-git-2511c56": "reference-skills/mac-3008-git-2511c56",
+    "mac-3008-production-20261005": "reference-skills/mac-3008-production-20261005"
+  },
+  "registeredFiles": [
+    {
+      "path": "apps/desktop/rules/asset-art-director/SKILL.md",
+      "sha256": "9193cd59b44bdc77fb413fb8c40bb6531c2cfb9377ca17fafc0749808ba6cd82",
+      "bytes": 6530,
+      "id": "asset-art-director",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage2_text_request_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/asset-image-production/SKILL.md",
+      "sha256": "96488c1f38f6552c9a4a5dd55f20777c0c2fb20b6cafd16af06c5092e5f48cf5",
+      "bytes": 2008,
+      "id": "asset-image-production",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "production_policy_reference_not_canvas_generation_bridge"
+    },
+    {
+      "path": "apps/desktop/rules/asset-visual-facts-extractor/SKILL.md",
+      "sha256": "53d0e92ba99704ef7b51e465ad2590dc2676ed62c13b7bfb1daaa6d21f607b66",
+      "bytes": 4271,
+      "id": "asset-visual-facts-extractor",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage2_text_request_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/episode-emotion-planner/SKILL.md",
+      "sha256": "9d06e36572a9052cf9d72e0d9723db4f5adc39f44f7d56de8c3c403481ddef50",
+      "bytes": 13466,
+      "id": "episode-emotion-planner",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/episode-finishing-editor/SKILL.md",
+      "sha256": "64e13089d39f39b3eff099d0a610dd673cee37f77313514dc782d5226e797bcc",
+      "bytes": 26108,
+      "id": "episode-finishing-editor",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/foundation-asset-catalog/SKILL.md",
+      "sha256": "569af266afa5197f6b219d356c87b0f3a04288fd8b986a3f87a37e287c0dd87b",
+      "bytes": 9107,
+      "id": "foundation-asset-catalog",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage1_rule_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/foundation-finishing-editor/SKILL.md",
+      "sha256": "5f28919467dd4ea25bb84eac60d42aa8d314f750e97af28ca1557d85b14866e9",
+      "bytes": 9769,
+      "id": "foundation-finishing-editor",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage1_rule_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/methods/acting-blocking.md",
+      "sha256": "c8f4543a559a0369766cd522946163adebac5dfe8bad78dbe39e493145d21067",
+      "bytes": 14069,
+      "id": "acting-blocking",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/camera-emotion.md",
+      "sha256": "fa2804b8bd1e3e9b52cbd172b2f7b9dc2723024265f4457de25990513c944ca9",
+      "bytes": 18178,
+      "id": "camera-emotion",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/camera-path-repair.md",
+      "sha256": "2c6c6c91706f04c2f311ee91df31315992cee58c7b808c4e6f1b1bd986db51de",
+      "bytes": 1982,
+      "id": "storyboard-card-camera-path-repair",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/comic-contrast.md",
+      "sha256": "462f6d3dc3cd0a055d31cf13941fb67327b762f91847927a4fff275076e90eed",
+      "bytes": 1689,
+      "id": "storyboard-card-comic-contrast",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/danger-rescue.md",
+      "sha256": "84a5ea29fdb89a11cfc8bfd0787db72bda6a43c5ca25cbcc29ee5027ab606893",
+      "bytes": 1432,
+      "id": "storyboard-card-danger-rescue",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/editing-integrity.md",
+      "sha256": "63a322cbde08040b5999ce38f113304389ca044e1e2214bf8e8bbe2b87ddf0b0",
+      "bytes": 1966,
+      "id": "storyboard-card-editing-integrity",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/expressive-emphasis.md",
+      "sha256": "c8b8cc18adc85ac109a01fdaac9fdbeeeab337a8d0253cbda8d920caa0a17fe5",
+      "bytes": 2745,
+      "id": "storyboard-card-expressive-emphasis",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/joy-acceptance.md",
+      "sha256": "412e4fa0c83c61ea70ac60a131e58672eca6c406ab5a58a0de5fb44d47f8e216",
+      "bytes": 1383,
+      "id": "storyboard-card-joy-acceptance",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/long-voice.md",
+      "sha256": "e0812d4cbaf7a40ff4b8655c4ebf68d8842cf221b8e4c695724712cd882001bf",
+      "bytes": 1831,
+      "id": "storyboard-card-long-voice",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/quiet-nonhuman.md",
+      "sha256": "e8d11f9819962328f4d5bfc39bfd383eb0a7cd8200a1820cbb0d453f7ac91cb3",
+      "bytes": 986,
+      "id": "storyboard-card-quiet-nonhuman",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/scale-silence.md",
+      "sha256": "20b47ff4dfe9b647ddb80e4492daf2d6be0619321c6d9f41fc371cf0ebd5c258",
+      "bytes": 961,
+      "id": "storyboard-card-scale-silence",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/spatial-contact.md",
+      "sha256": "60bc191d84e225a13283c652c16d226d7b0b09a1467332707d4d5032ef74ef7b",
+      "bytes": 1374,
+      "id": "storyboard-card-spatial-contact",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/cards/status-conflict.md",
+      "sha256": "90281f3f9e6d764a7711ecd89b4c2ddb7d833aeb8bd94926e4150bdbb67d8f3f",
+      "bytes": 1284,
+      "id": "storyboard-card-status-conflict",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/fantasy-expression.md",
+      "sha256": "fdca3d4e23b4c61d2a485b9560042146f5c3a0587fd4f6e834cedbb1795c031f",
+      "bytes": 24814,
+      "id": "fantasy-expression",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/lighting-space.md",
+      "sha256": "d12bd04c16d8ab0a1da5022beb9263731025927f8ea0dcb902ca0bf27f1306a3",
+      "bytes": 5050,
+      "id": "lighting-space",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/sound-rhythm.md",
+      "sha256": "dd50cd16ee4430297ffdad330aa341426e65c4d6bdf09d46a7b39915a7ca41b6",
+      "bytes": 8389,
+      "id": "sound-rhythm",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/storyboard-common.md",
+      "sha256": "02a63823900e1a0858fab86d7bc6819e6622075b969d8e4b6d385df0d487552c",
+      "bytes": 13634,
+      "id": "storyboard-common",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/methods/storyboard-source-context.md",
+      "sha256": "a5daaefd50b9d944c3f2a0432339d77512272b8f33433af398c4dda70b08f700",
+      "bytes": 2860,
+      "id": "storyboard-source-context",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/screenplay-fidelity/SKILL.md",
+      "sha256": "8746ed7ee06be797c817d7f73e8e9b8f548ef0238e82ff9fd10bf9d08c027f0b",
+      "bytes": 2377,
+      "id": "screenplay-fidelity",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage1_rule_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/story-foundation/SKILL.md",
+      "sha256": "ff512dc45931daf82bebef6ec3b8c92c06d05cc27d4c6bd6676437718a13163d",
+      "bytes": 3402,
+      "id": "story-foundation",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "stage1_rule_available_subject_to_domain_and_source_checks"
+    },
+    {
+      "path": "apps/desktop/rules/unit-performance-director/SKILL.md",
+      "sha256": "70fba0987dda7804e7740dc6aaf4dd93262bb3d566ffec917214d1b17ef2557e",
+      "bytes": 21499,
+      "id": "unit-performance-director",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "legacy_stage3_compiled_for_reference_and_tests_new_dispatch_blocked"
+    },
+    {
+      "path": "apps/desktop/rules/unit-video-production/SKILL.md",
+      "sha256": "6fbac2064e5f752ce90d55d6df36776b5b4b5ec18810dbc453939a1b65e33ab0",
+      "bytes": 2282,
+      "id": "unit-video-production",
+      "runtimeRole": "compiled_registry",
+      "dispatchStatus": "production_policy_reference_not_canvas_generation_bridge"
+    }
+  ],
+  "registrationIsNotLiveAcceptance": true,
+  "referenceSnapshotCount": 72,
+  "referenceSnapshotBytes": 552341
+}

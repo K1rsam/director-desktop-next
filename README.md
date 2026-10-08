@@ -2,7 +2,7 @@
 
 独立的 Windows 和 macOS 四阶段导演桌面项目，使用一套 Rust 业务核心、共享界面和版本化创作规则。
 
-当前已整合 M6 Canvas 只读检查与 M5.1 Mac 签名属性证据（尚待原生复验）：第二阶段美术合同、原文解析修复、官方 SDK 与共享 Rust 执行链已实现离线验证路径；保留四阶段界面与共享 Rust 核心，可创建独立项目、导入并重开原文、编辑本地资料；默认仍关闭真实生成；本机可主动检查现有 CLI 账户，登录和凭据改写另行控制，候选 Stage3 创作包尚未启用。它不是已验收的生产版本。用户已授权助理全权推进：云端实现与离线测试 → 本地 Codex 原生工程测试 → 问题回传 → 云端修复 → 本地复测，直到验收闭环成立。
+当前本机版本开放标准桌面的已实现渠道与第一、二阶段文字入口，保留源文、费用确认和未知提交保护；支持 App 内即梦 Canvas OAuth、账户和模型检查，额度保持未知。第二阶段美术合同、原文解析与官方SDK共享核心合成路径已经存在。最新3008的22份生产规则与旧两集采用稿已核实，但完整Stage3运行适配、生产SDK执行和Canvas生成桥仍未接入；即梦账户仍有真实授权失败记录。它不是已验收的完整生产版本。[本机修改与Windows合并说明](docs/handoff/LOCAL_STANDARD_EDITION.md)和[本机验收回执](docs/handoff/LOCAL_NATIVE_RECEIPT.json)分别记录来源、接线、实际点击结果和未验证项。
 
 本地工程执行代理使用 GPT-6.1 Sol、Max-Max；被测桌面应用内部 CLI 使用 GPT-6.1 Sol、medium，两层配置分别核实。原 director-web 及 Mac 参考工程只读；所有新实现属于本独立仓库和另一个新目录。本轮实现CLI＋官方SDK双入口，CLI保留；首轮真实验收仅走CLI，对核验同源的第1、2集生成文本并比较旧已采用终稿。SDK本轮不live，第三阶段不生成其他集、不自动多轮全稿重跑；第一/二阶段必要的完整10集上游文字工作可做；第二阶段仅少量经核验免费的即梦官方CLI5.0图片测试；不做真实视频测试。
 
@@ -31,6 +31,8 @@ M6.3 增加折叠的 [Canvas 进程阶段诊断](docs/CANVAS_PROCESS_PHASES.md)�
 5. [云端实现进度与运行检查](docs/IMPLEMENTATION_PROGRESS.md)
 6. [官方 SDK 桥接状态与边界](docs/SDK_BRIDGE.md)
 7. [SDK 共享核心接线](docs/SDK_CORE_INTEGRATION.md)与[有界原生验收](docs/NATIVE_ACCEPTANCE.md)
-8. [候选创作包](rules/stage3/manifest.json)：10份原版skill＋12份支持文件，逐字节保存，inactive；实际采用来源已核对，完整运行适配仍待单独授权的源码传递
+8. [规则版本与来源](reference-skills/README.md)：桌面初版29份、旧MacGit21份、实际Mac生产22份，原件及大小/SHA/运行角色分别保存
+9. [候选创作包](rules/stage3/manifest.json)：10份原版skill＋12份支持文件，逐字节保存，inactive；实际采用来源已核对，完整运行适配仍待单独授权的源码传递
+10. [Windows合并与本机修改过程](docs/handoff/LOCAL_STANDARD_EDITION.md)：已提交历史、本机修改、当前真实缺口、独立Git历史分支和平台复验步骤
 
 整合版 SKILL 和失败试验不作为生产基线。执行前先读 AGENTS.md 与完整任务书。当前继续完整运行适配和原生验收，不重复索取整体项目授权。

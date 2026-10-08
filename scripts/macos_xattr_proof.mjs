@@ -13,7 +13,7 @@ export async function compileAttributeCollector(directory, runCompiler) {
   const sourceSha256 = hash(await fs.readFile(collectorSource));
   const result = await runCompiler({ executable: '/usr/bin/cc',
     args: ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror', collectorSource, '-o', target],
-    options: { cwd: directory, env: { PATH: '/usr/bin:/bin:/usr/sbin:/sbin', LANG: 'C', LC_ALL: 'C' },
+    options: { cwd: directory, env: { PATH: '/usr/bin:/bin:/usr/sbin:/sbin', LANG: 'C', LC_ALL: 'C', TMPDIR: directory },
       shell: false, stdio: 'ignore', timeout: 30_000, killSignal: 'SIGKILL' } });
   if (result.status !== 0 || result.error || result.signal || result.timedOut || result.interrupted || result.stopError || result.unknown) {
     await writeProof(directory, 'collector.json', { schema: 'macos-xattr-collector/v1', compiled: false, sourceSha256,

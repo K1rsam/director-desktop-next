@@ -18,7 +18,7 @@ fn main() {
   if a.len()==2 && a[1]=="-h" && ["multimodal2video","text2video","text2image","image2image"].contains(&a[0].as_str()) {note(&format!("{} -h",a[0]));println!("official synthetic help only --model_version 5.0Pro --ratio 16:9 --resolution_type 2k");return;}
   if a==["user_credit"] {note("user_credit");println!("{{\"data\":{{\"user_id\":\"PRIVATE_SENTINEL\",\"total_credit\":42,\"gift_credit\":7}}}}");return;}
  } else {
-  if a==["--version"] {note("version");if __KIND__=="codex-output-flood" {for _ in 0..2048 {std::io::stdout().write_all(&[b'x';1024]).unwrap();}return;}println!("codex-cli synthetic-readiness");return;}
+  if a==["--version"] {note("version");if __KIND__=="codex-cold-start" {std::thread::sleep(std::time::Duration::from_millis(3500));}if __KIND__=="codex-output-flood" {for _ in 0..2048 {std::io::stdout().write_all(&[b'x';1024]).unwrap();}return;}println!("codex-cli synthetic-readiness");return;}
   if a==["exec","--help"] {note("exec-help");println!("--json --output-schema --output-last-message --ignore-user-config --ignore-rules --ephemeral");return;}
   if a.first().map(String::as_str)==Some("app-server") {
    note("app-server");
@@ -73,6 +73,22 @@ fn enabled_engine(home: PathBuf) -> Arc<Engine> {
     engine
 }
 #[test]
+fn readiness_codex_cold_native_start_reads_only_and_preserves_the_deadline() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = native_fixture(dir.path(), "codex-cold-start");
+    let engine = enabled_engine(dir.path().join("home"));
+    let project = engine.dispatch(json!({"action":"projects.create","title":"synthetic cold launch"})).unwrap();
+    let start = std::time::Instant::now();
+    let r = engine.dispatch(json!({"action":"readiness.check","provider":"codex_cli","projectId":project["id"],"settings":{"codexPath":path}})).unwrap();
+    assert_eq!(r["installation"]["state"], "ready", "{r}");
+    assert_eq!(r["protocol"]["state"], "ready", "{r}");
+    assert_eq!(r["generation"]["calls"], 0);
+    assert!(start.elapsed() < std::time::Duration::from_secs(25));
+    assert!(engine.store(s(&project,"id")).unwrap().jobs().unwrap().is_empty());
+    let calls = fs::read_to_string(dir.path().join("codex-cold-start-calls.txt")).unwrap();
+    assert!(!calls.contains("FORBIDDEN"));
+}
+#[test]
 fn explicit_codex_check_uses_only_read_rpc_preserves_settings_and_never_unlocks_generation() {
     let dir = tempfile::tempdir().unwrap();
     let path = native_fixture(dir.path(), "codex");
@@ -84,7 +100,7 @@ fn explicit_codex_check_uses_only_read_rpc_preserves_settings_and_never_unlocks_
     let before = store.settings().unwrap();
     let result=engine.dispatch(json!({"action":"readiness.check","projectId":project["id"],"provider":"codex_cli","settings":{"codexPath":path}})).unwrap();
     assert_eq!(result["schemaVersion"], crate::readiness::VERSION);
-    assert_eq!(result["installation"]["state"], "ready");
+    assert_eq!(result["installation"]["state"], "ready", "{result}");
     assert_eq!(result["protocol"]["state"], "ready");
     assert_eq!(result["authentication"]["state"], "authenticated");
     assert_eq!(result["catalog"]["state"], "available");
@@ -196,7 +212,7 @@ fn rpc_failure_keeps_verified_cli_version_and_does_not_claim_logged_out_or_model
         .dispatch(json!({"action":"projects.create","title":"synthetic RPC failure"}))
         .unwrap();
     let r=engine.dispatch(json!({"action":"readiness.check","provider":"codex_cli","projectId":p["id"],"settings":{"codexPath":path}})).unwrap();
-    assert_eq!(r["installation"]["state"], "ready");
+    assert_eq!(r["installation"]["state"], "ready", "{r}");
     assert_eq!(
         r["installation"]["version"],
         "codex-cli synthetic-readiness"
@@ -582,4 +598,22 @@ fn canvas_supervisor_timeout_survives_the_full_readiness_error_path() {
     assert_eq!(observation["preCleanup"]["state"],"running");assert_eq!(observation["cleanup"]["killRequested"],true);assert_eq!(observation["cleanup"]["reapConfirmed"],true);
     assert_eq!(observation["stdout"]["bytes"],0);assert_eq!(report["authentication"]["state"],"not_checked");assert_eq!(report["generation"]["calls"],0);
     assert_eq!(fs::read_to_string(dir.path().join("canvas-version-timeout-calls.txt")).unwrap(),"--format json version\n");
+}
+
+#[test]
+fn canvas_oauth_is_native_only_and_separate_from_generation() {
+    let dir = tempfile::tempdir().unwrap();
+    let disabled = Engine::new_offline_verification(dir.path().join("disabled")).unwrap();
+    assert!(disabled.dispatch(json!({"action":"canvas.loginStatus","projectId":"missing"})).is_err());
+    let engine = enabled_engine(dir.path().join("enabled"));
+    let p = engine.dispatch(json!({"action":"projects.create","title":"synthetic oauth"})).unwrap();
+    let fixture=native_fixture(dir.path(),"dreamina-oauth-status-only");
+    let status = engine.dispatch(json!({"action":"canvas.loginStatus","projectId":p["id"],"settings":{"dreaminaCanvasPath":fixture}}));
+    assert!(status.is_ok(), "native OAuth status must be usable without enabling generation: {status:?}");
+    assert_eq!(status.unwrap()["state"], "idle");
+    assert!(engine.dispatch(json!({"action":"canvas.logout","projectId":p["id"],"settings":{"dreaminaCanvasPath":fixture}})).unwrap_err().contains("请先确认"));
+    let policy = engine.dispatch(json!({"action":"getExecutionPolicy"})).unwrap();
+    assert_eq!(policy["canvasOAuth"]["enabled"],true);
+    assert_eq!(policy["liveExecutionAllowed"],false);
+    assert!(engine.dispatch(json!({"action":"images.run","projectId":p["id"]})).is_err());
 }

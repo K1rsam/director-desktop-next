@@ -14,7 +14,7 @@ fn main() {
             .map_err(|e| e.to_string())?;
         let request: Value = serde_json::from_str(&body).map_err(|e| e.to_string())?;
         let mode = args.next();
-        if mode.as_deref() == Some("--native-cli-acceptance")
+        if (mode.as_deref() == Some("--native-cli-acceptance") || home.join("native-cli-acceptance.json").try_exists().map_err(|e| e.to_string())?)
             && [
                 "foundation.run",
                 "images.design",

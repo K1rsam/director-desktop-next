@@ -1,0 +1,512 @@
+{
+  "version": "mac-runtime-transfer-requirements/v1",
+  "observedAtUtc": "2026-10-07T12:57:37.383989+00:00",
+  "sourceGitHead": "2511c56a52794cf5c5ee88434afafb96c787ad4c",
+  "sourceHasUncommittedProductionChanges": true,
+  "sourceRole": "current_actual_Mac_working_tree_not_proof_of_all_historical_code_bytes",
+  "bodyTransferAuthorized": false,
+  "newStage3RuntimeIntegrated": false,
+  "scope": "41 static MJS dependencies from four assembly entries plus one TS business-binding reference. Not a copy-paste runtime or broad old-project migration. Supporting original 22 rules are already separately authorized. Earlier 29-file packet is not asserted to equal this dependency closure.",
+  "entryPoints": [
+    "runtime/storyboard-v4/core/core.mjs",
+    "runtime/storyboard-v4/core/pipeline.mjs",
+    "runtime/storyboard-v4/core/runner.mjs",
+    "runtime/storyboard-v4/input.mjs"
+  ],
+  "files": [
+    {
+      "path": "lib/storyboard-service.ts",
+      "bytes": 35185,
+      "sha256": "628d6e775f725ec689921f0c0d0f969b24b175e81a4a73d3ad5f6f6f92d05232",
+      "purpose": "Web-to-runtime assembly, version assertions and business source binding; read contract only, do not migrate Web/prisma infrastructure",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/episode-boundary.mjs",
+      "bytes": 14917,
+      "sha256": "5addee7e9c8da5e3b025e0dce74ccaf653357d525042249bac681841b9fa451c",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: episode-boundary",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/production-supply.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/feedback-repair.mjs",
+      "bytes": 7127,
+      "sha256": "7d0d285e74852b6b84210dae7212c208b8db41936a0a5f0d4de1e355a7a10fbf",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: feedback-repair",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/episode-boundary.mjs",
+        "runtime/production-supply.mjs",
+        "runtime/storyboard-v4/core/schema-references.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/inline-performance.mjs",
+      "bytes": 4613,
+      "sha256": "85333fddc0608c2957c2eb2dbb7adb1efbc16cacbf56b4d567203b1d2865f82f",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: inline-performance",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/production-materials.mjs",
+      "bytes": 9732,
+      "sha256": "c2c1cfe7a1b25c81ef628c435c8d5adb743ca20a1c66afa4d219d84969d567be",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: production-materials",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/production-supply.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/production-read-pack.mjs",
+      "bytes": 8545,
+      "sha256": "36ed1253c494caeb317bf8f4cf5202c0cee2ba00ad25b33a919132d1915d74de",
+      "purpose": "Source-preserving production projection and compact model input: production-read-pack",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/standard-source.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/production-supply.mjs",
+      "bytes": 6604,
+      "sha256": "451e65c73c9adccd968da3515a2f3d89dcf3f97f1396548ace713092eb485638",
+      "purpose": "Source-preserving production projection and compact model input: production-supply",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/production-context-projection.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/production-transport.mjs",
+      "bytes": 4722,
+      "sha256": "6ccacc8c3a530412990a52c4d54728fc99e4efbe9b30339e4f559a44fd33edc0",
+      "purpose": "Source-preserving production projection and compact model input: production-transport",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/accepted-continuity.mjs",
+      "bytes": 2113,
+      "sha256": "49eb1aebcf480c59bb213db4c3a944aad1d41ac876e2da74ec5216a5646bf589",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: accepted-continuity",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/attempt-diagnostics.mjs",
+      "bytes": 5722,
+      "sha256": "63408b95f94562067467f4c5e15a26856045398f913fcadf0913bd1fe1af35e1",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: attempt-diagnostics",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/author-call-groups.mjs",
+      "bytes": 3341,
+      "sha256": "11d351a0c7c1b422403f106e88b3c1715ba6d1f29488d1ac15f256f6722e328e",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: author-call-groups",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/execution-batches.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/core.mjs",
+      "bytes": 46495,
+      "sha256": "2a54191b19a89d9a09f996a70ad15dff132de84ecd5eab2a1b9f94a1712c4bd6",
+      "purpose": "Rule loader, selected read pack, compiled prompt and schema assembly",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/source.mjs",
+        "runtime/storyboard-v4/core/selection.mjs",
+        "runtime/storyboard-v4/core/delta.mjs",
+        "runtime/storyboard-v4/core/director-refinement.mjs",
+        "runtime/storyboard-v4/core/output-schema.mjs",
+        "runtime/storyboard-v4/core/event-unit-packing.mjs",
+        "runtime/storyboard-v4/core/creative-brief.mjs",
+        "runtime/storyboard-v4/core/rhythm-brief.mjs",
+        "runtime/storyboard-v4/core/fantasy-timing.mjs",
+        "runtime/storyboard-v4/core/visual-subjects.mjs",
+        "runtime/storyboard-v4/core/visual-style.mjs",
+        "runtime/storyboard-v4/core/execution-batches.mjs",
+        "runtime/storyboard-v4/core/lossless-input.mjs",
+        "runtime/storyboard-v4/core/author-call-groups.mjs",
+        "runtime/storyboard-v4/core/schema-references.mjs",
+        "runtime/storyboard-v4/core/accepted-continuity.mjs",
+        "runtime/storyboard-v4/core/fact-projection.mjs",
+        "runtime/storyboard-v4/core/production-context-projection.mjs",
+        "runtime/episode-boundary.mjs",
+        "runtime/production-transport.mjs",
+        "runtime/production-read-pack.mjs",
+        "runtime/storyboard-v4/core/model-coordinates.mjs",
+        "runtime/production-supply.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/creative-brief.mjs",
+      "bytes": 3792,
+      "sha256": "b4abd404f43815e6d3b295fc893372a475e187018986dd6f735100b315b57392",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: creative-brief",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/rhythm-brief.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/delta.mjs",
+      "bytes": 3186,
+      "sha256": "aa561da409900a14b290ad229d40d1ef09f112f7f4a4c4b6aab9cdc719e9149c",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: delta",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/director-refinement.mjs",
+      "bytes": 14080,
+      "sha256": "2bf6b47b12c6fbd0e05651bde4c65161805250e8eaeb7ac6e43bd8e39a3dff35",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: director-refinement",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/delta.mjs",
+        "runtime/storyboard-v4/core/refinement-scope.mjs",
+        "runtime/storyboard-v4/core/refinement-source-resolution.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/event-unit-packing.mjs",
+      "bytes": 10977,
+      "sha256": "3aa5b1aeb55f3b9b8dbedfec1b15f377ab2a6fe51d9726cbfdfdd0d133da08d4",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: event-unit-packing",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/source.mjs",
+        "runtime/storyboard-v4/core/visual-subjects.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/execution-batches.mjs",
+      "bytes": 6227,
+      "sha256": "325bf2ae35377cdc0c87a2e5c41666c9ab0bc1789be044153baee1bd3f2bb44d",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: execution-batches",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/selection.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/fact-projection.mjs",
+      "bytes": 3396,
+      "sha256": "9dd44e2db61b539ba466bbb74c890156d6a4d4e1642b71295f059c010573b8b2",
+      "purpose": "Source-preserving production projection and compact model input: fact-projection",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/fantasy-timing.mjs",
+      "bytes": 2753,
+      "sha256": "49aff568193093e08649c3224b4d0d33ed9ef965e64eea7c7c08dd500cabfc1b",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: fantasy-timing",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/lossless-input.mjs",
+      "bytes": 7314,
+      "sha256": "8db1789bfc147ebb98b3988f6d0c1f763ed8f7fb80bb81a571489b8486c5246a",
+      "purpose": "Source-preserving production projection and compact model input: lossless-input",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/model-coordinates.mjs",
+      "bytes": 8609,
+      "sha256": "aac4130510685247dea7415ec451d7883101cd6aa7cc1412ed0e66e0e28ea0dd",
+      "purpose": "Source-preserving production projection and compact model input: model-coordinates",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/output-schema.mjs",
+      "bytes": 4919,
+      "sha256": "e47dd841c191d930fe3b638334722e2fca5fb2f59e3ccf1d3e38413ff3da47ef",
+      "purpose": "Versioned output schema, enums/reference projection and shared hashes: output-schema",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/delta.mjs",
+        "runtime/storyboard-v4/core/fantasy-timing.mjs",
+        "runtime/storyboard-v4/core/visual-subjects.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/pipeline.mjs",
+      "bytes": 59368,
+      "sha256": "92e004e90a41787dd905e75c99053bc6c529b0dd5fc47b9a47f031707a7d94fa",
+      "purpose": "Production operation lifecycle, immutable candidates and adoption coordinator",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/source.mjs",
+        "runtime/storyboard-v4/core/core.mjs",
+        "runtime/storyboard-v4/core/selection.mjs",
+        "runtime/storyboard-v4/core/quality.mjs",
+        "runtime/storyboard-v4/core/store.mjs",
+        "runtime/storyboard-v4/core/runner.mjs",
+        "runtime/storyboard-v4/core/delta.mjs",
+        "runtime/storyboard-v4/core/execution-batches.mjs",
+        "runtime/storyboard-v4/core/author-call-groups.mjs",
+        "runtime/storyboard-v4/core/accepted-continuity.mjs",
+        "runtime/episode-boundary.mjs",
+        "runtime/production-materials.mjs",
+        "runtime/production-transport.mjs",
+        "runtime/production-supply.mjs",
+        "runtime/feedback-repair.mjs",
+        "runtime/storyboard-v4/core/director-refinement.mjs",
+        "runtime/storyboard-v4/core/refinement-comparison.mjs",
+        "runtime/storyboard-v4/core/refinement-adoption.mjs",
+        "runtime/storyboard-v4/core/refinement-linked-units.mjs",
+        "runtime/storyboard-v4/core/refinement-source-resolution.mjs",
+        "runtime/storyboard-v4/core/execution-batches.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/production-context-projection.mjs",
+      "bytes": 13402,
+      "sha256": "4045e58af90b556ae7007d5b09c5f6354ff030116e6625c419703e82d2cdb002",
+      "purpose": "Source-preserving production projection and compact model input: production-context-projection",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/fact-projection.mjs",
+        "runtime/storyboard-v4/core/standard-source.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/quality.mjs",
+      "bytes": 18968,
+      "sha256": "92105c88e38ae06c08d91114592a95cafd7bc4d1d805f35e490a141e9feb04a8",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: quality",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/source.mjs",
+        "runtime/storyboard-v4/core/event-unit-packing.mjs",
+        "runtime/storyboard-v4/core/output-schema.mjs",
+        "runtime/storyboard-v4/core/visual-style.mjs",
+        "runtime/storyboard-v4/core/fantasy-timing.mjs",
+        "runtime/storyboard-v4/core/visual-subjects.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/refinement-adoption.mjs",
+      "bytes": 11645,
+      "sha256": "cc9145bb318ed896a61239c6e9c98e8ead50f197c5f8659d4b669e0f6aaa1525",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: refinement-adoption",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/delta.mjs",
+        "runtime/storyboard-v4/core/refinement-comparison.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/refinement-comparison.mjs",
+      "bytes": 2465,
+      "sha256": "cdd514a4fb45c0157fcb2e9d30bcc97b57bca4d8b958b69b251d1863c850106c",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: refinement-comparison",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/director-refinement.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/refinement-linked-units.mjs",
+      "bytes": 2825,
+      "sha256": "1117a7da9ec7fdc539908e1aafef5773904a6417af0bd2b4dc2b3312354e9e68",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: refinement-linked-units",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/delta.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/refinement-scope.mjs",
+      "bytes": 1294,
+      "sha256": "fad78a9a501e4af63873b24d8b4e8ec466e583c73903351909b265e6b4a08d31",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: refinement-scope",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/refinement-source-resolution.mjs",
+      "bytes": 2672,
+      "sha256": "76330b380b24b2998f0613ddfaa4be64441536edb5ccc18327ba9aba77225e8f",
+      "purpose": "Whole-episode refinement, comparison and mixed adoption contract: refinement-source-resolution",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/rhythm-brief.mjs",
+      "bytes": 14090,
+      "sha256": "a63c824bd8326b293b8e7a258bfee8afa4cd60e43c34d474641ad4ab71cad9a7",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: rhythm-brief",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/runner.mjs",
+      "bytes": 28960,
+      "sha256": "8269f2735a1a9ebd63ae657825e0672604bf83a64065f7835a7b0b0107914818",
+      "purpose": "CLI request execution and paid-response recovery; adapt to existing Rust transport rather than duplicate execution",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/attempt-diagnostics.mjs",
+        "runtime/storyboard-v4/core/model-coordinates.mjs",
+        "runtime/storyboard-v4/core/attempt-diagnostics.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/schema-references.mjs",
+      "bytes": 1657,
+      "sha256": "86cb5115756865b9bd8ba74a0d5c7aa20d4c28c0a000013a2e29d02c1da8944b",
+      "purpose": "Versioned output schema, enums/reference projection and shared hashes: schema-references",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/selection.mjs",
+      "bytes": 5763,
+      "sha256": "26fcbf0b78b8d8707f581a766ee4f4e10c2ab87b3655481182442f301e3f0183",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: selection",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/shared.mjs",
+      "bytes": 520,
+      "sha256": "adf04635927ee41a4348d69307efe88f7de27948fe0a7df4f69e0d2ff7df684e",
+      "purpose": "Versioned output schema, enums/reference projection and shared hashes: shared",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/source.mjs",
+      "bytes": 16509,
+      "sha256": "2fde855a8a5468e0df3fe97f4675e762ef64041cc7e509495ee972f734342cc5",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: source",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/standard-source.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/standard-source.mjs",
+      "bytes": 32548,
+      "sha256": "bb173a04230787809e4cfba6d347a30c4e367aaa662e61d8707fd940cf21ed59",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: standard-source",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/inline-performance.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/store.mjs",
+      "bytes": 4625,
+      "sha256": "5595f7cf2447ebb987ee4a2db491be5d826cc9045341d0fa5d5aba02076e4159",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: store",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/visual-style.mjs",
+      "bytes": 2474,
+      "sha256": "6dbdc6841f5f44fb189da8319ebaaf0311a0b0f179312cd783720e773ec55b1b",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: visual-style",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/core/visual-subjects.mjs",
+      "bytes": 890,
+      "sha256": "492e4588c4f1217090cdaf03175bb421648a3a0c2b8395bbc4a14fd814f8ef9e",
+      "purpose": "Creative/source validation, cadence, timing and domain contracts: visual-subjects",
+      "relativeImports": [],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/input.mjs",
+      "bytes": 37118,
+      "sha256": "af6bc17ee9e3f0e1b3ed78d1fd3ffd4d45bfc8b00cd62349a0085214f37bf6ca",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: input",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/source.mjs",
+        "runtime/storyboard-v4/core/visual-style.mjs",
+        "runtime/storyboard-v4/core/shared.mjs",
+        "runtime/storyboard-v4/core/selection.mjs",
+        "runtime/storyboard-v4/source-context.mjs",
+        "runtime/storyboard-v4/core/pipeline.mjs",
+        "runtime/feedback-repair.mjs",
+        "runtime/storyboard-v4/core/standard-source.mjs",
+        "runtime/storyboard-v4/core/director-refinement.mjs",
+        "runtime/storyboard-v4/core/refinement-scope.mjs",
+        "runtime/storyboard-v4/core/refinement-comparison.mjs",
+        "runtime/storyboard-v4/core/refinement-adoption.mjs",
+        "runtime/storyboard-v4/core/refinement-source-resolution.mjs"
+      ],
+      "bodyTransferred": false
+    },
+    {
+      "path": "runtime/storyboard-v4/source-context.mjs",
+      "bytes": 1773,
+      "sha256": "22022add1d9045d2c021e96f4c05e486939ec03f1aa8ce8423b2c7ba8b7a83ee",
+      "purpose": "Direct runtime dependency for input, continuity or immutable lifecycle: source-context",
+      "relativeImports": [
+        "runtime/storyboard-v4/core/shared.mjs"
+      ],
+      "bodyTransferred": false
+    }
+  ],
+  "fileCount": 42,
+  "totalBytes": 473935,
+  "exclusions": [
+    "Private episode/adopted bodies",
+    "Business databases",
+    "User media",
+    "Credentials and auth stores",
+    "Environment files",
+    "Codex session storage",
+    "Integrated export SKILL",
+    "Private experiments and production reports"
+  ]
+}

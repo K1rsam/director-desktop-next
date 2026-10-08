@@ -128,6 +128,18 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
         }
       } finally { view.unmount(); }
     });
+    await t.test('the main Jimeng check targets Canvas and its OAuth belongs to the same connection', () => {
+      const view = hookRenderer();
+      try {
+        const nodes = view.render(React.createElement(SettingsPanel, { workspace, writable: true, mutate: async () => { throw new Error('no writes during render'); } }));
+        const main = nodes.find(node => node.type === 'button' && content(node) === '检查即梦 CLI、账户与模型');
+        assert.ok(main);
+        assert.equal(main.props['data-readiness-provider'], 'dreamina_canvas');
+        const oauth = nodes.find(node => node.type === 'button' && content(node) === 'OAuth 连接即梦');
+        assert.ok(oauth);
+        assert.equal(oauth.props['data-execution-action'], 'canvas.login');
+      } finally { view.unmount(); }
+    });
     await t.test('Jimeng account and provider buttons use readiness with the current unsaved path', async () => {
       calls.length = 0; const view = hookRenderer();
       try {
@@ -402,6 +414,82 @@ test('actual readiness controls and effects use only the explicit read-only IPC'
         assert.ok(!nodes.some(node => node.props.role === 'alert'));
         assert.equal(calls.length, 3);
       } finally { view.unmount(); respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
+    });
+    await t.test('Canvas OAuth polls authorization, refreshes the main result and confirms force explicitly', async () => {
+      const { DreaminaCanvasReadiness } = await server.ssrLoadModule('/src/DreaminaCanvasReadiness.tsx');
+      policy.installExecutionPolicy(policy.validateExecutionPolicy({ ...capability, canvasOAuth: { version: 'canvas-oauth/v1', enabled: true } }));
+      const view = hookRenderer();
+      const element = React.createElement(DreaminaCanvasReadiness, { projectId: 'oauth-project', path: '/synthetic/canvas', writable: true, update() {} });
+      let state = 'idle';
+      respond = async input => {
+        if (input.action === 'readiness.check') return result('dreamina_canvas');
+        if (input.action === 'canvas.login') {
+          state = input.force ? 'failed' : 'authorizing';
+          return { state, userCode: 'PUBLIC_SYNTHETIC', message: input.force ? 'synthetic denied' : '请在官方网页确认' };
+        }
+        if (input.action === 'canvas.cancelLogin') return { state: 'cancelled' };
+        return { state };
+      };
+      try {
+        view.render(element); await settle(); view.render(element); await settle();
+        let nodes = view.render(element);
+        assert.ok(nodes.map(content).join(' ').includes('已连接即梦'));
+        calls.length = 0;
+        tab(nodes, 'OAuth 连接即梦').props.onClick(); await settle(); nodes = view.render(element);
+        assert.equal(calls[0].action, 'canvas.login'); assert.equal(calls[0].force, undefined);
+        assert.ok(nodes.map(content).join(' ').includes('PUBLIC_SYNTHETIC'));
+        assert.ok(!nodes.map(content).join(' ').includes('已连接即梦'), 'old success must be cleared during authorization');
+        assert.equal(button(nodes, 'dreamina_canvas').props.disabled, true);
+        state = 'authenticated';
+        await new Promise(resolve => setTimeout(resolve, 1100)); await settle(); view.render(element); await settle(); nodes = view.render(element);
+        assert.ok(calls.some(call => call.action === 'canvas.loginStatus'));
+        assert.ok(calls.some(call => call.action === 'readiness.check' && call.provider === 'dreamina_canvas'));
+        assert.ok(nodes.map(content).join(' ').includes('已连接即梦'));
+        const before = calls.length;
+        tab(nodes, '重新登录').props.onClick(); nodes = view.render(element);
+        assert.equal(calls.length, before, 'force must not run before the explicit in-app confirmation');
+        tab(nodes, '确认重新授权').props.onClick(); await settle(); nodes = view.render(element);
+        assert.equal(calls.at(-1)?.force, true); assert.equal(calls.at(-1)?.confirmedForce, true);
+        assert.ok(!nodes.map(content).join(' ').includes('已连接即梦'), 'failed renewal must not retain stale success');
+        assert.ok(nodes.map(content).join(' ').includes('synthetic denied'));
+        tab(nodes, 'OAuth 连接即梦').props.onClick(); await settle(); nodes = view.render(element);
+        tab(nodes, '取消等待').props.onClick(); await settle(); nodes = view.render(element);
+        assert.equal(calls.at(-1)?.action, 'canvas.cancelLogin');
+        assert.equal(button(nodes, 'dreamina_canvas').props.disabled, false);
+      } finally {
+        view.unmount(); policy.installExecutionPolicy(policy.validateExecutionPolicy(capability));
+        respond = async input => result(input.provider as ProviderReadinessReport['provider']);
+      }
+    });
+    await t.test('Canvas account panel shows verified membership, unknown credits and explicit logout confirmation', async () => {
+      const { DreaminaCanvasReadiness } = await server.ssrLoadModule('/src/DreaminaCanvasReadiness.tsx');
+      policy.installExecutionPolicy(policy.validateExecutionPolicy({ ...capability, canvasOAuth: { version: 'canvas-oauth/v1', enabled: true } }));
+      const view = hookRenderer();
+      const element = React.createElement(DreaminaCanvasReadiness, { projectId: 'account-project', path: '/synthetic/canvas', writable: true, update() {} });
+      let loggedOut = false;
+      respond = async input => {
+        if (input.action === 'canvas.loginStatus') return { state: 'idle' };
+        if (input.action === 'canvas.logout') { loggedOut = true; return { state: 'logged_out', message: '已退出登录' }; }
+        const report = result('dreamina_canvas');
+        report.details = { accountQuery: { state: 'available', isVip: true, vipLevel: 'maestro' } };
+        if (loggedOut) { report.authentication = { state: 'not_logged_in', identityVerified: false }; report.catalog = { state: 'not_checked', models: [] }; report.details = {}; }
+        return report;
+      };
+      try {
+        view.render(element); await settle(); view.render(element); await settle(); let nodes = view.render(element);
+        assert.ok(nodes.map(content).join(' ').includes('会员（maestro）'));
+        assert.ok(nodes.map(content).join(' ').includes('账户额度'));
+        assert.ok(nodes.map(content).join(' ').includes('当前接口未提供'));
+        assert.ok(nodes.some(node => node.type === 'details' && node.props['data-connection-diagnostics'] && !node.props.open));
+        calls.length = 0;
+        tab(nodes, '退出登录').props.onClick(); nodes = view.render(element);
+        assert.equal(calls.length, 0);
+        tab(nodes, '确认退出登录').props.onClick(); await settle(); view.render(element); await settle(); nodes = view.render(element);
+        assert.equal(calls[0].action, 'canvas.logout'); assert.equal(calls[0].confirmedLogout, true);
+        assert.ok(!nodes.map(content).join(' ').includes('会员（maestro）'));
+        assert.ok(nodes.map(content).join(' ').includes('未登录'));
+        assert.ok(!nodes.map(content).join(' ').includes('已连接即梦'));
+      } finally { view.unmount(); policy.installExecutionPolicy(policy.validateExecutionPolicy(capability)); respond = async input => result(input.provider as ProviderReadinessReport['provider']); }
     });
     await t.test('invalid readiness and model-generation claims are rejected; other live actions remain closed', async () => {
       for (const invalid of [null, {}, { ...result('codex_cli'), provider: 'dreamina' }, { ...result('codex_cli'), schemaVersion: 'other' }, { ...result('codex_cli'), generation: { enabled: true, testPerformed: false, calls: 0 } }, { ...result('codex_cli'), generation: { enabled: false, testPerformed: true, calls: 1 } }]) assert.throws(() => validateProviderReadiness(invalid, 'codex_cli'));

@@ -1,5 +1,4 @@
-//! Product execution boundary. The first migration build is deliberately offline.
-//! Injected test channels exercise the inherited core without enabling user credentials.
+//! Native product capabilities and a separate isolated verification boundary.
 use crate::{providers::*, tasks::Channels};
 use serde_json::{json, Value};
 use std::path::Path;
@@ -47,6 +46,37 @@ pub const OFFLINE_ACTIONS: &[&str] = &[
     "backup.restore",
 ];
 pub const CREDENTIAL_FIELDS: &[&str] = &["bhToken", "chromeToken", "textApiKey"];
+pub const STANDARD_ACTIONS: &[&str] = &[
+    "foundation.run", "foundation.choices.apply", "images.design", "images.produce", "images.run",
+    "workflows.resume", "providers.refresh", "videos.preflight", "videos.prepare", "videos.submit",
+    "jobs.query", "jobs.download", "jobs.reconcile", "textCli.status", "textCli.login",
+    "textCli.loginStatus", "textCli.cancelLogin", "textCli.openLogin", "dreamina.status",
+    "dreamina.login", "dreamina.logout", "dreamina.open_authorization",
+];
+pub const STAGE3_ACTIONS: &[&str] = &["storyboard.run", "storyboard.decision.resolve", "units.regenerate"];
+
+pub fn check_standard(request: &Value) -> Result<(), String> {
+    let action = request["action"].as_str().unwrap_or("");
+    if STAGE3_ACTIONS.contains(&action) {
+        return if creative_runtime_ready() { Ok(()) }
+        else { Err("STAGE3_ADAPTER_PENDING: 最新 3008 创作运行装配尚未接入；已有分镜和历史保留，未调用模型。".into()) };
+    }
+    if OFFLINE_ACTIONS.contains(&action) || STANDARD_ACTIONS.contains(&action) { return Ok(()); }
+    Err(format!("STANDARD_ACTION_UNSUPPORTED: {action} 尚未实现"))
+}
+pub fn standard_report() -> Value {
+    let mut actions = OFFLINE_ACTIONS.to_vec();
+    actions.extend_from_slice(STANDARD_ACTIONS);
+    if creative_runtime_ready() { actions.extend_from_slice(STAGE3_ACTIONS); }
+    json!({"version":"execution-policy/v3","mode":"standard_native","liveExecutionAllowed":true,
+        "stage3CreativePackStatus":if creative_runtime_ready(){"verified_active"}else{"inactive"},
+        "allowedActions":actions,"credentialBackend":crate::platform::credential_backend_status(),
+        "reasons":["第一阶段制作和第二阶段提示词设计使用所选真实文字渠道。",
+            "图片及视频沿用已实现渠道的账户、模型、费用确认和未知提交保护；即梦画布生成桥尚未接入。",
+            "最新 3008 第三阶段尚待运行适配；官方 SDK 真实执行尚未开放。"],
+        "textBackends":[{"id":"codex_cli","status":"enabled"},{"id":"codex_sdk","status":"offline_contract_only"}],
+        "localAcceptance":{"backend":"codex_cli","model":"gpt-6.1-sol","reasoning":"medium"}})
+}
 pub fn report() -> Value {
     json!({"version":"execution-policy/v1", "mode":"offline_prepare_only",
         "liveExecutionAllowed":false, "stage3CreativePackStatus":"inactive",

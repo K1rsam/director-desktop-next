@@ -353,7 +353,7 @@ fn main() {
             let engine = match &acceptance_grant {
                 Some(grant) => Engine::with_native_acceptance(home,grant.clone()),
                 None if setup_verification.is_some() => Engine::new_offline_verification(home),
-                None => Engine::new(home),
+                None => Engine::new_standard(home),
             }.map_err(std::io::Error::other)?;
             let engine=engine.with_native_resource_root(app.path().resource_dir()?).map_err(std::io::Error::other)?;
             if let Some(v) = &setup_verification {
@@ -419,6 +419,7 @@ fn main() {
                 // Keep the process alive until workers finish saving receipts and errors.
                 // Child exit alone is insufficient: SQLite writes follow process output collection.
                 if closing.load(std::sync::atomic::Ordering::SeqCst)
+                    && engine.canvas_oauth_stopped()
                     && engine.await_worker_shutdown(0)
                     && director_core::providers::await_local_shutdown(0)
                     && director_core::text_executor::await_local_shutdown(0)
@@ -432,6 +433,7 @@ fn main() {
                 }
                 if let Some(v) = &run_verification { v.diagnostics.mark(DiagnosticStage::ShutdownStarted); }
                 engine.stop.store(true, std::sync::atomic::Ordering::SeqCst);
+                engine.cancel_canvas_oauth();
                 for window in app.webview_windows().values() {
                     let _ = window.hide();
                 }
@@ -462,7 +464,7 @@ fn main() {
                         let text_done = director_core::text_executor::await_local_shutdown(1);
                         let media_done = director_core::media_probe::await_local_shutdown(1);
                         let workers_done = engine.await_worker_shutdown(1);
-                        if providers_done && text_done && media_done && workers_done {
+                        if providers_done && text_done && media_done && workers_done && engine.canvas_oauth_stopped() {
                             if let Some(v) = &shutdown_verification {
                                 v.diagnostics.mark(DiagnosticStage::ShutdownFinished);
                                 v.diagnostics.mark(DiagnosticStage::NativeExitIssued);

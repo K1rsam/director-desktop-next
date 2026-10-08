@@ -1,7 +1,7 @@
 {
   "schemaVersion": "creative-candidate-manifest/v1",
   "packId": "mac-3008-original-export-20261006",
-  "status": "candidate_not_approved_for_runtime",
+  "status": "production_rules_verified_runtime_adapter_pending",
   "active": false,
   "activePackId": null,
   "repository": "K1rsam/director-desktop-next",
@@ -9,16 +9,28 @@
     "repository": "K1rsam/director-web",
     "ref": "00093c632c45369106c7ef79a47b684fd5e77526",
     "path": "skill-packs/3008-stage3/2026-10-06/stage3-storyboard-director/references/原版/",
-    "authority": "byte_verified_export_candidates_pending_actual_adopted_runtime_verification",
-    "runtimeCodeStatus": "latest_adopted_Mac_working_tree_not_pinned",
+    "authority": "pinned_export_candidate_bytes_match_both_adopted_Mac_tasks_and_current_runtime_rules",
+    "runtimeCodeStatus": "current_Mac_working_tree_dependency_hashes_recorded_historical_complete_source_not_pinned",
     "excludeIntegratedSkill": true
   },
   "evidence": {
     "byteHashVerification": "verified_against_pinned_export_and_source_manifest",
-    "fullMacRuntimeCode": "not_yet_verified",
+    "fullMacRuntimeCode": "adapter_not_integrated_current_dependency_manifest_only",
     "lastAdoptedRunHistoryMessage": 228,
     "failedExperimentIsBaseline": false,
-    "integratedSkillIsBaseline": false
+    "integratedSkillIsBaseline": false,
+    "actualAdoptedFrozenRules": "22_of_22_match_in_both_production_tasks_and_current_Mac_rules",
+    "productionSummary": {
+      "ep1FinalSeconds": 210,
+      "ep2FinalSeconds": 125,
+      "literalLinesPreserved": 53,
+      "knownCalls": 10,
+      "knownTokens": 776746,
+      "privateBodyUploaded": false
+    },
+    "runtimeDependencyManifest": "docs/handoff/MAC_RUNTIME_TRANSFER_REQUIREMENTS.json",
+    "referenceIndex": "reference-skills/index.json",
+    "currentLibraryDocxSameSource": "not_confirmed_local_bytes_unavailable"
   },
   "runtimeLabelsReportedByExport": [
     "production-lean-v4",

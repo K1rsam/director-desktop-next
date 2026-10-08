@@ -59,8 +59,10 @@ pub struct Engine {
     // Serializes registry lifecycle changes with synchronous dispatch and worker reservations.
     lifecycle_mutex: Mutex<()>,
     dreamina_sessions: Arc<DreaminaSessions>,
+    canvas_sessions: crate::canvas_oauth::CanvasSessions,
     live_accounts: bool,
     offline_only: bool,
+    standard_native: bool,
     native_acceptance: Option<Arc<crate::native_acceptance::NativeAcceptance>>,
     readiness_enabled: bool,
     readiness_resources: Option<PathBuf>,
@@ -287,8 +289,30 @@ fn prepared_source_prompt_provenance(
     )
 }
 impl Engine {
+    /// Normal installed desktop. Isolated probes and the one-shot diagnostic
+    /// core keep their explicit offline constructor; no UI switch changes this.
+    pub fn new_standard(home: PathBuf) -> Result<Arc<Self>> {
+        crate::platform::ensure_isolated_home(&home)?;
+        if !cfg!(any(target_os="macos",target_os="windows")) {
+            return Self::new_offline_verification(home);
+        }
+        let saved_grant = home.join("native-cli-acceptance.json");
+        if saved_grant.try_exists().map_err(|e| e.to_string())? {
+            // Preserve an existing source-bound test reservation and its budget.
+            return Self::with_native_acceptance(home, crate::native_acceptance::AcceptanceGrant::from_file(&saved_grant)?);
+        }
+        let mut engine=Self::build(home, Arc::new(crate::tasks::RealChannels), true, false)?;
+        let inner=Arc::get_mut(&mut engine).ok_or("初始化所有权无效")?;
+        inner.standard_native=true;
+        inner.readiness_enabled=true;
+        Ok(engine)
+    }
     pub fn new(home: PathBuf) -> Result<Arc<Self>> {
         crate::platform::ensure_isolated_home(&home)?;
+        let saved_grant = home.join("native-cli-acceptance.json");
+        if saved_grant.try_exists().map_err(|e| e.to_string())? {
+            return Self::with_native_acceptance(home, crate::native_acceptance::AcceptanceGrant::from_file(&saved_grant)?);
+        }
         let mut engine=Self::build(home, Arc::new(crate::execution_policy::OfflineChannels), false, true)?;
         Arc::get_mut(&mut engine).ok_or("初始化所有权无效")?.readiness_enabled=cfg!(any(target_os="macos",target_os="windows"));
         Ok(engine)
@@ -346,8 +370,10 @@ impl Engine {
             registry_mutex: Mutex::new(()),
             lifecycle_mutex: Mutex::new(()),
             dreamina_sessions: Arc::new(DreaminaSessions::default()),
+            canvas_sessions: crate::canvas_oauth::CanvasSessions::default(),
             live_accounts,
             offline_only,
+            standard_native: false,
             native_acceptance: None,
             readiness_enabled: false,
             readiness_resources: None,
@@ -917,17 +943,51 @@ impl Engine {
             json!({"project":store.project()?,"source":source,"foundation":store.foundation()?,"assets":assets,"deletedAssets":deleted_assets,"media":media,"units":units,"jobs":summaries,"workflowProgress":store.workflow_progress()?,"settings":settings,"providers":providers,"dreaminaAccount":self.dreamina_sessions.snapshot(&self.dreamina_config(store)?)?,"rules":rules,"diagnostics":diagnostics,"lastImportReport":report}),
         )
     }
+    pub fn cancel_canvas_oauth(&self) { self.canvas_sessions.shutdown(); }
+    pub fn canvas_oauth_stopped(&self) -> bool { self.canvas_sessions.stopped() }
     pub fn dispatch(self: &Arc<Self>, request: Value) -> Result<Value> {
         let action = s(&request, "action");
         if action == "getExecutionPolicy" {
-            let mut policy=match &self.native_acceptance {Some(a)=>crate::execution_policy::native_report(a),None=>crate::execution_policy::report()};
+            let mut policy=match &self.native_acceptance {Some(a)=>crate::execution_policy::native_report(a),None if self.standard_native=>crate::execution_policy::standard_report(),None=>crate::execution_policy::report()};
             policy["readiness"]=crate::readiness::capability(self.readiness_enabled);
+            policy["canvasOAuth"]=json!({"version":"canvas-oauth/v1","enabled":self.readiness_enabled});
             return Ok(policy);
+        }
+        if crate::canvas_oauth::ACTIONS.contains(&action) {
+            if !self.readiness_enabled { return Err("CANVAS_AUTH_NATIVE_ONLY: 当前环境未开放本机即梦授权。".into()); }
+            let _lifecycle=self.lifecycle_mutex.lock().map_err(|e|e.to_string())?;
+            let project=s(&request,"projectId");
+            let store=self.store(project)?;
+            let (_,settings)=crate::readiness::request_settings(&json!({"provider":"dreamina_canvas","settings":request["settings"]}),&store.settings()?)?;
+            let path=crate::canvas_oauth::resolve(&settings,self.readiness_resources.as_deref(),&self.home)?;
+            return match action {
+                "canvas.login" => {
+                    if request.get("force").is_some_and(|v|!v.is_boolean()) {return Err("重新授权参数无效。".into());}
+                    let force=request["force"]==true;
+                    if force && request["confirmedForce"]!=true {return Err("重新授权会清除本配置登录态，请先确认。".into());}
+                    store.save_settings(&json!({"dreaminaCanvasPath":path}))?;
+                    atomic_json(&self.home.join("canvas-cli-path.json"),&json!({"path":path}))?;
+                    self.canvas_sessions.begin(project,path,force)
+                },
+                "canvas.logout" => {
+                    if request["confirmedLogout"]!=true {return Err("退出会清除当前 Canvas 配置的登录状态，请先确认。".into());}
+                    self.canvas_sessions.logout(project,path)
+                },
+                "canvas.loginStatus" => self.canvas_sessions.status(project,&path),
+                "canvas.cancelLogin" => self.canvas_sessions.cancel(project,&path),
+                _ => {
+                    let state=self.canvas_sessions.status(project,&path)?;
+                    if state["state"]!="authorizing" {return Err("当前没有等待确认的即梦授权。".into());}
+                    crate::canvas_oauth::open_authorization(s(&state,"verificationUrl"))?;
+                    Ok(state)
+                }
+            };
         }
         if action=="readiness.check" && !self.readiness_enabled {
             return Err("READINESS_NATIVE_ONLY: 只读连接检查仅由本机桌面显式触发；云端和隔离启动探针不读取宿主账户".into());
         }
         if self.native_acceptance.is_some() { crate::execution_policy::check_native_action(&request)?; }
+        else if self.standard_native { crate::execution_policy::check_standard(&request)?; }
         else if self.offline_only { crate::execution_policy::check(&request)?; }
         // File pickers and library reads must not hold a project lifecycle reservation.
         match action {
@@ -1016,6 +1076,10 @@ impl Engine {
                 self.spawn_foundation_choices(store.clone(), &request)?;
             }
             "workflows.resume" | "storyboard.decision.resolve" => {
+                if self.standard_native && !crate::execution_policy::creative_runtime_ready()
+                    && s(&store.job(s(&request,"workflowId"))?, "entityId") == "storyboard.run" {
+                    return Err("STAGE3_ADAPTER_PENDING: 最新 3008 运行装配尚未接入；原工作流和预算保留，未重发。".into());
+                }
                 self.resume_production(store.clone(), &request)?;
             }
             "units.regenerate" => {
@@ -1200,7 +1264,10 @@ impl Engine {
                 }
             }
             "readiness.check" => {
-                let (provider,settings)=crate::readiness::request_settings(&request,&store.settings()?)?;
+                let (provider,mut settings)=crate::readiness::request_settings(&request,&store.settings()?)?;
+                if provider=="dreamina_canvas" {
+                    if let Ok(path)=crate::canvas_oauth::resolve(&settings,self.readiness_resources.as_deref(),&self.home) {settings["dreaminaCanvasPath"]=json!(path);}
+                }
                 let _readiness=self.acquire_keys(vec![format!("readiness:{provider}")])?;
                 return Ok(crate::text_cli::control_runtime()?.block_on(crate::readiness::check(&provider,&settings,self.readiness_resources.as_deref())));
             }

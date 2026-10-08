@@ -385,6 +385,9 @@ fn command(path: &Path) -> tokio::process::Command {
 
 const INSPECTION_STDOUT_LIMIT:usize=262_144;
 const INSPECTION_STDERR_LIMIT:usize=65_536;
+// Native cold launch can exceed three seconds under concurrent compilation on
+// macOS. This only bounds local version/help inspection, never a model request.
+const INSPECTION_TIMEOUT:Duration=Duration::from_secs(10);
 const RPC_LINE_LIMIT:usize=1_048_576;
 const RPC_TOTAL_LIMIT:usize=16_777_216;
 const RPC_FRAME_LIMIT:usize=2048;
@@ -412,7 +415,7 @@ async fn inspect_command(path: &Path, arguments: &[&str]) -> Result<String> {
     let (mut child,_registration)=crate::text_executor::spawn_cli_child(&mut cmd)?;
     let stdout=child.stdout.take().ok_or("CLI 检查输出不可用")?;
     let stderr=child.stderr.take().ok_or("CLI 检查错误输出不可用")?;
-    let result=tokio::time::timeout(Duration::from_secs(3),async {
+    let result=tokio::time::timeout(INSPECTION_TIMEOUT,async {
         let (stdout,stderr,status)=tokio::try_join!(
             bounded_inspection_read(stdout,INSPECTION_STDOUT_LIMIT),
             bounded_inspection_read(stderr,INSPECTION_STDERR_LIMIT),

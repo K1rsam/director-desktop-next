@@ -292,7 +292,7 @@ fn catalog(data: &Value) -> ProviderResult<Value> {
     Ok(json!(models))
 }
 
-fn executable(path: &Path) -> ProviderResult<Value> {
+pub(crate) fn executable(path: &Path) -> ProviderResult<Value> {
     if !path.is_absolute() {
         return Err(failure("CANVAS_PATH_INVALID"));
     }

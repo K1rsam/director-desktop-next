@@ -148,3 +148,18 @@ fn headless_native_async_command_rejects_before_home_or_worker_creation() {
         assert!(output.stdout.is_empty());
     }
 }
+
+#[test]
+fn headless_saved_grant_cannot_start_an_async_workflow() {
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("native-cli-acceptance.json"), b"{}").unwrap();
+    let mut child = Command::new(env!("CARGO_BIN_EXE_director-next-core"))
+        .arg(root.path()).stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn().unwrap();
+    child.stdin.take().unwrap().write_all(br#"{"action":"foundation.run"}"#).unwrap();
+    let output = child.wait_with_output().unwrap();
+    assert!(!output.status.success());
+    assert!(String::from_utf8(output.stderr).unwrap().contains("HEADLESS_ASYNC_ACCEPTANCE_BLOCKED"));
+    assert_eq!(std::fs::read_dir(root.path()).unwrap().count(), 1);
+}

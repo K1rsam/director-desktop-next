@@ -1,6 +1,27 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { actionBlockReason, assertOfflineAction, classifyAction, CREDENTIAL_SETTING_KEYS, dispatchOfflineRequest, OFFLINE_EXECUTION_POLICY, validateExecutionPolicy } from './executionPolicy.ts';
+
+test('standard native capabilities enable existing flows and keep unported Stage3 closed', async () => {
+  const { installExecutionPolicy } = await import('./executionPolicy.ts');
+  const policy = { version: 'execution-policy/v3', mode: 'standard_native', liveExecutionAllowed: true,
+    stage3CreativePackStatus: 'inactive', reasons: ['synthetic standard capabilities'],
+    allowedActions: ['getExecutionPolicy', 'foundation.run', 'images.design', 'settings.save', 'providers.refresh', 'textCli.login', 'workflows.resume'] };
+  try {
+    installExecutionPolicy(validateExecutionPolicy(policy));
+    const sent: string[] = [];
+    for (const action of ['foundation.run', 'images.design', 'textCli.login']) {
+      await dispatchOfflineRequest({ action }, async input => { sent.push(input.action); return null; });
+    }
+    assert.deepEqual(sent, ['foundation.run', 'images.design', 'textCli.login']);
+    assert.equal(actionBlockReason({ action: 'settings.save', settings: { textApiKey: 'synthetic' } }), null);
+    for (const action of ['storyboard.run', 'units.regenerate']) {
+      await assert.rejects(dispatchOfflineRequest({ action }, async () => assert.fail('unported Stage3 reached IPC')), /第三阶段暂不可生成/);
+    }
+    assert.throws(() => validateExecutionPolicy({ ...policy, allowedActions: ['storyboard.run'] }), /标准版功能策略无效/);
+    assert.throws(() => validateExecutionPolicy({ ...policy, allowedActions: ['unknown.action'] }), /标准版功能策略无效/);
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});
 import type { PolicyRequest } from './executionPolicy.ts';
 import { createCatalogDiscovery } from './contracts.ts';
 import type { Workspace } from './types.ts';
@@ -176,5 +197,18 @@ test('Canvas readiness requires its explicit backend capability and never opens 
     installExecutionPolicy(validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, readiness: { ...capability, enabled: false, providers: ['dreamina_canvas'] } }));
     await assert.rejects(dispatchOfflineRequest(request, async input => { calls.push(input); }));
     assert.equal(calls.length, 1, 'disabled startup policy remains fail closed');
+  } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
+});
+
+
+test('native Canvas OAuth is independently gated and cannot unlock generation', async () => {
+  const { installExecutionPolicy } = await import('./executionPolicy.ts');
+  try {
+    for (const enabled of [false, true]) {
+      installExecutionPolicy(validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, canvasOAuth: { version: 'canvas-oauth/v1', enabled } }));
+      for (const action of ['canvas.login', 'canvas.loginStatus', 'canvas.openAuthorization', 'canvas.cancelLogin', 'canvas.logout']) assert.equal(!actionBlockReason(action), enabled);
+      for (const action of ['canvas.loginShell', 'canvas.generate', 'dreamina.login', 'images.run', 'videos.submit']) assert.ok(actionBlockReason(action));
+    }
+    assert.throws(() => validateExecutionPolicy({ ...OFFLINE_EXECUTION_POLICY, canvasOAuth: { version: 'unknown', enabled: true } }));
   } finally { installExecutionPolicy(OFFLINE_EXECUTION_POLICY); }
 });

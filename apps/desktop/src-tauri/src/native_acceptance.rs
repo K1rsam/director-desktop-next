@@ -442,6 +442,27 @@ mod tests {
         )
     }
     #[test]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    fn saved_grant_enables_normal_restart_but_not_isolated_verification() {
+        let directory = tempfile::tempdir().unwrap();
+        let home = directory.path().join("home");
+        fs::create_dir_all(&home).unwrap();
+        let (grant, _, _) = fixture();
+        fs::write(home.join("native-cli-acceptance.json"), serde_json::to_vec(&grant).unwrap()).unwrap();
+        for _ in 0..2 {
+            let engine = crate::Engine::new(home.clone()).unwrap();
+            let policy = engine.dispatch(json!({"action":"getExecutionPolicy"})).unwrap();
+            assert_eq!(policy["mode"], "native_cli_acceptance");
+            assert!(policy["allowedActions"].as_array().unwrap().contains(&json!("foundation.run")));
+            assert!(!policy["allowedActions"].as_array().unwrap().contains(&json!("videos.submit")));
+        }
+        let engine = crate::Engine::new_offline_verification(home.clone()).unwrap();
+        assert_eq!(engine.dispatch(json!({"action":"getExecutionPolicy"})).unwrap()["liveExecutionAllowed"], false);
+        drop(engine);
+        fs::write(home.join("native-cli-acceptance.json"), b"{}").unwrap();
+        assert!(crate::Engine::new(home).is_err());
+    }
+    #[test]
     fn exact_source_model_and_two_episode_scope_are_required() {
         let (g, source, settings) = fixture();
         let ids = source["episodes"]

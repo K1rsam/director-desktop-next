@@ -438,7 +438,12 @@ async fn run_health(node: &Path, root: &Path, state_parent: Option<&Path>) -> Ch
                     "WINDIR",
                     "DIRECTOR_HEALTH_AUDIT"
                 ]
-                .contains(&key.as_str().unwrap()),
+                .contains(&key.as_str().unwrap())
+                    // CoreFoundation adds this locale key after Node starts on
+                    // macOS, including when the parent supplies an empty env.
+                    // Keep the no-effects audit strict for all other keys.
+                    || (cfg!(target_os = "macos")
+                        && key.as_str() == Some("__CF_USER_TEXT_ENCODING")),
                 "unexpected inherited environment key: {key}"
             );
         }

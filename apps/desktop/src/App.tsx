@@ -122,7 +122,7 @@ export default function App() {
   async function importProject() {
     if (busyRef.current || !desktop) return;
     busyRef.current = 'project.import'; setBusy('project.import'); setError('');
-    try { const paths = await choose('file'); if (!paths[0]) return; const result = await request<Workspace | ProjectSummary>({ action: 'project.import', path: paths[0] }); setProjectFilter('active'); await listProjects(); if (isWorkspace(result)) { setWorkspace(normalize(result)); setPage('videos'); } else if (result?.id) await loadProject(result, 'videos'); setNotice('项目包已导入，可继续整理本地资料；当前处于离线准备模式。'); } catch (reason) { setError(messageOf(reason)); } finally { busyRef.current = ''; setBusy(''); }
+    try { const paths = await choose('file'); if (!paths[0]) return; const result = await request<Workspace | ProjectSummary>({ action: 'project.import', path: paths[0] }); setProjectFilter('active'); await listProjects(); if (isWorkspace(result)) { setWorkspace(normalize(result)); setPage('videos'); } else if (result?.id) await loadProject(result, 'videos'); setNotice('项目包已导入，可继续整理资料和制作。'); } catch (reason) { setError(messageOf(reason)); } finally { busyRef.current = ''; setBusy(''); }
   }
   async function exportProject() { const paths = await choose('directory'); if (paths[0] && workspace) { const filename = `${workspace.project.title.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')}-${new Date().toISOString().replace(/[:.]/g, '-')}.director.zip`; await mutate('project.export', { path: `${paths[0].replace(/[\\/]$/, '')}/${filename}` }, `项目包已导出：${filename}`); } }
   const selectedStage = stages.find(stage => stage.id === page), activeJobs = workspace?.jobs.filter(jobActive).length || 0;

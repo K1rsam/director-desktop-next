@@ -1,0 +1,222 @@
+{
+  "version": "local-native-receipt/v1",
+  "recordedAtUtc": "2026-10-07T13:25:41.769163+00:00",
+  "releaseScope": "Local standard-entry and OAuth implementation, rule provenance and native checks. Not full product acceptance.",
+  "baseCommit": "2c952f67b96878a90338ab5770c7d864bcf1b78f",
+  "publishedCommitReference": "Use the repository commit containing this receipt; exact final SHA is returned separately after normal push.",
+  "publicationSnapshot": {
+    "dateUtc": "2026-10-08",
+    "branch": "handoff/mac-native-20261008",
+    "previousNativeEvidenceDateUtc": "2026-10-07",
+    "selectedSourceFingerprintsChecked": 141,
+    "selectedSourceFingerprintMismatches": 0,
+    "privateEvidenceLogsHashChecked": 8,
+    "fullBuildOrSuiteRepeated": false,
+    "privateEvidenceIncludedInGit": false
+  },
+  "platform": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "windowsNativeVerified": false,
+    "engineeringModelRequirement": "GPT-6.1 Sol / Max",
+    "engineeringModelIndependentlyObserved": null
+  },
+  "app": {
+    "installedPath": "~/Applications/导演工作台 Next.app",
+    "mainSha256": "ea5521bafc69e0bb7306fe0bfe6391947aa61ee687296c062d1cfe22f3f1af3d",
+    "previousMainSha256": "54b53419944ca39691604395945959b343a9b457d5e2961245b41dda89a022de",
+    "installedFileHashesVerified": true,
+    "strictAdhocSignatureAndResourcesVerified": true,
+    "existingAttributesPreserved": true,
+    "newSignatureProvenanceMatched": true,
+    "notarizationVerified": false,
+    "gatekeeperDistributionAcceptance": false,
+    "sameApplicationPathUsedForGuiChecks": true
+  },
+  "desktopPolicy": {
+    "freshNativeDefault": "standard_native",
+    "existingInstalledHome": "native_cli_acceptance",
+    "savedSourceGrantAndBudgetPreserved": true,
+    "isolatedVerification": "offline_prepare_only",
+    "stage3AdapterReady": false,
+    "sdkLiveEnabled": false,
+    "canvasGenerationBridgeEnabled": false
+  },
+  "actualGui": {
+    "firstPid": 69014,
+    "reopenedPid": 72185,
+    "navigationClicked": [
+      "01 剧本与基础 原文 · 方向 · 资产目录",
+      "02 图片资产 形象设计 · 当前图 · 历史",
+      "03 分镜提示词 情绪规划 · 主创 · 整编",
+      "04 单元视频 配图绑定 · 生成 · 验收",
+      "任务记录",
+      "渠道与设置"
+    ],
+    "navigationHeadingsRendered": true,
+    "canvasManualCheckClicked": true,
+    "codexManualCheckClicked": true,
+    "normalQuitAndOrdinaryReopenPerformed": true,
+    "bothExistingProjectsPreserved": true,
+    "existingJobStateCountsUnchanged": true,
+    "generatorButtonsClicked": false
+  },
+  "canvas": {
+    "cliVersion": "1.0.2",
+    "installation": "found",
+    "protocol": "passed",
+    "localLogin": "present",
+    "serverAccountIdentity": "not_verified",
+    "accountExitCode": 11,
+    "accountReason": "oauth_scope_insufficient",
+    "accountRequiredAction": "login",
+    "imageModelListExitCode": 12,
+    "modelListErrorClass": "access_denied",
+    "balance": "unknown_public_schema_has_no_balance_command",
+    "firstEarlierAutomaticVersionTimeout": "observed_once_cause_unresolved",
+    "scopeFailureDespiteFutureLocalExpiryObserved": true,
+    "stableConnectionAccepted": false,
+    "reauthorizationOrLogoutPerformedThisTask": false,
+    "generationCallsThisTask": 0
+  },
+  "codex": {
+    "actualCliVersion": "0.159.2",
+    "actualProgram": "~/.local/bin/codex",
+    "localLogin": "present",
+    "readOnlyProtocol": "passed",
+    "modelDirectoryCount": 13,
+    "effectiveModel": "gpt-6.1-sol",
+    "effectiveReasoning": "medium",
+    "configuredBackend": "codex_cli",
+    "actualGenerationTestPerformed": false,
+    "modelCatalogIsGenerationPermissionProof": false
+  },
+  "verification": {
+    "frontend": {
+      "passed": 109,
+      "failed": 0
+    },
+    "focusedReadiness": {
+      "passed": 44,
+      "failed": 0
+    },
+    "standardCore": {
+      "passed": 2,
+      "failed": 0
+    },
+    "fullCoreNative": {
+      "passed": 837,
+      "failed": 0,
+      "ignored": 24,
+      "suites": 25,
+      "testThreads": 4,
+      "loopbackFixtureListeningAllowed": true
+    },
+    "macSignatureAndAttributePolicy": {
+      "passed": 121,
+      "failed": 0
+    },
+    "sourceLock": {
+      "passed": true,
+      "candidateFiles": 22,
+      "migratedFiles": 144,
+      "candidateActive": false
+    },
+    "skillLineage": {
+      "passed": true,
+      "referenceFiles": 72,
+      "registeredRules": 29,
+      "productionCandidateMatches": 22
+    }
+  },
+  "testFailureHistory": {
+    "firstSandboxFullRun": {
+      "passed": 657,
+      "failed": 9,
+      "ignored": 20
+    },
+    "sevenFailuresWereLoopbackPermissionDenied": true,
+    "twoProcessTimingFixtureFailuresPassedInFinalNativeRun": true,
+    "noProductionProcessDeadlineWeakenedForThoseFixtures": true,
+    "codexInspectionColdStartRegressionAdded": true,
+    "sdkAllowsOnlyMacSpecificInjectedEnvironmentKey": "__CF_USER_TEXT_ENCODING"
+  },
+  "sourceAudit": {
+    "productionRulesVerified": 22,
+    "legacyAdoptedEpisodeCount": 2,
+    "legacyKnownCalls": 10,
+    "legacyKnownTokens": 776746,
+    "legacyLiteralSourceLinesPreserved": 53,
+    "finalSeconds": [
+      210,
+      125
+    ],
+    "currentUploadedDocxBytesVerified": false,
+    "existingGrantIsVerifiedUploadedDocxGrant": false,
+    "existingLocalFullTextExactEpisodeMatchProven": false,
+    "privateBodiesUploaded": false,
+    "newStage3RuntimeIntegrated": false,
+    "runtimeMetadataManifest": "MAC_RUNTIME_TRANSFER_REQUIREMENTS.json",
+    "runtimeBodiesTransferred": false
+  },
+  "historyZip": {
+    "downloaded": false,
+    "bytes": 364013,
+    "sha256Expected": "9cb28b8f6bdd398b371dfa4c2786c83e0fe14fc54835ad074b6b859389c92bca",
+    "blocker": "ZIP bytes remain unmaterialized and unverified locally. The separately published Git history branch is now fetched and its commit/file list checked."
+  },
+  "historyGit": {
+    "branch": "handoff/windows-history-20261007",
+    "commit": "cb4f728e1f22dbf20b88e0eae0cf0a11c6c85f13",
+    "parentCommit": "2c952f67b96878a90338ab5770c7d864bcf1b78f",
+    "fetchedAndCommitFileListChecked": true,
+    "changedFiles": 65,
+    "mergedIntoThisSnapshot": false,
+    "gitFetchIsZipByteHashProof": false
+  },
+  "untested": [
+    "New-product real text and old-final quality comparison",
+    "Real image output and free eligibility",
+    "Real video",
+    "SDK live",
+    "Windows native packaging and persistence",
+    "Complete historical Mac runtime code identity and faithful adapter"
+  ],
+  "privateEvidenceHashes": [
+    {
+      "name": "frontend-tests.log",
+      "sha256": "e9399527c26413f6f924f2813f3d936983c911f92f1b0e6bdb420f09685d0993"
+    },
+    {
+      "name": "readiness-final.log",
+      "sha256": "976af4c8c980752911cf8fa698d9d5fb151a1918546e0d0119da73d9378abb81"
+    },
+    {
+      "name": "standard-core-tests.log",
+      "sha256": "83dedcc21d9f8301b12b1aab5e4694040c89d6e8d8b17de1f0af880dfd054938"
+    },
+    {
+      "name": "core-native-regression.log",
+      "sha256": "f140aeacbe5266642e2f63abc24108a80d598ad0716f27a75958b74f162ac560"
+    },
+    {
+      "name": "signature-tests.log",
+      "sha256": "e7b222464330c4b998e7d8080ddf6b03b131b16af0249c8e4c2bb86edc4f00dd"
+    },
+    {
+      "name": "source-lock.log",
+      "sha256": "2f101919d8373e995df7e18d0c3f1510316619086098529086192dd0a372be52"
+    },
+    {
+      "name": "skill-lineage.log",
+      "sha256": "a7469df4e11f6f0b9be676031727498b5f3ea7209c2a5a5e543bb74669cd4635"
+    },
+    {
+      "name": "build.log",
+      "sha256": "1a2db4931ba3d8595d0263a4cc4e1f8d1063ea21b5802d8ee2066575d26ba0d7"
+    }
+  ],
+  "selectedSourceSnapshotSha256": "8a00a91838c4514419ff5fcd2a0b521f025a4b6ea4a5d714c8e74e18ea1b9e92",
+  "selectedSourceFileCount": 141,
+  "selectedSourceSnapshotScope": "Tracked Rust/UI/current rule/SDK-source files plus OAuth source and selected Mac builder scripts, observed after build; not a reproducible-build attestation."
+}

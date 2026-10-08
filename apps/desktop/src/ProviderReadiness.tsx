@@ -56,7 +56,11 @@ export function useProviderReadiness(projectId: string, provider: ReadinessProvi
     }
   }, [enabled, scope, projectId, provider, path]);
   const current = state.scope === scope && state.attempt === sequence.current ? state : { busy: false, result: null, error: '' };
-  return { ...current, check, blocked, provider };
+  const reset = useCallback(() => {
+    const attempt = ++sequence.current; inFlight.current = null;
+    setState({ scope, attempt, busy: false, result: null, error: '' });
+  }, [scope]);
+  return { ...current, check, reset, blocked, provider };
 }
 export type ReadinessCheck = ReturnType<typeof useProviderReadiness>;
 
